@@ -30,7 +30,7 @@ export type Property = {
 
   is_featured: boolean;
 
-  cover: string;
+  
 
   created_at?: string;
   updated_at?: string;
@@ -40,7 +40,8 @@ export type PropertyImages = {
   id?: string;
   property_id: string;
   image_url: string;
-  position: number
+  position: number;
+  cover_image: boolean;
   created_at?: string;
   updated_at?: string
 };
