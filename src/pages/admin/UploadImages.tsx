@@ -24,7 +24,7 @@ export default function UploadImages() {
     const selectedFiles = Array.from(e.target.files);
 
     if (selectedFiles.length > 15) {
-      alert("Máximo de 15 imagens");
+      alert("Máximo de 15 imagens"); 
       return;
     }
 

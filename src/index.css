@@ -1,35 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+@theme {
+  --color-primary1: #556b5a;
+  --color-primary2: #b08a4a;
+  --color-primary3: #695e3e;
+  --color-primary4: #e7ddcf;
+  --color-primary5: #70838a;
+  --color-secondary1: #2f3a33;
+  --color-secondary2: #aabcbf;
+  --color-secondary3: #8b947f;
+  --color-secondary4: #f5f1ea;
+  --color-secondary5: #914417;
+  --color-opacity1: #e7ddcf80;
+  --color-opacity2: #8b947f80;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-cormorant: "Cormorant Garamond", serif;
 }
 
+html, body {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
 
+main {
+  padding: 0 80px;
+}
