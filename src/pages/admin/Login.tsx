@@ -1,9 +1,7 @@
-// import Button from "../../components/Button";
-// import { loginToAdmin } from "../../services/login";
 import AdminHeader from "../../components/admin/AdminHeader";
 import AdminFooter from "../../components/admin/AdminFooter";
 import logo from "../../assets/logo.svg";
-import { Button } from "@/components/ui/button";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Field,
   FieldGroup,
@@ -14,6 +12,11 @@ import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import DefaultButton from "@/components/Button";
+import { loginToAdmin } from "@/services/login";
+import { useState } from "react";
+import Loading from "../../components/Loading";
+import { useNavigate } from "react-router-dom";
 
 type FormData = {
   email: string;
@@ -29,6 +32,8 @@ const formSchema = z.object({
 });
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
   // const { register, handleSubmit } = useForm<FormData>();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,27 +45,36 @@ const Login = () => {
   });
 
   async function onSubmit(data: FormData) {
-    console.log(data);
-
-    // enviar para o backend
-    // await api.post("/login", data);
+    try {
+      setIsLoading(true);
+      const user = await loginToAdmin(data.email, data.password);
+      navigate("home");
+      console.log(user);
+      toast.success("Login realizado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao realizar login.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <>
       <AdminHeader />
-      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 h-full">
+      {isLoading && <Loading />}
+      <ToastContainer />
+      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8!">
         <div className="flex flex-col gap-2 items-center justify-ceter">
           <img src={logo} alt="logo" className="w-36" />
           <h1 className="font-cormorant text-3xl font-semibold">
             Gerenciar imóveis
           </h1>
-          <h2 className="text-sm text-primary1 pb-4">
+          <h2 className="text-xs text-center text-primary1 pb-4">
             Tenha total controle do seu site, editando, excluindo e adicionando
             imóveis.
           </h2>
         </div>
-        <div className="flex flex-col gap-4 items-center p-8 w-120 h-100 bg-white rounded-xl ">
+        <div className="flex flex-col gap-4 items-center p-8 w-120 max-lg:w-80  bg-white rounded-xl ">
           <h3 className="font-semibold text-xl">Login</h3>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <FieldGroup>
@@ -106,10 +120,7 @@ const Login = () => {
                   </Field>
                 )}
               />
-
-              <Field orientation="horizontal">
-                <Button type="submit">Entrar</Button>
-              </Field>
+              <DefaultButton text="Entrar" typeSubmit={true} />
             </FieldGroup>
           </form>
         </div>

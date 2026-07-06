@@ -1,18 +1,17 @@
 import { supabase } from "../lib/supabase";
 
-export const loginToAdmin = async () => {
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: import.meta.env.VITE_LOGIN_EMAIL,
-      password: import.meta.env.VITE_LOGIN_PASSWORD,
-    });
+export const loginToAdmin = async (
+  email: string,
+  password: string
+) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (error) {
-      console.error(error);
-    } else {
-      console.log("Usuário logado:", data.user);
-    }
-  } catch (error) {
-    Error(`Cannot login in the admin dashboard. Error: ${error}`);
+  if (error) {
+    throw new Error(error.message);
   }
+
+  return data.user;
 };

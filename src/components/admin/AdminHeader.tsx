@@ -4,7 +4,7 @@ import Button from "../Button";
 
 const AdminHeader = () => {
   return (
-    <header className="flex justify-between items-center bg-white h-20 px-20">
+    <header className="flex justify-between items-center bg-white h-20 px-20 max-lg:px-4">
       <Link
         to="/"
         className="flex gap-2 items-center justify-center h-12 cursor-pointer"

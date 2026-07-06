@@ -8,8 +8,7 @@ export default function PrivateRoute({
   children: React.ReactNode;
 }) {
   const [loading, setLoading] = useState(true);
-  const [authenticated, setAuthenticated] =
-    useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {

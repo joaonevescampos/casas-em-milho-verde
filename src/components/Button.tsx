@@ -5,12 +5,26 @@ type ButtonProps = {
   path?: string;
   style?: string;
   onClick?: () => void;
+  typeSubmit?: boolean;
 };
 
-const Button = ({ text, path, style, onClick }: ButtonProps) => {
+const DefaultButton = ({
+  text,
+  path,
+  style,
+  onClick,
+  typeSubmit,
+}: ButtonProps) => {
   return (
     <>
-      {path ? (
+      {typeSubmit ? (
+        <button
+          type="submit"
+          className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-xs cursor-pointer font-semibold px-6 ${style}`}
+        >
+          {text}
+        </button>
+      ) : path ? (
         <Link to={path}>
           <button
             className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-xs cursor-pointer font-semibold px-6 ${style}`}
@@ -30,4 +44,4 @@ const Button = ({ text, path, style, onClick }: ButtonProps) => {
   );
 };
 
-export default Button;
+export default DefaultButton;
