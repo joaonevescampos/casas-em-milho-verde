@@ -4,7 +4,7 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import DefaultButton from "@/components/Button";
 import { propertiesToRent } from "@/data/propertiesToRent";
 import { propertiesToSend } from "@/data/propertiesToSend";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const HomeAdmin = () => {
   const [purpose, setPurpose] = useState<string>("rent");
@@ -12,8 +12,6 @@ const HomeAdmin = () => {
   const changePurpose = (value: string) => {
     value === "rent" ? setPurpose("rent") : setPurpose("send");
   };
-
-
 
   return (
     <>
@@ -23,7 +21,7 @@ const HomeAdmin = () => {
           <span className="text-secondary5 font-medium text-[10px]">
             GERENCIAMENTO DE IMÓVEIS
           </span>
-          <h1 className="font-cormorant font-semibold text-2xl">
+          <h1 className="font-cormorant font-semibold text-2xl max-lg:text-xl">
             {purpose === "rent" ? "Aluguéis de temporada" : "Venda de imóveis"}
           </h1>
           <h2 className="text-xs opacity-80">
@@ -32,9 +30,9 @@ const HomeAdmin = () => {
         </div>
 
         <section className="flex flex-col items-center justify-center w-full">
-          <div className="flex gap-4 items-center justify-center text-[10px]">
+          <div className="flex gap-4 items-center justify-center text-[10px] max-lg:text-[8px]">
             <button
-              className={`flex items-center justify-center w-40 py-4 cursor-pointer rounded-t-sm  font-medium bg-white  ${purpose === "send" ? "opacity-100" : "opacity-40"}`}
+              className={`flex items-center justify-center w-40 max-lg:w-32 py-4 cursor-pointer rounded-t-sm  font-medium bg-white  ${purpose === "send" ? "opacity-100" : "opacity-40"}`}
               onClick={() => changePurpose("send")}
             >
               VENDA DE IMÓVEIS
@@ -52,7 +50,7 @@ const HomeAdmin = () => {
                 <span className="text-xs font-medium">21 anúncios</span>
                 <DefaultButton text="+ ADICIONAR" />
               </div>
-              <ul className="flex flex-col gap-2 w-full max-h-100 overflow-y-scroll">
+              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-415px)]  overflow-y-scroll">
                 {purpose === "rent"
                   ? propertiesToRent.map((property, index) => (
                       <li className="w-full">
