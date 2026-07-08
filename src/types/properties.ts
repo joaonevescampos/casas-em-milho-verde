@@ -8,8 +8,6 @@ export type Property = {
   title: string;
   description: string;
 
-  price: number;
-
   state: string;
   city: string;
   neighborhood: string;
@@ -26,11 +24,7 @@ export type Property = {
   airbnb_link: string | null;
   status: string;
 
-  rate: number | null;
-
   is_featured: boolean;
-
-  
 
   created_at?: string;
   updated_at?: string;

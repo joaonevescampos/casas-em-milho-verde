@@ -60,7 +60,7 @@ const Login = () => {
 
   return (
     <>
-      <AdminHeader />
+      <AdminHeader isLogged={false} />
       {isLoading && <Loading />}
       <ToastContainer />
       <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8!">

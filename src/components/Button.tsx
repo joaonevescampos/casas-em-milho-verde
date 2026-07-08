@@ -20,21 +20,21 @@ const DefaultButton = ({
       {typeSubmit ? (
         <button
           type="submit"
-          className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-xs cursor-pointer font-semibold px-6 ${style}`}
+          className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-[10px] cursor-pointer font-semibold px-6 ${style}`}
         >
           {text}
         </button>
       ) : path ? (
         <Link to={path}>
           <button
-            className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-xs cursor-pointer font-semibold px-6 ${style}`}
+            className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-[10px] cursor-pointer font-semibold px-6 ${style}`}
           >
             {text}
           </button>
         </Link>
       ) : (
         <button
-          className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-xs cursor-pointer font-semibold px-6 ${style}`}
+          className={`font-montserrat bg-secondary1 text-white rounded-3xl h-11 text-[10px] cursor-pointer font-semibold px-6 ${style}`}
           onClick={onClick}
         >
           {text}
