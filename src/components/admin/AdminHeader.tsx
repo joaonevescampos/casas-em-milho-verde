@@ -5,9 +5,10 @@ import profile from "../../assets/logo.svg"
 
 type HeaderProps = {
   isLogged: boolean;
+  onLogout? : () => void;
 };
 
-const AdminHeader = ({ isLogged }: HeaderProps) => {
+const AdminHeader = ({ isLogged, onLogout }: HeaderProps) => {
   return (
     <header className="flex justify-between items-center bg-white h-20 px-20 max-lg:px-4">
       <Link
@@ -28,7 +29,7 @@ const AdminHeader = ({ isLogged }: HeaderProps) => {
         <div className="flex gap-4 max-lg:gap-2 items-center">
           <div className="flex flex-col gap-1 items-end">
             <span className="font-semibold text-xs max-lg:text-[10px]">Matias Hansen</span>
-            <span className="text-xs max-lg:text-[10px] text-red-700">Sair</span>
+            <button className="text-xs max-lg:text-[10px] text-red-700 cursor-pointer" onClick={onLogout}>Sair</button>
           </div>
           <div>
             <img src={profile} alt="photo-profile" className="w-12 h-12 max-lg:w-10 max-lg:h-10 rounded-full" />
