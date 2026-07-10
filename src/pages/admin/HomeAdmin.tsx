@@ -2,6 +2,8 @@ import AdminCard from "@/components/admin/AdminCard";
 import AdminFooter from "@/components/admin/AdminFooter";
 import AdminHeader from "@/components/admin/AdminHeader";
 import ModalAdd from "@/components/admin/ModalAdd";
+import ModalDelete from "@/components/admin/ModalDelete";
+import ModalEdit from "@/components/admin/ModalEdit";
 import DefaultButton from "@/components/Button";
 import Loading from "@/components/Loading";
 import { propertiesToRent } from "@/data/propertiesToRent";
@@ -9,7 +11,7 @@ import { propertiesToSend } from "@/data/propertiesToSend";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const HomeAdmin = () => {
   const [purpose, setPurpose] = useState<string>("rent");
@@ -17,6 +19,7 @@ const HomeAdmin = () => {
   const [openEditProperty, setOpenEditProperty] = useState<boolean>(false);
   const [openDeleteProperty, setOpenDeleteProperty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<string>("");
 
   const changePurpose = (value: string) => {
     value === "rent" ? setPurpose("rent") : setPurpose("send");
@@ -26,8 +29,27 @@ const HomeAdmin = () => {
     setOpenAddProperty(true);
   };
 
+  const handleEditProperty = (propertyId: string) => {
+    setOpenEditProperty(true);
+    setSelectedId(propertyId);
+  };
+
+  const handleDeleteProperty = (propertyId: string) => {
+    console.log("detalhamento do que vai ser excluido ID", propertyId);
+    setSelectedId(propertyId);
+    setOpenDeleteProperty(true);
+  };
+
   const handleCloseAdd = () => {
     setOpenAddProperty(false);
+  };
+
+  const handleCloseEdit = () => {
+    setOpenEditProperty(false);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDeleteProperty(false);
   };
 
   const navigate = useNavigate();
@@ -50,8 +72,21 @@ const HomeAdmin = () => {
       <AdminHeader isLogged={true} onLogout={() => logout()} />
       <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! px-4">
         {isLoading && <Loading />}
-        <ToastContainer />
+
         {openAddProperty && <ModalAdd onClose={() => handleCloseAdd()} />}
+        {openEditProperty && (
+          <ModalEdit
+            propertyId={selectedId}
+            onClose={() => handleCloseEdit()}
+          />
+        )}
+        {openDeleteProperty && (
+          <ModalDelete
+            propertyId={selectedId}
+            onClose={() => handleCloseDelete()}
+          />
+        )}
+
         <div className="flex flex-col gap-2 text-center">
           <span className="text-secondary5 font-medium text-[10px]">
             GERENCIAMENTO DE IMÓVEIS
@@ -82,7 +117,12 @@ const HomeAdmin = () => {
           <div className="flex flex-col items-center justify-center bg-white w-full max-w-300 px-8 max-lg:px-4 py-4 rounded-sm">
             <div className="w-full">
               <div className="flex justify-between items-center pb-4">
-                <span className="text-xs font-medium">21 anúncios</span>
+                <span className="text-xs font-medium">
+                  {purpose === "rent"
+                    ? propertiesToRent.length
+                    : propertiesToSend.length}{" "}
+                  anúncios
+                </span>
                 <DefaultButton
                   text="+ ADICIONAR"
                   onClick={() => handleAddProperty()}
@@ -93,6 +133,7 @@ const HomeAdmin = () => {
                   ? propertiesToRent.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
+                          propertyId={property.id}
                           city={property.city}
                           state={property.state}
                           title={property.title}
@@ -105,12 +146,15 @@ const HomeAdmin = () => {
                             property.images.find((item) => item.cover_image)
                               ?.image_url!
                           }
+                          onEdit={() => handleEditProperty(property.id)}
+                          onDelete={() => handleDeleteProperty(property.id)}
                         />
                       </li>
                     ))
                   : propertiesToSend.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
+                          propertyId={property.id}
                           city={property.city}
                           state={property.state}
                           title={property.title}
@@ -123,6 +167,8 @@ const HomeAdmin = () => {
                             property.images.find((item) => item.cover_image)
                               ?.image_url!
                           }
+                          onEdit={() => handleEditProperty(property.id)}
+                          onDelete={() => handleDeleteProperty(property.id)}
                         />
                       </li>
                     ))}

@@ -1,7 +1,6 @@
 import AdminHeader from "../../components/admin/AdminHeader";
 import AdminFooter from "../../components/admin/AdminFooter";
 import logo from "../../assets/logo.svg";
-import { ToastContainer, toast } from "react-toastify";
 import {
   Field,
   FieldGroup,
@@ -18,6 +17,7 @@ import { useState } from "react";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { loginSchema } from "@/schemas/login";
+import { toast } from "react-toastify";
 
 type FormData = {
   email: string;
@@ -53,7 +53,7 @@ const Login = () => {
     <>
       <AdminHeader isLogged={false} />
       {isLoading && <Loading />}
-      <ToastContainer />
+     
       <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8!">
         <div className="flex flex-col gap-2 items-center justify-ceter">
           <img src={logo} alt="logo" className="w-36" />

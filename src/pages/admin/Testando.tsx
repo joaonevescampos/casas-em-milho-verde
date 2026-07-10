@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
-import { ToastContainer, toast } from "react-toastify";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +28,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   title: z
@@ -76,7 +75,6 @@ export function Testando() {
 
   return (
     <Card className="w-full sm:max-w-md">
-      <ToastContainer />
       <CardHeader>
         <CardTitle>Bug Report</CardTitle>
         <CardDescription>

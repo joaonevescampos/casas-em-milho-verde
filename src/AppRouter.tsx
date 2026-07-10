@@ -5,10 +5,12 @@ import PrivateRoute from "./pages/PrivateRoute";
 import Login from "./pages/admin/Login";
 import { Testando } from "./pages/admin/Testando";
 import HomeAdmin from "./pages/admin/HomeAdmin";
+import { ToastContainer } from "react-toastify";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
+    <ToastContainer />
       <Routes>
         <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<Login />} />

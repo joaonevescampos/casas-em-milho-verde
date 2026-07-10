@@ -4,10 +4,10 @@ import { Controller, useForm } from "react-hook-form";
 import { Input } from "@base-ui/react/input";
 import DefaultButton from "../Button";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addSchema } from "@/schemas/add";
+import { propertySchema } from "@/schemas/property";
 import * as z from "zod";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,6 +17,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "react-toastify";
 
 type ModalProps = {
   onClose?: () => void;
@@ -33,13 +34,13 @@ type FormData = {
   bedroom: number;
   beds: number;
   guests: number;
-  bathrooms: number;
+  bathroom: number;
 };
 
 const ModalAdd = ({ onClose }: ModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const form = useForm<z.infer<typeof addSchema>>({
-    resolver: zodResolver(addSchema),
+  const form = useForm<z.infer<typeof propertySchema>>({
+    resolver: zodResolver(propertySchema),
     defaultValues: {
       title: "",
       description: "",
@@ -51,7 +52,7 @@ const ModalAdd = ({ onClose }: ModalProps) => {
       bedroom: 1,
       beds: 1,
       guests: 1,
-      bathrooms: 1,
+      bathroom: 1,
     },
   });
 
@@ -59,7 +60,10 @@ const ModalAdd = ({ onClose }: ModalProps) => {
     try {
       setIsLoading(true);
 
+      console.log("data", data);
+
       toast.success("Cadastro realizado com sucesso!");
+      onClose?.();
     } catch (error) {
       toast.error("Erro ao realizar cadastrar imóvel.");
     } finally {
@@ -69,7 +73,6 @@ const ModalAdd = ({ onClose }: ModalProps) => {
 
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
-      <ToastContainer />
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
       <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] rounded-sm px-8 max-lg:px-4 py-4">
         <button
@@ -439,12 +442,12 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="bathrooms"
+                  name="bathroom"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-bathrooms"
+                        htmlFor="field-bathroom"
                         className="font-semibold text-xs"
                       >
                         Banheiros
@@ -454,7 +457,7 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-bathrooms" className="w-full">
+                        <SelectTrigger id="field-bathroom" className="w-full">
                           <SelectValue placeholder="Selecione a quantidade de banheiros" />
                         </SelectTrigger>
                         <SelectContent>
@@ -535,8 +538,12 @@ const ModalAdd = ({ onClose }: ModalProps) => {
               </div>
             </div>
           </FieldGroup>
+          <DefaultButton
+            text="CRIAR"
+            style="absolute bottom-2 right-4 w-24"
+            typeSubmit={true}
+          />
         </form>
-        <DefaultButton text="SALVAR" style="self-end w-24" typeSubmit={true} />
       </div>
     </div>
   );

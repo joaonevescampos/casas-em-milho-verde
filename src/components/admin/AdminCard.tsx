@@ -2,6 +2,7 @@ import { BiSolidPencil } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 
 type PropertiesCard = {
+  propertyId: string;
   city: string;
   state: string;
   title: string;
@@ -11,9 +12,12 @@ type PropertiesCard = {
   bedroom: number;
   bathroom: number;
   coverImage: string;
+  onEdit: (propertyId: string) => void;
+  onDelete: (propertyId: string) => void;
 };
 
 const AdminCard = ({
+  propertyId,
   city,
   state,
   title,
@@ -23,6 +27,8 @@ const AdminCard = ({
   bedroom,
   bathroom,
   coverImage,
+  onEdit,
+  onDelete,
 }: PropertiesCard) => {
   return (
     <div className="flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full">
@@ -57,10 +63,16 @@ const AdminCard = ({
         </div>
       </div>
       <div className="flex max-lg:flex-col max-lg:gap-2 gap-4">
-        <button className="flex items-center justify-center border border-primary5/30 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12">
+        <button
+          className="flex items-center justify-center border border-primary5/30 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12"
+          onClick={() => onEdit(propertyId)}
+        >
           <BiSolidPencil className="text-primary5" />
         </button>
-        <button className="flex items-center justify-center border border-red-700/50 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12">
+        <button
+          className="flex items-center justify-center border border-red-700/50 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12"
+          onClick={() => onDelete(propertyId)}
+        >
           <FaRegTrashAlt className="text-red-700" />
         </button>
       </div>

@@ -9,7 +9,7 @@ import useDeleteProperty from "../../hooks/useDeleteProperty";
 
 const data : Property = {
             title: "Casa Teste atuaizada",
-            price: 350000,
+         
             purpose: "rent",
             category: "apartamento",
             slug: "teste-teste4",
@@ -24,7 +24,7 @@ const data : Property = {
             guests: 3,
             beds: 2,
             area: 104,
-            rate: 4.86,
+          
             airbnb_link: "https://www.airbnb.com.br/rooms/1345473862660743223?source_impression_id=p3_1779761873_P3m4EPHKPQcsa32l",
     
             is_featured: true,
