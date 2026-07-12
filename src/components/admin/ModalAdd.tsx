@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { propertySchema } from "@/schemas/property";
 import * as z from "zod";
 import { useState } from "react";
-
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,63 +17,130 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
+import { supabase } from "../../lib/supabase";
+import useCreateProperty from "@/hooks/useCreateProperty";
+import type { Property, PropertyImages } from "@/types/properties";
 
 type ModalProps = {
   onClose?: () => void;
+  purpose: string;
 };
 
-type FormData = {
-  title: string;
-  description: string;
-  category: string;
-  isFeatured: boolean;
-  state: string;
-  city: string;
-  neighborhood: string;
-  bedroom: number;
-  beds: number;
-  guests: number;
-  bathroom: number;
-};
+const ModalAdd = ({ onClose, purpose }: ModalProps) => {
+  const [files, setFiles] = useState<File[]>([]);
+  const { createProperty, property, error, loading } = useCreateProperty();
 
-const ModalAdd = ({ onClose }: ModalProps) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [previews, setPreviews] = useState<string[]>([]);
+
+  // Exemplo:
+  const propertyId = "87653318-1c22-412b-93e0-097671f7857b";
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
+      purpose,
       title: "",
       description: "",
       category: "",
-      isFeatured: false,
+      is_featured: false,
       state: "",
       city: "",
       neighborhood: "",
-      bedroom: 1,
+      bedrooms: 1,
       beds: 1,
       guests: 1,
-      bathroom: 1,
+      bathrooms: 1,
     },
   });
 
-  async function onSubmit(data: FormData) {
+  console.log("defaultValues: ", form.getValues())
+
+  async function onSubmit(data: Property) {
     try {
-      setIsLoading(true);
+      createProperty(data);
 
       console.log("data", data);
+      saleImages();
 
       toast.success("Cadastro realizado com sucesso!");
       onClose?.();
     } catch (error) {
       toast.error("Erro ao realizar cadastrar imóvel.");
     } finally {
-      setIsLoading(false);
     }
   }
+
+  const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const selectedFiles = Array.from(e.target.files);
+
+    if (selectedFiles.length > 15) {
+      toast.error("Máximo de 15 imagens");
+      return;
+    }
+
+    setFiles(selectedFiles);
+
+    const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
+
+    setPreviews(previewUrls);
+  };
+
+  const saleImages = async () => {
+    try {
+      const imagesToInsert: PropertyImages[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        const extension = file.name.split(".").pop();
+
+        const fileName = `${Date.now()}-${i}.${extension}`;
+
+        const filePath = `${propertyId}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("property_images")
+          .upload(filePath, file);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("property_images").getPublicUrl(filePath);
+
+        imagesToInsert.push({
+          property_id: propertyId,
+          image_url: publicUrl,
+          position: i,
+          cover_image: i == 0 ? true : false,
+        });
+      }
+
+      const { error } = await supabase
+        .from("property_images")
+        .insert(imagesToInsert);
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Imagens enviadas com sucesso!");
+      setFiles([]);
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao enviar imagens");
+    } finally {
+    }
+  };
 
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
       <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] rounded-sm px-8 max-lg:px-4 py-4">
+        <h1 className="font-semibold pb-4">Cadastrar anúncio para {purpose=="rent" ? "alugar" : "vender"}</h1>
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer"
@@ -82,18 +148,45 @@ const ModalAdd = ({ onClose }: ModalProps) => {
           <IoClose />
         </button>
 
-        <h1 className="text-center font-semibold font-cormorant text-xl">
-          Adicionar imóvel
-        </h1>
-        <div>
-          <span className="font-semibold text-xs">Fotos</span>
-        </div>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full overflow-y-scroll h-10/12 mb-4"
+          className="w-full overflow-y-scroll h-9/12"
         >
+          <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
+            <h1 className="text-sm font-semibold">Fotos</h1>
+            <h2 className="text-xs opacity-70">
+              Selecione as imagens na ordem que deseja que apareça no anúncio.
+              Primeira imagem, será a capa principal!
+            </h2>
+            <h3 className="text-[10px] font-medium">Máximo de 15 imagens</h3>
+
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleSelectImages}
+              className="bg-primary5/15 p-4 text-xs cursor-pointer rounded"
+            />
+
+            <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-2">
+              {previews.map((preview, index) => (
+                <div
+                  key={index}
+                  className="aspect-square overflow-hidden rounded-lg border"
+                >
+                  <img
+                    src={preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-xs">{files.length} imagens selecionadas</p>
+          </div>
+
           <FieldGroup>
-            <div className="flex max-lg:flex-col gap-8 max-lg:gap-4 h-screen">
+            <div className="flex max-lg:flex-col gap-8 max-lg:gap-4 h-fit m-2">
               <div className="flex-2 flex flex-col gap-4">
                 <Controller
                   name="title"
@@ -156,20 +249,20 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="isFeatured"
+                  name="is_featured"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <div className="flex gap-2 items-center">
                         <Checkbox
-                          id="fieldgroup-isFeatured"
+                          id="fieldgroup-is_featured"
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           className="border border-gray-400"
                         />
 
                         <FieldLabel
-                          htmlFor="fieldgroup-isFeatured"
+                          htmlFor="fieldgroup-is_featured"
                           className="font-semibold text-xs"
                         >
                           Marcar como anúncio em destaque
@@ -358,12 +451,12 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="bedroom"
+                  name="bedrooms"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-bedroom"
+                        htmlFor="field-bedrooms"
                         className="font-semibold text-xs"
                       >
                         Quartos
@@ -373,7 +466,7 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-bedroom" className="w-full">
+                        <SelectTrigger id="field-bedrooms" className="w-full">
                           <SelectValue placeholder="Selecione a quantidade de quartos" />
                         </SelectTrigger>
                         <SelectContent>
@@ -442,12 +535,12 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="bathroom"
+                  name="bathrooms"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-bathroom"
+                        htmlFor="field-bathrooms"
                         className="font-semibold text-xs"
                       >
                         Banheiros
@@ -457,7 +550,7 @@ const ModalAdd = ({ onClose }: ModalProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-bathroom" className="w-full">
+                        <SelectTrigger id="field-bathrooms" className="w-full">
                           <SelectValue placeholder="Selecione a quantidade de banheiros" />
                         </SelectTrigger>
                         <SelectContent>

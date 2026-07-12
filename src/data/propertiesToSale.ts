@@ -1,4 +1,4 @@
-export const propertiesToSend = [
+export const propertiesToSale = [
   {
     id: "11",
     purpose: "sale",

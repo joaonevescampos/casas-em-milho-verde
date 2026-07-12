@@ -8,7 +8,7 @@ import HomeAdmin from "./pages/admin/HomeAdmin";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/public/Home";
 import Rent from "./pages/public/Rent";
-import Send from "./pages/public/Send";
+import Sale from "./pages/public/Sale";
 
 const AppRouter = () => {
   return (
@@ -17,7 +17,7 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/alugueis-temporada" element={<Rent />} />
-        <Route path="/venda" element={<Send />} />
+        <Route path="/venda" element={<Sale />} />
         <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<Login />} />
         <Route path="/testando" element={<Testando />} />

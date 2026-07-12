@@ -1,10 +1,10 @@
 export type Property = {
   id?: string;
-  purpose: "sale" | "rent";
+  purpose: string;
 
   category: string;
 
-  slug: string;
+  slug?: string;
   title: string;
   description: string;
 
@@ -14,15 +14,11 @@ export type Property = {
 
   bedrooms: number;
   bathrooms: number;
-  garage: number | null;
-  balcony: number | null;
-  area: number;
+  guests: number;
+  beds: number;
 
-  guests: number | null;
-  beds: number | null;
-
-  airbnb_link: string | null;
-  status: string;
+  airbnb_link?: string;
+  status?: string;
 
   is_featured: boolean;
 

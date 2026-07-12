@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
 import { propertiesToRent } from "@/data/propertiesToRent";
-import { propertiesToSend } from "@/data/propertiesToSend";
+import { propertiesToSale } from "@/data/propertiesToSale";
 
 type Property = {
   propertyId?: string;
@@ -82,7 +82,7 @@ const ModalEdit = ({ onClose, propertyId }: ModalProps) => {
       (property) => property.id === propertyId,
     )
       ? propertiesToRent.find((property) => property.id === propertyId)
-      : propertiesToSend.find((property) => property.id === propertyId);
+      : propertiesToSale.find((property) => property.id === propertyId);
 
     if (getProperty) {
       const formatProperty: Property = {

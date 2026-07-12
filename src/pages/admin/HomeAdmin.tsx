@@ -7,7 +7,8 @@ import ModalEdit from "@/components/admin/ModalEdit";
 import DefaultButton from "@/components/Button";
 import Loading from "@/components/Loading";
 import { propertiesToRent } from "@/data/propertiesToRent";
-import { propertiesToSend } from "@/data/propertiesToSend";
+import { propertiesToSale } from "@/data/propertiesToSale";
+
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,7 +23,7 @@ const HomeAdmin = () => {
   const [selectedId, setSelectedId] = useState<string>("");
 
   const changePurpose = (value: string) => {
-    value === "rent" ? setPurpose("rent") : setPurpose("send");
+    value === "rent" ? setPurpose("rent") : setPurpose("sale");
   };
 
   const handleAddProperty = () => {
@@ -73,7 +74,9 @@ const HomeAdmin = () => {
       <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! px-4">
         {isLoading && <Loading />}
 
-        {openAddProperty && <ModalAdd onClose={() => handleCloseAdd()} />}
+        {openAddProperty && (
+          <ModalAdd purpose={purpose} onClose={() => handleCloseAdd()} />
+        )}
         {openEditProperty && (
           <ModalEdit
             propertyId={selectedId}
@@ -102,8 +105,8 @@ const HomeAdmin = () => {
         <section className="flex flex-col items-center justify-center w-full">
           <div className="flex gap-4 items-center justify-center text-[10px] max-lg:text-[8px]">
             <button
-              className={`flex items-center justify-center w-40 max-lg:w-32 py-4 cursor-pointer rounded-t-sm  font-medium bg-white  ${purpose === "send" ? "opacity-100" : "opacity-40"}`}
-              onClick={() => changePurpose("send")}
+              className={`flex items-center justify-center w-40 max-lg:w-32 py-4 cursor-pointer rounded-t-sm  font-medium bg-white  ${purpose === "sale" ? "opacity-100" : "opacity-40"}`}
+              onClick={() => changePurpose("sale")}
             >
               VENDA DE IMÓVEIS
             </button>
@@ -130,7 +133,7 @@ const HomeAdmin = () => {
                   <span className="text-[10px] font-medium">
                     {purpose === "rent"
                       ? propertiesToRent.length
-                      : propertiesToSend.length}{" "}
+                      : propertiesToSale.length}{" "}
                     anúncios
                   </span>
                 </div>
@@ -163,7 +166,7 @@ const HomeAdmin = () => {
                         />
                       </li>
                     ))
-                  : propertiesToSend.map((property, index) => (
+                  : propertiesToSale.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
                           propertyId={property.id}

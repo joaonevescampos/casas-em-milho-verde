@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 export const propertySchema = z.object({
+  purpose: z.string(),
   title: z
     .string()
     .min(1, "preencha o título")
@@ -10,12 +11,14 @@ export const propertySchema = z.object({
     .min(1, "preencha a descrição")
     .min(1, "descrição passou do limite permitido"),
   category: z.string().min(1, "preencha a categoria"),
-  isFeatured: z.boolean(),
+  is_featured: z.boolean(),
   state: z.string().min(1, "preencha o estatdo"),
   city: z.string().min(1, "preencha a cidade"),
   neighborhood: z.string(),
-  bedroom: z.number(),
+  bedrooms: z.number(),
   beds: z.number().min(1, "preencha a quantidade de cama"),
   guests: z.number().min(1, "preencha a quantidade de hóspedes"),
-  bathroom: z.number().min(1, "preencha a quantidade de banheiros"),
+  bathrooms: z.number().min(1, "preencha a quantidade de banheiros"),
+  airbnb_link: z
+    .string(),
 });

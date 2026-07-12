@@ -1,5 +1,5 @@
 import { propertiesToRent } from "@/data/propertiesToRent";
-import { propertiesToSend } from "@/data/propertiesToSend";
+import { propertiesToSale } from "@/data/propertiesToSale";
 import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import DefaultButton from "../Button";
@@ -42,7 +42,7 @@ const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
       (property) => property.id === propertyId,
     )
       ? propertiesToRent.find((property) => property.id === propertyId)
-      : propertiesToSend.find((property) => property.id === propertyId);
+      : propertiesToSale.find((property) => property.id === propertyId);
 
     if (getProperty) {
       const formatProperty: Property = {
