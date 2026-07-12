@@ -10,7 +10,7 @@ import { propertiesToRent } from "@/data/propertiesToRent";
 import { propertiesToSend } from "@/data/propertiesToSend";
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const HomeAdmin = () => {
@@ -117,12 +117,24 @@ const HomeAdmin = () => {
           <div className="flex flex-col items-center justify-center bg-white w-full max-w-300 px-8 max-lg:px-4 py-4 rounded-sm">
             <div className="w-full">
               <div className="flex justify-between items-center pb-4">
-                <span className="text-xs font-medium">
-                  {purpose === "rent"
-                    ? propertiesToRent.length
-                    : propertiesToSend.length}{" "}
-                  anúncios
-                </span>
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to={`${purpose === "rent" ? "/alugueis-temporada" : "/venda"}`}
+                    target="_blank"
+                  >
+                    <DefaultButton
+                      text={`${purpose === "rent" ? "VER IMOVÉIS PARA ALUGAR NO SITE >" : "VER IMOVÉIS PARA VENDER NO SITE >"}`}
+                      style="bg-transparent! border border-primary1/30 text-primary1! text-[8px]! h-6! max-lg:h-6! rounded-xs!"
+                    />
+                  </Link>
+                  <span className="text-[10px] font-medium">
+                    {purpose === "rent"
+                      ? propertiesToRent.length
+                      : propertiesToSend.length}{" "}
+                    anúncios
+                  </span>
+                </div>
+
                 <DefaultButton
                   text="+ ADICIONAR"
                   onClick={() => handleAddProperty()}

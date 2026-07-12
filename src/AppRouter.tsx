@@ -6,12 +6,18 @@ import Login from "./pages/admin/Login";
 import { Testando } from "./pages/admin/Testando";
 import HomeAdmin from "./pages/admin/HomeAdmin";
 import { ToastContainer } from "react-toastify";
+import Home from "./pages/public/Home";
+import Rent from "./pages/public/Rent";
+import Send from "./pages/public/Send";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
-    <ToastContainer />
+      <ToastContainer />
       <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/alugueis-temporada" element={<Rent />} />
+        <Route path="/venda" element={<Send />} />
         <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<Login />} />
         <Route path="/testando" element={<Testando />} />
@@ -24,7 +30,7 @@ const AppRouter = () => {
             </PrivateRoute>
           }
         />
-         <Route
+        <Route
           path="/admin/home"
           element={
             <PrivateRoute>

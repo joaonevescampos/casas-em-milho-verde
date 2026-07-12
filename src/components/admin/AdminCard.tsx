@@ -70,7 +70,7 @@ const AdminCard = ({
           <BiSolidPencil className="text-primary5" />
         </button>
         <button
-          className="flex items-center justify-center border border-red-700/50 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12"
+          className="flex items-center justify-center border border-red-700/50 rounded-xl cursor-pointer w-20 h-20 max-lg:w-12 max-lg:h-12 bg-red-300/20"
           onClick={() => onDelete(propertyId)}
         >
           <FaRegTrashAlt className="text-red-700" />
