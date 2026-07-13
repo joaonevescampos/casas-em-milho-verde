@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { supabase } from "../../lib/supabase";
 import useCreateProperty from "@/hooks/useCreateProperty";
 import type { Property, PropertyImages } from "@/types/properties";
+import Loading from "../Loading";
 
 type ModalProps = {
   onClose?: () => void;
@@ -28,12 +29,15 @@ type ModalProps = {
 
 const ModalAdd = ({ onClose, purpose }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const { createProperty, property, error, loading } = useCreateProperty();
-
+  const [loadingImages, setLoadingImages] = useState<boolean>(false);
+  const {
+    createProperty,
+    propertyId,
+    error,
+    loading: loadingInsert,
+  } = useCreateProperty();
   const [previews, setPreviews] = useState<string[]>([]);
 
-  // Exemplo:
-  const propertyId = "87653318-1c22-412b-93e0-097671f7857b";
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -49,22 +53,36 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       beds: 1,
       guests: 1,
       bathrooms: 1,
+      airbnb_link: "",
     },
   });
 
-  console.log("defaultValues: ", form.getValues())
+  const createSlug = (title: string) => {
+    return title
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-");
+  };
 
   async function onSubmit(data: Property) {
     try {
-      createProperty(data);
+      const slug = createSlug(data.title);
 
-      console.log("data", data);
-      saleImages();
+      const property = await createProperty({
+        ...data,
+        slug,
+      });
+
+      if (property.id) {
+        await sendImages(property.id);
+      }
 
       toast.success("Cadastro realizado com sucesso!");
       onClose?.();
     } catch (error) {
-      toast.error("Erro ao realizar cadastrar imóvel.");
+      toast.error("Erro ao realizar o cadastro do imóvel.");
     } finally {
     }
   }
@@ -86,8 +104,9 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
     setPreviews(previewUrls);
   };
 
-  const saleImages = async () => {
+  const sendImages = async (propertyId: string) => {
     try {
+      setLoadingImages(true);
       const imagesToInsert: PropertyImages[] = [];
 
       for (let i = 0; i < files.length; i++) {
@@ -111,6 +130,13 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
           data: { publicUrl },
         } = supabase.storage.from("property_images").getPublicUrl(filePath);
 
+        console.log("dados da imagem: ", {
+          property_id: propertyId,
+          image_url: publicUrl,
+          position: i,
+          cover_image: i == 0 ? true : false,
+        });
+
         imagesToInsert.push({
           property_id: propertyId,
           image_url: publicUrl,
@@ -133,14 +159,19 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       console.error(error);
       toast.error("Erro ao enviar imagens");
     } finally {
+      setLoadingImages(false);
     }
   };
 
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
+      {(loadingInsert || loadingImages) && <Loading />}
+
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] rounded-sm px-8 max-lg:px-4 py-4">
-        <h1 className="font-semibold pb-4">Cadastrar anúncio para {purpose=="rent" ? "alugar" : "vender"}</h1>
+      <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] max-h-180 rounded-sm px-8 max-lg:px-4 py-4">
+        <h1 className="font-semibold pb-4">
+          Cadastro de anúncio para {purpose == "rent" ? "alugar" : "vender"}
+        </h1>
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer"
@@ -149,8 +180,10 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
         </button>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full overflow-y-scroll h-9/12"
+          onSubmit={form.handleSubmit(onSubmit, (errors) => {
+            console.log(errors);
+          })}
+          className="w-full overflow-y-scroll  h-10/12"
         >
           <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
             <h1 className="text-sm font-semibold">Fotos</h1>
@@ -327,6 +360,37 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                   )}
                 />
                 <Controller
+                  name="airbnb_link"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel
+                        htmlFor="fieldgroup-airbnb_link"
+                        className="font-semibold text-xs"
+                      >
+                        Link do anúncio do Airbnb
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        id="fieldgroup-airbnb_link"
+                        aria-invalid={fieldState.invalid}
+                        placeholder="Adicione o link do airbnb do seu anúncio"
+                        type="text"
+                        autoComplete="off"
+                        className="h-10 px-2 text-xs border border-gray-300 rounded"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-[10px]"
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+              </div>
+              <div className="flex-1 flex flex-col gap-4">
+                <Controller
                   name="state"
                   control={form.control}
                   render={({ field, fieldState }) => (
@@ -390,8 +454,6 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     </Field>
                   )}
                 />
-              </div>
-              <div className="flex-1 flex flex-col gap-4">
                 <Controller
                   name="city"
                   control={form.control}

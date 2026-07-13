@@ -6,8 +6,8 @@ import ModalDelete from "@/components/admin/ModalDelete";
 import ModalEdit from "@/components/admin/ModalEdit";
 import DefaultButton from "@/components/Button";
 import Loading from "@/components/Loading";
-import { propertiesToRent } from "@/data/propertiesToRent";
-import { propertiesToSale } from "@/data/propertiesToSale";
+import useGetAllImages from "@/hooks/useGetAllImages";
+import useGetAllProperties from "@/hooks/useGetAllProperties";
 
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
@@ -21,6 +21,26 @@ const HomeAdmin = () => {
   const [openDeleteProperty, setOpenDeleteProperty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>("");
+  const { properties, loading: loadingProperties } = useGetAllProperties();
+  const { images, loading: loadingImages } = useGetAllImages();
+
+  console.log("imagens do hook", images);
+  if (images) console.log(typeof images[0].cover_image, images[1].cover_image);
+
+  const findImage = (propertyId: string) => {
+    const selectedImage = images?.find(
+      (image) => image.property_id === propertyId && image.cover_image,
+    )?.image_url;
+    console.log("find image ", selectedImage);
+    return selectedImage;
+  };
+
+  const propertiesToRent = properties?.filter(
+    (property) => property.purpose === "rent",
+  );
+  const propertiesToSale = properties?.filter(
+    (property) => property.purpose === "sale",
+  );
 
   const changePurpose = (value: string) => {
     value === "rent" ? setPurpose("rent") : setPurpose("sale");
@@ -66,6 +86,12 @@ const HomeAdmin = () => {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const loading = loadingProperties || loadingImages;
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -132,8 +158,8 @@ const HomeAdmin = () => {
                   </Link>
                   <span className="text-[10px] font-medium">
                     {purpose === "rent"
-                      ? propertiesToRent.length
-                      : propertiesToSale.length}{" "}
+                      ? propertiesToRent?.length
+                      : propertiesToSale?.length}{" "}
                     anúncios
                   </span>
                 </div>
@@ -143,47 +169,42 @@ const HomeAdmin = () => {
                   onClick={() => handleAddProperty()}
                 />
               </div>
+
               <ul className="flex flex-col gap-2 w-full h-[calc(100vh-415px)]  overflow-y-scroll">
                 {purpose === "rent"
-                  ? propertiesToRent.map((property, index) => (
+                  ? propertiesToRent?.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
-                          propertyId={property.id}
+                          propertyId={property.id!}
                           city={property.city}
                           state={property.state}
                           title={property.title}
                           description={property.description}
                           guests={property.guests}
                           beds={property.beds}
-                          bedroom={property.bedroom}
-                          bathroom={property.bathroom}
-                          coverImage={
-                            property.images.find((item) => item.cover_image)
-                              ?.image_url!
-                          }
-                          onEdit={() => handleEditProperty(property.id)}
-                          onDelete={() => handleDeleteProperty(property.id)}
+                          bedroom={property.bedrooms}
+                          bathroom={property.bathrooms}
+                          coverImage={findImage(property.id!)}
+                          onEdit={() => handleEditProperty(property.id!)}
+                          onDelete={() => handleDeleteProperty(property.id!)}
                         />
                       </li>
                     ))
-                  : propertiesToSale.map((property, index) => (
+                  : propertiesToSale?.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
-                          propertyId={property.id}
+                          propertyId={property.id!}
                           city={property.city}
                           state={property.state}
                           title={property.title}
                           description={property.description}
                           guests={property.guests}
                           beds={property.beds}
-                          bedroom={property.bedroom}
-                          bathroom={property.bathroom}
-                          coverImage={
-                            property.images.find((item) => item.cover_image)
-                              ?.image_url!
-                          }
-                          onEdit={() => handleEditProperty(property.id)}
-                          onDelete={() => handleDeleteProperty(property.id)}
+                          bedroom={property.bedrooms}
+                          bathroom={property.bathrooms}
+                          coverImage={findImage(property.id!)}
+                          onEdit={() => handleEditProperty(property.id!)}
+                          onDelete={() => handleDeleteProperty(property.id!)}
                         />
                       </li>
                     ))}

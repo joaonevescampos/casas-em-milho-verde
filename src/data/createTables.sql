@@ -36,8 +36,6 @@ create table if not exists properties (
 
   description text,
 
-  price numeric(12,2) not null,
-
   state text not null,
 
   city text not null,
@@ -58,11 +56,7 @@ create table if not exists properties (
 
   area numeric(10,2),
 
-  rate numeric(2,1),
-
   airbnb_link text,
-
-  cover text,
 
   is_featured boolean default false,
 
@@ -95,6 +89,8 @@ create table if not exists property_images (
 
   image_url text not null,
 
+  cover_image boolean default false,
+
   position integer default 0,
 
   created_at timestamptz not null default now()
@@ -112,9 +108,6 @@ on properties(city);
 
 create index if not exists idx_properties_neighborhood
 on properties(neighborhood);
-
-create index if not exists idx_properties_price
-on properties(price);
 
 create index if not exists idx_property_images_property_id
 on property_images(property_id);

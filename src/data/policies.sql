@@ -2,29 +2,6 @@
 -- POLÍTICAS PROPERTIES
 -- =====================================================
 
-create policy "Public read properties"
-on properties
-for select
-using (true);
-
--- ==========================
--- PARA TESTE!
-
-create policy "Allow insert properties"
-on properties
-for insert
-with check (true);
-
-create policy "Allow update properties"
-on properties
-for update
-with check (true);
-
-create policy "Allow delete properties"
-on properties
-for delete
-with check (true);
-
 
 -- BUCKET
 create policy "Allow anonymous uploads"
@@ -69,6 +46,11 @@ with check (
 );
 
 -- ==========================
+
+create policy "Public read properties"
+on properties
+for select
+using (true);
 
 create policy "Authenticated insert properties"
 on properties

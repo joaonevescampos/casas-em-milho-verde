@@ -2,6 +2,16 @@ import { supabase } from "../lib/supabase";
 import type { Property } from "../types/properties";
 
 export default class Services {
+     async getAllImages() {
+    try {
+      const { data } = await supabase.from("property_images").select("*");
+
+      console.log("imagens", data);
+      return data ? data : null
+    } catch (error) {
+      throw error;
+    }
+  };
   async selectAllProperties() : Promise<Property[] | null> {
     try {
       const { data } = await supabase.from("properties").select("*");
@@ -27,8 +37,8 @@ export default class Services {
 
   async insertProperty (data: Property) : Promise<Property> {
     try {
-      await supabase.from("properties").insert(data).select();
-      return data
+      const response = await supabase.from("properties").insert(data).select().single();
+      return response.data
     } catch (error) {
       throw Error(`Cannot insert property: ${error}`);
     }

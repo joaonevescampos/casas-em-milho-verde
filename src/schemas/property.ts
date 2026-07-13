@@ -19,6 +19,5 @@ export const propertySchema = z.object({
   beds: z.number().min(1, "preencha a quantidade de cama"),
   guests: z.number().min(1, "preencha a quantidade de hóspedes"),
   bathrooms: z.number().min(1, "preencha a quantidade de banheiros"),
-  airbnb_link: z
-    .string(),
+  airbnb_link: z.string().url("Informe uma URL válida").min(1, "adicione o link correspondente a este anúncio do Airbnb"),
 });
