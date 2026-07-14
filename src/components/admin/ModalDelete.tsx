@@ -1,67 +1,15 @@
-import { propertiesToRent } from "@/data/propertiesToRent";
-import { propertiesToSale } from "@/data/propertiesToSale";
-import { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import DefaultButton from "../Button";
+import useDetailProperty from "@/hooks/useDetailProperty";
 
 type ModalProps = {
   onClose?: () => void;
   propertyId: string;
 };
 
-type Property = {
-  propertyId: string;
-  city: string;
-  state: string;
-  neighborhood?: string;
-  title: string;
-  description: string;
-  guests: number;
-  beds: number;
-  bedroom: number;
-  bathroom: number;
-  coverImage: string;
-};
-
 const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
-  const [propertySelected, setPropertySelected] = useState<Property>({
-    propertyId: "",
-    city: "",
-    state: "",
-    title: "",
-    description: "",
-    guests: 1,
-    beds: 1,
-    bedroom: 1,
-    bathroom: 1,
-    coverImage: "",
-  });
-  useEffect(() => {
-    //fazer o get do imóvel
-    const getProperty = propertiesToRent.some(
-      (property) => property.id === propertyId,
-    )
-      ? propertiesToRent.find((property) => property.id === propertyId)
-      : propertiesToSale.find((property) => property.id === propertyId);
-
-    if (getProperty) {
-      const formatProperty: Property = {
-        propertyId: getProperty.id,
-        city: getProperty.city,
-        state: getProperty.state,
-        title: getProperty.title,
-        description: getProperty.description,
-        guests: getProperty.guests,
-        beds: getProperty.beds,
-        bedroom: getProperty.bedroom,
-        bathroom: getProperty.bathroom,
-        coverImage:
-          getProperty.images.find((item) => item.cover_image)?.image_url || "",
-      };
-
-      setPropertySelected(formatProperty);
-    }
-  }, []);
+  const {property} = useDetailProperty(propertyId)
+  
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
@@ -79,10 +27,10 @@ const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
         <div className="flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full">
           <div className="flex items-center gap-2 rounded-sm">
             <div className="w-36 h-24 max-lg:w-28">
-              {propertySelected.coverImage ? (
+              {/* {property?.coverImage ? (
                 <img
-                  src={propertySelected.coverImage}
-                  alt={propertySelected.title}
+                  src={property?.coverImage}
+                  alt={property?.title}
                   className="w-full h-full object-cover rounded-sm"
                 />
               ) : (
@@ -91,23 +39,23 @@ const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
                   alt="no-image"
                   className="w-full h-full object-cover rounded-sm"
                 />
-              )}
+              )} */}
             </div>
             <div className="max-[400px]:max-w-28 max-[380px]:max-w-24">
               <span className="text-primary2 font-medium text-[10px]">
-                {propertySelected.city.toLocaleUpperCase()} -{" "}
-                {propertySelected.state.toLocaleUpperCase()}
+                {property?.city.toLocaleUpperCase()} -{" "}
+                {property?.state.toLocaleUpperCase()}
               </span>
               <h2 className="text-sm max-lg:text-xs font-semibold">
-                {propertySelected.title}
+                {property?.title}
               </h2>
               <span className="font-medium text-xs max-lg:text-[10px] text-primary5">
-                {propertySelected.guests} hospedes . {propertySelected.bedroom}{" "}
-                quartos . {propertySelected.bathroom} banheiro .{" "}
-                {propertySelected.beds} cama
+                {property?.guests} hospedes . {property?.bedrooms}{" "}
+                quartos . {property?.bathrooms} banheiro .{" "}
+                {property?.beds} cama
               </span>
               <p className="text-sm max-lg:text-xs truncate max-w-72 max-md:max-w-48">
-                {propertySelected.description}
+                {property?.description}
               </p>
             </div>
           </div>

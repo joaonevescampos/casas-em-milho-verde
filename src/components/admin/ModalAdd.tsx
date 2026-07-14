@@ -17,10 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
-import { supabase } from "../../lib/supabase";
 import useCreateProperty from "@/hooks/useCreateProperty";
-import type { Property, PropertyImages } from "@/types/properties";
+import type { Property } from "@/types/properties";
 import Loading from "../Loading";
+import useAddImages from "@/hooks/useAddImages";
 
 type ModalProps = {
   onClose?: () => void;
@@ -29,13 +29,9 @@ type ModalProps = {
 
 const ModalAdd = ({ onClose, purpose }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [loadingImages, setLoadingImages] = useState<boolean>(false);
-  const {
-    createProperty,
-    propertyId,
-    error,
-    loading: loadingInsert,
-  } = useCreateProperty();
+
+  const { createProperty, loading: loadingInsert } = useCreateProperty();
+  const { addImages, loading: loadingImages } = useAddImages();
   const [previews, setPreviews] = useState<string[]>([]);
 
   const form = useForm<z.infer<typeof propertySchema>>({
@@ -75,15 +71,18 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
         slug,
       });
 
-      if (property.id) {
-        await sendImages(property.id);
+      if (property.id && files) {
+        await addImages(files, property.id);
       }
 
       toast.success("Cadastro realizado com sucesso!");
       onClose?.();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000);
     } catch (error) {
       toast.error("Erro ao realizar o cadastro do imóvel.");
-    } finally {
     }
   }
 
@@ -104,69 +103,12 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
     setPreviews(previewUrls);
   };
 
-  const sendImages = async (propertyId: string) => {
-    try {
-      setLoadingImages(true);
-      const imagesToInsert: PropertyImages[] = [];
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        const extension = file.name.split(".").pop();
-
-        const fileName = `${Date.now()}-${i}.${extension}`;
-
-        const filePath = `${propertyId}/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("property_images")
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("property_images").getPublicUrl(filePath);
-
-        console.log("dados da imagem: ", {
-          property_id: propertyId,
-          image_url: publicUrl,
-          position: i,
-          cover_image: i == 0 ? true : false,
-        });
-
-        imagesToInsert.push({
-          property_id: propertyId,
-          image_url: publicUrl,
-          position: i,
-          cover_image: i == 0 ? true : false,
-        });
-      }
-
-      const { error } = await supabase
-        .from("property_images")
-        .insert(imagesToInsert);
-
-      if (error) {
-        throw error;
-      }
-
-      toast.success("Imagens enviadas com sucesso!");
-      setFiles([]);
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro ao enviar imagens");
-    } finally {
-      setLoadingImages(false);
-    }
-  };
+  if (loadingInsert || loadingImages) {
+    return <Loading />;
+  }
 
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
-      {(loadingInsert || loadingImages) && <Loading />}
-
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
       <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] max-h-180 rounded-sm px-8 max-lg:px-4 py-4">
         <h1 className="font-semibold pb-4">

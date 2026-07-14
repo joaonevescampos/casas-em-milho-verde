@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
 
 export default function PrivateRoute({
   children,
@@ -17,7 +18,7 @@ export default function PrivateRoute({
     });
   }, []);
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) return <Loading />;
 
   if (!authenticated) {
     return <Navigate to="/admin" />;

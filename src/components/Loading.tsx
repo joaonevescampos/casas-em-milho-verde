@@ -30,7 +30,7 @@ const Loading = () => {
           }}
         />
 
-        <h1 className="mt-2 text-sm font-bold text-primary1">
+        <h1 className="mt-2 text-sm font-bold text-primary1 animate-pulse">
           CARREGANDO...
         </h1>
       </div>
