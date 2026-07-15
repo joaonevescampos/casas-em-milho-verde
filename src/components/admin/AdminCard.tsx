@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+
 import { BiSolidPencil } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 
@@ -31,10 +31,6 @@ const AdminCard = ({
   onEdit,
   onDelete,
 }: PropertiesCard) => {
-  useEffect(() => {
-    console.log("useEffect coverImage ", coverImage)
-    return;
-  }, [coverImage]);
   return (
     <div className="flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full">
       <div className="flex items-center gap-2 rounded-sm">

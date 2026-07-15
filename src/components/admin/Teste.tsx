@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { propertySchema } from "@/schemas/property";
 import * as z from "zod";
 import { useEffect, useState } from "react";
+
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -17,172 +18,128 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
-import useCreateProperty from "@/hooks/useCreateProperty";
-import type { Property, PropertyImages } from "@/types/properties";
-import Loading from "../Loading";
-import useAddImages from "@/hooks/useAddImages";
-import useDetailProperty from "@/hooks/useDetailProperty";
-import useGetAllImages from "@/hooks/useGetAllImages";
-import useDeleteImages from "@/hooks/useDeleteImage";
+import { propertiesToRent } from "@/data/propertiesToRent";
+import { propertiesToSale } from "@/data/propertiesToSale";
+
+type Property = {
+  propertyId?: string;
+  city: string;
+  state: string;
+  title: string;
+  description: string;
+  category: string;
+  guests: number;
+  beds: number;
+  neighborhood?: string;
+  bedroom: number;
+  bathroom: number;
+  coverImage?: string;
+  isFeatured?: boolean;
+};
 
 type ModalProps = {
   onClose?: () => void;
-  purpose: string;
   propertyId: string;
 };
 
-const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
-  const [files, setFiles] = useState<File[]>([]);
-  const [imagesFromStorage, setImagesFromStorage] =
-    useState<PropertyImages[]>();
-  const [previews, setPreviews] = useState<string[]>([]);
-
-  const { property, loading: loadingGetProperty } =
-    useDetailProperty(propertyId);
-  const { images } = useGetAllImages();
-  const { createProperty, loading: loadingInsert } = useCreateProperty();
-  const { addImages, loading: loadingImages } = useAddImages();
-  const { deleteImage, images: imagesUpdated } = useDeleteImages();
-
-  const findImages = (propertyId: string) => {
-    const selectedImages = images?.filter(
-      (image) => image.property_id === propertyId,
-    );
-
-    setImagesFromStorage(selectedImages);
-  };
+const ModalEdit = ({ onClose, propertyId }: ModalProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [propertySelected, setPropertySelected] = useState<Property>({
+    propertyId: "",
+    city: "",
+    state: "",
+    title: "",
+    description: "",
+    category: "",
+    guests: 1,
+    beds: 1,
+    bedroom: 1,
+    bathroom: 1,
+    coverImage: "",
+    isFeatured: false,
+  });
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
-      purpose,
       title: "",
       description: "",
       category: "",
-      is_featured: false,
+      isFeatured: false,
       state: "",
       city: "",
       neighborhood: "",
-      bedrooms: 1,
+      bedroom: 1,
       beds: 1,
       guests: 1,
-      bathrooms: 1,
-      airbnb_link: "",
+      bathroom: 1,
     },
   });
 
+  //Fazer o get para pegar os valores de cada campo
   useEffect(() => {
-    findImages(propertyId);
-  }, [images, form]);
+    const getProperty = propertiesToRent.some(
+      (property) => property.id === propertyId,
+    )
+      ? propertiesToRent.find((property) => property.id === propertyId)
+      : propertiesToSale.find((property) => property.id === propertyId);
 
-  useEffect(() => {
-    console.log("entrei no useEffect");
-    if (!property) return;
+    if (getProperty) {
+      const formatProperty: Property = {
+        propertyId: getProperty.id,
+        city: getProperty.city,
+        state: getProperty.state,
+        title: getProperty.title,
+        description: getProperty.description,
+        category: getProperty.category,
+        guests: getProperty.guests,
+        beds: getProperty.beds,
+        bedroom: getProperty.bedroom,
+        bathroom: getProperty.bathroom,
+        coverImage:
+          getProperty.images.find((item) => item.cover_image)?.image_url || "",
+        isFeatured: getProperty.is_featured,
+      };
 
-    form.reset({
-      purpose: property.purpose,
-      title: property.title,
-      description: property.description,
-      category: property.category,
-      is_featured: property.is_featured,
-      state: property.state,
-      city: property.city,
-      neighborhood: property.neighborhood,
-      bedrooms: property.bedrooms,
-      beds: property.beds,
-      guests: property.guests,
-      bathrooms: property.bathrooms,
-      airbnb_link: property.airbnb_link,
-    });
-  }, [property, form]);
+      console.log("teste", formatProperty);
 
-  const createSlug = (title: string) => {
-    return title
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-");
-  };
+      setPropertySelected(formatProperty);
+
+      form.reset({
+        title: formatProperty.title,
+        description: formatProperty.description,
+        category: formatProperty.category,
+        isFeatured: formatProperty.isFeatured,
+        state: formatProperty.state,
+        city: formatProperty.city,
+        neighborhood: formatProperty.neighborhood,
+        bedroom: formatProperty.bedroom,
+        beds: formatProperty.beds,
+        guests: formatProperty.guests,
+        bathroom: formatProperty.bathroom,
+      });
+    }
+    console.log("teste");
+  }, []);
 
   async function onSubmit(data: Property) {
     try {
-      const slug = createSlug(data.title);
+      setIsLoading(true);
 
-      const property = await createProperty({
-        ...data,
-        slug,
-      });
+      console.log("data", data);
 
-      if (property.id && files) {
-        await addImages(files, property.id);
-      }
-
-      toast.success("Edição realizada com sucesso!");
+      toast.success("Cadastro realizado com sucesso!");
       onClose?.();
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 6000);
     } catch (error) {
-      toast.error("Erro ao realizar a edição do imóvel.");
+      toast.error("Erro ao realizar cadastrar imóvel.");
+    } finally {
+      setIsLoading(false);
     }
   }
-
-  const handleSelectImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-
-    const selectedFiles = Array.from(e.target.files);
-
-    const totalImages =
-      (imagesFromStorage?.length ?? 0) + files.length + selectedFiles.length;
-
-    if (totalImages > 15) {
-      toast.error("Máximo de 15 imagens.");
-      return;
-    }
-
-    setFiles((prev) => [...prev, ...selectedFiles]);
-
-    const newPreviews = selectedFiles.map((file) => URL.createObjectURL(file));
-
-    setPreviews((prev) => [...prev, ...newPreviews]);
-
-    e.target.value = "";
-  };
-
-  const removePreview = (index: number) => {
-    URL.revokeObjectURL(previews[index]);
-
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-
-    setPreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleDeleteStorageImage = async (imageId: string) => {
-    try {
-      await deleteImage(imageId);
-
-      setImagesFromStorage((prev) =>
-        prev?.filter((image) => image.id !== imageId),
-      );
-
-    } catch {
-      toast.error("Erro ao remover imagem.");
-    }
-  };
-
-  if (loadingInsert || loadingImages) {
-    return <Loading />;
-  }
-
   return (
     <div className="fixed top-1/2 left-1/2 -translate-1/2 w-full h-full z-50 ">
       <div className="bg-black/40 backdrop-blur-xl w-full h-full"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] max-h-180 rounded-sm px-8 max-lg:px-4 py-4">
-        <h1 className="font-semibold pb-4">
-          Edição de anúncio para {purpose == "rent" ? "alugar" : "vender"}
-        </h1>
+      <div className="absolute top-1/2 left-1/2 -translate-1/2 flex flex-col bg-white w-[calc(100%-32px)] max-w-200 h-[calc(100%-32px)] rounded-sm px-8 max-lg:px-4 py-4">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 cursor-pointer"
@@ -190,141 +147,18 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
           <IoClose />
         </button>
 
+        <h1 className="text-center font-semibold font-cormorant text-xl">
+          Editar imóvel
+        </h1>
+        <div>
+          <span className="font-semibold text-xs">Fotos</span>
+        </div>
         <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log(errors);
-          })}
-          className="w-full overflow-y-scroll  h-10/12"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full overflow-y-scroll h-10/12 mb-4"
         >
-          {/* <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
-            <h1 className="text-sm font-semibold">Fotos do anúncio</h1>
-            <h2 className="text-xs opacity-70">
-              Selecione as imagens na ordem que deseja que apareça no anúncio.
-              Primeira imagem, será a capa principal!
-            </h2>
-            <h3 className="text-[10px] font-medium">Máximo de 15 imagens</h3>
-
-            <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-2">
-              {imagesFromStorage?.map((image) => (
-                <div className="aspect-square overflow-hidden rounded-lg border">
-                  <img
-                    src={image.image_url}
-                    alt={image.id}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-              {previews.map((preview, index) => (
-                <div
-                  key={index}
-                  className="aspect-square overflow-hidden rounded-lg border"
-                >
-                  <img
-                    src={preview}
-                    alt={`Preview ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            <p className="text-xs">
-              {imagesFromStorage
-                ? imagesFromStorage.length + files.length
-                : files.length}{" "}
-              imagens selecionadas
-            </p>
-            <label
-              htmlFor="images"
-              className="bg-primary1 text-white w-fit p-4 rounded-xl cursor-pointer text-xs"
-            >
-              Adicionar mais imagens
-            </label>
-
-            <input
-              id="images"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleSelectImages}
-              className="bg-primary5/15 p-4 text-xs cursor-pointer rounded hidden"
-            />
-          </div> */}
-
-          <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
-            {/* Imagens do Storage */}
-
-            {imagesFromStorage?.map((image) => (
-              <div
-                key={image.id}
-                className="relative aspect-square overflow-hidden rounded-lg border"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleDeleteStorageImage(image.id!)}
-                  className="absolute top-1 right-1 z-10 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow cursor-pointer"
-                >
-                  ✕
-                </button>
-
-                <img
-                  src={image.image_url}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-
-            {/* Novas imagens */}
-
-            {previews.map((preview, index) => (
-              <div
-                key={index}
-                className="relative aspect-square overflow-hidden rounded-lg border"
-              >
-                <button
-                  type="button"
-                  onClick={() => removePreview(index)}
-                  className="absolute top-1 right-1 z-10 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow cursor-pointer"
-                >
-                  ✕
-                </button>
-
-                <img
-                  src={preview}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-
-            {/* Botão adicionar */}
-
-            {(imagesFromStorage?.length ?? 0) + files.length < 15 && (
-              <label
-                htmlFor="images"
-                className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition"
-              >
-                <span className="text-3xl">+</span>
-                <span className="text-xs">Adicionar</span>
-              </label>
-            )}
-          </div>
-
-          <p className="text-xs mt-2">
-            {(imagesFromStorage?.length ?? 0) + files.length} / 15 imagens
-          </p>
-
-          <input
-            id="images"
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleSelectImages}
-            className="hidden"
-          />
-
           <FieldGroup>
-            <div className="flex max-lg:flex-col gap-8 max-lg:gap-4 h-fit m-2">
+            <div className="flex max-lg:flex-col gap-8 max-lg:gap-4 h-screen">
               <div className="flex-2 flex flex-col gap-4">
                 <Controller
                   name="title"
@@ -387,20 +221,20 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="is_featured"
+                  name="isFeatured"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <div className="flex gap-2 items-center">
                         <Checkbox
-                          id="fieldgroup-is_featured"
+                          id="fieldgroup-isFeatured"
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           className="border border-gray-400"
                         />
 
                         <FieldLabel
-                          htmlFor="fieldgroup-is_featured"
+                          htmlFor="fieldgroup-isFeatured"
                           className="font-semibold text-xs"
                         >
                           Marcar como anúncio em destaque
@@ -465,37 +299,6 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="airbnb_link"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel
-                        htmlFor="fieldgroup-airbnb_link"
-                        className="font-semibold text-xs"
-                      >
-                        Link do anúncio do Airbnb
-                      </FieldLabel>
-                      <Input
-                        {...field}
-                        id="fieldgroup-airbnb_link"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="Adicione o link do airbnb do seu anúncio"
-                        type="text"
-                        autoComplete="off"
-                        className="h-10 px-2 text-xs border border-gray-300 rounded"
-                      />
-                      {fieldState.invalid && (
-                        <FieldError
-                          errors={[fieldState.error]}
-                          className="text-[10px]"
-                        />
-                      )}
-                    </Field>
-                  )}
-                />
-              </div>
-              <div className="flex-1 flex flex-col gap-4">
-                <Controller
                   name="state"
                   control={form.control}
                   render={({ field, fieldState }) => (
@@ -559,6 +362,8 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                     </Field>
                   )}
                 />
+              </div>
+              <div className="flex-1 flex flex-col gap-4">
                 <Controller
                   name="city"
                   control={form.control}
@@ -618,12 +423,12 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="bedrooms"
+                  name="bedroom"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-bedrooms"
+                        htmlFor="field-bedroom"
                         className="font-semibold text-xs"
                       >
                         Quartos
@@ -633,7 +438,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-bedrooms" className="w-full">
+                        <SelectTrigger id="field-bedroom" className="w-full">
                           <SelectValue placeholder="Selecione a quantidade de quartos" />
                         </SelectTrigger>
                         <SelectContent>
@@ -702,12 +507,12 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="bathrooms"
+                  name="bathroom"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-bathrooms"
+                        htmlFor="field-bathroom"
                         className="font-semibold text-xs"
                       >
                         Banheiros
@@ -717,7 +522,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-bathrooms" className="w-full">
+                        <SelectTrigger id="field-bathroom" className="w-full">
                           <SelectValue placeholder="Selecione a quantidade de banheiros" />
                         </SelectTrigger>
                         <SelectContent>
@@ -799,7 +604,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
             </div>
           </FieldGroup>
           <DefaultButton
-            text="CRIAR"
+            text="SALVAR"
             style="absolute bottom-2 right-4 w-24"
             typeSubmit={true}
           />

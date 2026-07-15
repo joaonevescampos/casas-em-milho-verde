@@ -1,9 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Test from "./components/admin/test";
 import UploadImages from "./pages/admin/UploadImages";
 import PrivateRoute from "./pages/PrivateRoute";
 import Login from "./pages/admin/Login";
-import { Testando } from "./pages/admin/Testando";
 import HomeAdmin from "./pages/admin/HomeAdmin";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/public/Home";
@@ -15,12 +13,12 @@ const AppRouter = () => {
     <BrowserRouter>
       <ToastContainer />
       <Routes>
+        {/* Rotas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/alugueis-temporada" element={<Rent />} />
         <Route path="/venda" element={<Sale />} />
-        <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<Login />} />
-        <Route path="/testando" element={<Testando />} />
+
         {/* rotas protegidas */}
         <Route
           path="/upload"

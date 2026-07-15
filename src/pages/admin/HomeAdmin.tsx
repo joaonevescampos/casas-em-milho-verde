@@ -24,14 +24,11 @@ const HomeAdmin = () => {
   const { properties, loading: loadingProperties } = useGetAllProperties();
   const { images, loading: loadingImages } = useGetAllImages();
 
-  console.log("imagens do hook", images);
-  if (images) console.log(typeof images[0].cover_image, images[1].cover_image);
-
   const findImage = (propertyId: string) => {
     const selectedImage = images?.find(
       (image) => image.property_id === propertyId && image.cover_image,
     )?.image_url;
-    console.log("find image ", selectedImage);
+
     return selectedImage;
   };
 
@@ -56,7 +53,6 @@ const HomeAdmin = () => {
   };
 
   const handleDeleteProperty = (propertyId: string) => {
-    console.log("detalhamento do que vai ser excluido ID", propertyId);
     setSelectedId(propertyId);
     setOpenDeleteProperty(true);
   };
@@ -107,6 +103,7 @@ const HomeAdmin = () => {
           <ModalEdit
             propertyId={selectedId}
             onClose={() => handleCloseEdit()}
+            purpose={purpose}
           />
         )}
         {openDeleteProperty && (

@@ -5,8 +5,6 @@ export default class Services {
   async getAllImages() {
     try {
       const { data } = await supabase.from("property_images").select("*");
-
-      console.log("imagens", data);
       return data ? data : null;
     } catch (error) {
       throw error;
@@ -38,13 +36,6 @@ export default class Services {
           data: { publicUrl },
         } = supabase.storage.from("property_images").getPublicUrl(filePath);
 
-        console.log("dados da imagem: ", {
-          property_id: propertyId,
-          image_url: publicUrl,
-          position: i,
-          cover_image: i == 0 ? true : false,
-        });
-
         imagesToInsert.push({
           property_id: propertyId,
           image_url: publicUrl,
@@ -63,6 +54,48 @@ export default class Services {
       throw error;
     }
   }
+
+  async deleteImage(imageId: string) {
+    try {
+      // Busca a imagem que será excluída
+      const { data: image } = await supabase
+        .from("property_images")
+        .select("*")
+        .eq("id", imageId)
+        .single();
+
+      if (!image) return null;
+
+      // Exclui a imagem
+      await supabase.from("property_images").delete().eq("id", imageId);
+
+      // Se ela era a capa, escolhe outra
+      if (image.cover_image) {
+        const { data: firstImage } = await supabase
+          .from("property_images")
+          .select("id")
+          .eq("property_id", image.property_id)
+          .order("created_at", { ascending: true }) // ou "order", se existir
+          .limit(1)
+          .single();
+
+        if (firstImage) {
+          await supabase
+            .from("property_images")
+            .update({
+              cover_image: true,
+            })
+            .eq("id", firstImage.id);
+        }
+        console.log("primeira imagem", firstImage);
+      }
+
+      return image;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async selectAllProperties(): Promise<Property[] | null> {
     try {
       const { data } = await supabase.from("properties").select("*");
