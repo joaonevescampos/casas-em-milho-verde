@@ -1,25 +1,23 @@
 import { useState } from "react";
 import Services from "../services/property";
 
-export default function useDeleteProperty() {
+export default function useDeletePropertyImages() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<boolean>(false);
 
   const api = new Services();
 
-  async function deleteProperty(id: string) {
+  async function deleteImages(propertyId: string) {
     try {
       setLoading(true);
-      await api.deleteProperty(id);
+      await api.deletePropertyImages(propertyId);
     } catch (error) {
       setError(true);
-      throw Error(
-        `Cannot delete property using hook useDeleteProperty: ${error}`,
-      );
+      throw Error(`Cannot get all images using hook usedeleteImages: ${error}`);
     } finally {
       setLoading(false);
     }
   }
 
-  return { deleteProperty, loading, error };
+  return { deleteImages, loading, error };
 }

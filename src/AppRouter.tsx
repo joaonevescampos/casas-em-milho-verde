@@ -11,7 +11,7 @@ import Sale from "./pages/public/Sale";
 const AppRouter = () => {
   return (
     <BrowserRouter>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
       <Routes>
         {/* Rotas públicas */}
         <Route path="/" element={<Home />} />

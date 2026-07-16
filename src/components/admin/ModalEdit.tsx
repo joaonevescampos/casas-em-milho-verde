@@ -17,13 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
-import useCreateProperty from "@/hooks/useCreateProperty";
 import type { Property, PropertyImages } from "@/types/properties";
 import Loading from "../Loading";
 import useAddImages from "@/hooks/useAddImages";
 import useDetailProperty from "@/hooks/useDetailProperty";
 import useGetAllImages from "@/hooks/useGetAllImages";
 import useDeleteImages from "@/hooks/useDeleteImage";
+import useUpdateProperty from "@/hooks/useUpdateProperty";
 
 type ModalProps = {
   onClose?: () => void;
@@ -37,12 +37,12 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
     useState<PropertyImages[]>();
   const [previews, setPreviews] = useState<string[]>([]);
 
-  const { property, loading: loadingGetProperty } =
-    useDetailProperty(propertyId);
+  const { property } = useDetailProperty(propertyId);
   const { images } = useGetAllImages();
-  const { createProperty, loading: loadingInsert } = useCreateProperty();
+  const { updateProperty, loading: loadingUpdate } = useUpdateProperty();
   const { addImages, loading: loadingImages } = useAddImages();
-  const { deleteImage, images: imagesUpdated } = useDeleteImages();
+  const { deleteImage } = useDeleteImages();
+  const [fakeLoading, setFakeLoading] = useState(false)
 
   const findImages = (propertyId: string) => {
     const selectedImages = images?.filter(
@@ -96,34 +96,15 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
     });
   }, [property, form]);
 
-  const createSlug = (title: string) => {
-    return title
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-");
-  };
-
   async function onSubmit(data: Property) {
     try {
-      const slug = createSlug(data.title);
-
-      const property = await createProperty({
-        ...data,
-        slug,
-      });
-
-      if (property.id && files) {
-        await addImages(files, property.id);
-      }
-
-      toast.success("Edição realizada com sucesso!");
-      onClose?.();
+      setFakeLoading(true)
+      await updateProperty(propertyId, data);
+      await addImages(files, propertyId, imagesFromStorage?.length || 0);
 
       setTimeout(() => {
         window.location.reload();
-      }, 6000);
+      }, 3000);
     } catch (error) {
       toast.error("Erro ao realizar a edição do imóvel.");
     }
@@ -166,13 +147,12 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       setImagesFromStorage((prev) =>
         prev?.filter((image) => image.id !== imageId),
       );
-
     } catch {
       toast.error("Erro ao remover imagem.");
     }
   };
 
-  if (loadingInsert || loadingImages) {
+  if (loadingUpdate || loadingImages || fakeLoading) {
     return <Loading />;
   }
 
@@ -196,60 +176,6 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
           })}
           className="w-full overflow-y-scroll  h-10/12"
         >
-          {/* <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
-            <h1 className="text-sm font-semibold">Fotos do anúncio</h1>
-            <h2 className="text-xs opacity-70">
-              Selecione as imagens na ordem que deseja que apareça no anúncio.
-              Primeira imagem, será a capa principal!
-            </h2>
-            <h3 className="text-[10px] font-medium">Máximo de 15 imagens</h3>
-
-            <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-2">
-              {imagesFromStorage?.map((image) => (
-                <div className="aspect-square overflow-hidden rounded-lg border">
-                  <img
-                    src={image.image_url}
-                    alt={image.id}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-              {previews.map((preview, index) => (
-                <div
-                  key={index}
-                  className="aspect-square overflow-hidden rounded-lg border"
-                >
-                  <img
-                    src={preview}
-                    alt={`Preview ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            <p className="text-xs">
-              {imagesFromStorage
-                ? imagesFromStorage.length + files.length
-                : files.length}{" "}
-              imagens selecionadas
-            </p>
-            <label
-              htmlFor="images"
-              className="bg-primary1 text-white w-fit p-4 rounded-xl cursor-pointer text-xs"
-            >
-              Adicionar mais imagens
-            </label>
-
-            <input
-              id="images"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleSelectImages}
-              className="bg-primary5/15 p-4 text-xs cursor-pointer rounded hidden"
-            />
-          </div> */}
-
           <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
             {/* Imagens do Storage */}
 
@@ -266,10 +192,16 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                   ✕
                 </button>
 
+                {image.cover_image && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-primary1  w-full text-[10px] text-white text-center font-bold">
+                    CAPA
+                  </span>
+                )}
+
                 <img
                   src={image.image_url}
-                  alt=""
-                  className="w-full h-full object-cover"
+                  alt="image"
+                  className={`${image.cover_image ? "border-2 border-primary1 rounded-lg" : ""} w-full h-full object-cover`}
                 />
               </div>
             ))}
@@ -799,7 +731,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
             </div>
           </FieldGroup>
           <DefaultButton
-            text="CRIAR"
+            text="SALVAR"
             style="absolute bottom-2 right-4 w-24"
             typeSubmit={true}
           />

@@ -10,12 +10,13 @@ export default function useAddImages() {
 
   const api = new Services();
 
-  async function addImages(files: File[], propertyId: string) {
+  async function addImages(files: File[], propertyId: string, initialLength: number) {
     try {
       setLoading(true);
       const response: PropertyImages[] | null = await api.addImages(
         files,
         propertyId,
+        initialLength
       );
       if (response) {
         setError(false);

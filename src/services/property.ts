@@ -4,14 +4,30 @@ import type { Property, PropertyImages } from "../types/properties";
 export default class Services {
   async getAllImages() {
     try {
-      const { data } = await supabase.from("property_images").select("*");
+      const { data } = await supabase
+        .from("property_images")
+        .select("*")
+        .order("position", { ascending: true });
       return data ? data : null;
     } catch (error) {
       throw error;
     }
   }
 
-  async addImages(files: File[], propertyId: string) {
+  async detailImagesFromPropertyId(propertyId: string) {
+    try {
+      const { data } = await supabase
+        .from("property_images")
+        .select("*")
+        .eq("property_id", propertyId);
+      // console.log("resposta1", data, "resposta2", response.data, "ID", propertyId)
+      return data ? data : null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addImages(files: File[], propertyId: string, initialLength: number) {
     try {
       const imagesToInsert: PropertyImages[] = [];
 
@@ -20,7 +36,7 @@ export default class Services {
 
         const extension = file.name.split(".").pop();
 
-        const fileName = `${Date.now()}-${i}.${extension}`;
+        const fileName = `${Date.now()}-${initialLength + i}.${extension}`;
 
         const filePath = `${propertyId}/${fileName}`;
 
@@ -39,8 +55,8 @@ export default class Services {
         imagesToInsert.push({
           property_id: propertyId,
           image_url: publicUrl,
-          position: i,
-          cover_image: i == 0 ? true : false,
+          position: initialLength + i,
+          cover_image: initialLength + i == 0 ? true : false,
         });
       }
 
@@ -55,27 +71,74 @@ export default class Services {
     }
   }
 
+  async deletePropertyImages(propertyId: string) {
+    try {
+      // Lista arquivos da pasta
+      const { data: files, error } = await supabase.storage
+        .from("property_images")
+        .list(propertyId);
+
+      if (error) throw error;
+
+      // Remove arquivos do Storage
+      if (files?.length) {
+        const { error: removeError } = await supabase.storage
+          .from("property_images")
+          .remove(files.map((file) => `${propertyId}/${file.name}`));
+
+        if (removeError) throw removeError;
+      }
+
+      // Remove registros do banco
+      const { error: deleteError } = await supabase
+        .from("property_images")
+        .delete()
+        .eq("property_id", propertyId);
+
+      if (deleteError) throw deleteError;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async deleteImage(imageId: string) {
     try {
-      // Busca a imagem que será excluída
-      const { data: image } = await supabase
+      // Busca o registro da imagem
+      const { data: image, error } = await supabase
         .from("property_images")
         .select("*")
         .eq("id", imageId)
         .single();
 
+      if (error) throw error;
+
       if (!image) return null;
 
-      // Exclui a imagem
-      await supabase.from("property_images").delete().eq("id", imageId);
+      // Extrai o caminho do arquivo no bucket
+      const filePath = image.image_url.split("/public/property_images/")[1];
 
-      // Se ela era a capa, escolhe outra
+      // Remove o arquivo do Storage
+      const { error: storageError } = await supabase.storage
+        .from("property_images")
+        .remove([filePath]);
+
+      if (storageError) throw storageError;
+
+      // Remove o registro do banco
+      const { error: deleteError } = await supabase
+        .from("property_images")
+        .delete()
+        .eq("id", imageId);
+
+      if (deleteError) throw deleteError;
+
+      // Se era a capa, promove outra imagem
       if (image.cover_image) {
         const { data: firstImage } = await supabase
           .from("property_images")
           .select("id")
           .eq("property_id", image.property_id)
-          .order("created_at", { ascending: true }) // ou "order", se existir
+          .order("position", { ascending: true })
           .limit(1)
           .single();
 
@@ -87,9 +150,7 @@ export default class Services {
             })
             .eq("id", firstImage.id);
         }
-        console.log("primeira imagem", firstImage);
       }
-
       return image;
     } catch (error) {
       throw error;
@@ -98,7 +159,10 @@ export default class Services {
 
   async selectAllProperties(): Promise<Property[] | null> {
     try {
-      const { data } = await supabase.from("properties").select("*");
+      const { data } = await supabase
+        .from("properties")
+        .select("*")
+        .order("created_at", { ascending: true });
 
       return data ? data : null;
     } catch (error) {

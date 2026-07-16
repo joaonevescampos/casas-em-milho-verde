@@ -29,10 +29,10 @@ type ModalProps = {
 
 const ModalAdd = ({ onClose, purpose }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
-
   const { createProperty, loading: loadingInsert } = useCreateProperty();
   const { addImages, loading: loadingImages } = useAddImages();
   const [previews, setPreviews] = useState<string[]>([]);
+  const [fakeLoading, setFakeLoading] = useState(false);
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
@@ -64,6 +64,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
 
   async function onSubmit(data: Property) {
     try {
+      setFakeLoading(true);
       const slug = createSlug(data.title);
 
       const property = await createProperty({
@@ -72,17 +73,14 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       });
 
       if (property.id && files) {
-        await addImages(files, property.id);
+        await addImages(files, property.id, 0);
       }
-
-      toast.success("Cadastro realizado com sucesso!");
-      onClose?.();
 
       setTimeout(() => {
         window.location.reload();
-      }, 6000);
+      }, 3000);
     } catch (error) {
-      toast.error("Erro ao realizar o cadastro do imóvel.");
+      throw error;
     }
   }
 
@@ -91,19 +89,30 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
 
     const selectedFiles = Array.from(e.target.files);
 
-    if (selectedFiles.length > 15) {
-      toast.error("Máximo de 15 imagens");
+    const totalImages = files.length + selectedFiles.length;
+
+    if (totalImages > 15) {
+      toast.error("Máximo de 15 imagens.");
       return;
     }
 
-    setFiles(selectedFiles);
+    setFiles((prev) => [...prev, ...selectedFiles]);
 
     const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
 
-    setPreviews(previewUrls);
+    setPreviews((prev) => [...prev, ...previewUrls]);
+    e.target.value = "";
   };
 
-  if (loadingInsert || loadingImages) {
+  const removePreview = (index: number) => {
+    URL.revokeObjectURL(previews[index]);
+
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+
+    setPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  if (loadingInsert || loadingImages || fakeLoading) {
     return <Loading />;
   }
 
@@ -134,30 +143,61 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
               Primeira imagem, será a capa principal!
             </h2>
             <h3 className="text-[10px] font-medium">Máximo de 15 imagens</h3>
-
+            {/* 
             <input
               type="file"
               multiple
               accept="image/*"
               onChange={handleSelectImages}
               className="bg-primary5/15 p-4 text-xs cursor-pointer rounded"
-            />
+            /> */}
 
-            <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-2">
+            <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
+              {/* Novas imagens */}
+
               {previews.map((preview, index) => (
                 <div
                   key={index}
-                  className="aspect-square overflow-hidden rounded-lg border"
+                  className="relative aspect-square overflow-hidden rounded-lg border"
                 >
+                  <button
+                    type="button"
+                    onClick={() => removePreview(index)}
+                    className="absolute top-1 right-1 z-10 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center shadow cursor-pointer"
+                  >
+                    ✕
+                  </button>
+
                   <img
                     src={preview}
-                    alt={`Preview ${index + 1}`}
+                    alt=""
                     className="w-full h-full object-cover"
                   />
                 </div>
               ))}
+
+              {/* Botão adicionar */}
+              {files.length < 15 && (
+                <label
+                  htmlFor="images"
+                  className="aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition"
+                >
+                  <span className="text-3xl">+</span>
+                  <span className="text-xs">Adicionar</span>
+                </label>
+              )}
             </div>
-            <p className="text-xs">{files.length} imagens selecionadas</p>
+
+            <p className="text-xs mt-2">{files.length} / 15 imagens</p>
+
+            <input
+              id="images"
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleSelectImages}
+              className="hidden"
+            />
           </div>
 
           <FieldGroup>
