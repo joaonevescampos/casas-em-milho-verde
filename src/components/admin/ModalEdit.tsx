@@ -373,7 +373,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
 
                         <SelectContent>
                           <SelectItem value="Casa">Casa</SelectItem>
-                          <SelectItem value="Apartmento">
+                          <SelectItem value="Apartamento">
                             Apartamento
                           </SelectItem>
                           <SelectItem value="Terreno">Terreno</SelectItem>
@@ -384,6 +384,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           <SelectItem value="Mansão">Mansão</SelectItem>
                           <SelectItem value="Fazenda">Fazenda</SelectItem>
                           <SelectItem value="Sitio">Sítio</SelectItem>
+                           <SelectItem value="Chale">Chalé</SelectItem>
                         </SelectContent>
                       </Select>
 

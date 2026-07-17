@@ -1,3 +1,4 @@
+import { convertToWebp } from "@/utils/convertFiles";
 import { supabase } from "../lib/supabase";
 import type { Property, PropertyImages } from "../types/properties";
 
@@ -31,18 +32,28 @@ export default class Services {
     try {
       const imagesToInsert: PropertyImages[] = [];
 
+      const timestamp = Date.now();
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
-        const extension = file.name.split(".").pop();
+        // Converte para WebP
+        const webpBlob = await convertToWebp(file);
 
-        const fileName = `${Date.now()}-${initialLength + i}.${extension}`;
+        if (!webpBlob) {
+          throw new Error("Erro ao converter imagem para WebP.");
+        }
+
+        // Sempre salva como .webp
+        const fileName = `${timestamp}-${initialLength + i}.webp`;
 
         const filePath = `${propertyId}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("property_images")
-          .upload(filePath, file);
+          .upload(filePath, webpBlob, {
+            contentType: "image/webp",
+          });
 
         if (uploadError) {
           throw uploadError;
@@ -56,16 +67,18 @@ export default class Services {
           property_id: propertyId,
           image_url: publicUrl,
           position: initialLength + i,
-          cover_image: initialLength + i == 0 ? true : false,
+          cover_image: initialLength + i === 0,
         });
       }
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("property_images")
         .insert(imagesToInsert)
         .select("*");
 
-      return data ? data : null;
+      if (error) throw error;
+
+      return data ?? null;
     } catch (error) {
       throw error;
     }

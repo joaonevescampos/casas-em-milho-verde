@@ -143,14 +143,6 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
               Primeira imagem, será a capa principal!
             </h2>
             <h3 className="text-[10px] font-medium">Máximo de 15 imagens</h3>
-            {/* 
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleSelectImages}
-              className="bg-primary5/15 p-4 text-xs cursor-pointer rounded"
-            /> */}
 
             <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
               {/* Novas imagens */}
@@ -318,7 +310,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
 
                         <SelectContent>
                           <SelectItem value="Casa">Casa</SelectItem>
-                          <SelectItem value="Apartmento">
+                          <SelectItem value="Apartamento">
                             Apartamento
                           </SelectItem>
                           <SelectItem value="Terreno">Terreno</SelectItem>
@@ -329,6 +321,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           <SelectItem value="Mansão">Mansão</SelectItem>
                           <SelectItem value="Fazenda">Fazenda</SelectItem>
                           <SelectItem value="Sitio">Sítio</SelectItem>
+                           <SelectItem value="Chale">Chalé</SelectItem>
                         </SelectContent>
                       </Select>
 
