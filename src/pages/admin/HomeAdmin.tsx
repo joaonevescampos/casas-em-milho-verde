@@ -1,6 +1,7 @@
 import AdminCard from "@/components/admin/AdminCard";
 import AdminFooter from "@/components/admin/AdminFooter";
 import AdminHeader from "@/components/admin/AdminHeader";
+import { EmptyProperties } from "@/components/admin/EmptyProperties";
 import ModalAdd from "@/components/admin/ModalAdd";
 import ModalDelete from "@/components/admin/ModalDelete";
 import ModalEdit from "@/components/admin/ModalEdit";
@@ -149,8 +150,8 @@ const HomeAdmin = () => {
                     target="_blank"
                   >
                     <DefaultButton
-                      text={`${purpose === "rent" ? "VER IMOVÉIS PARA ALUGAR NO SITE >" : "VER IMOVÉIS PARA VENDER NO SITE >"}`}
-                      style="bg-transparent! border border-primary1/30 text-primary1! text-[8px]! h-6! max-lg:h-6! rounded-xs!"
+                      text={`${purpose === "rent" ? "VER ANÚNCIOS PARA ALUGAR >" : "VER ANÚNCIOS PARA VENDER >"}`}
+                      style="bg-transparent! border border-primary1/30 text-primary1! text-[8px]! h-6! max-lg:h-6! rounded-xs! px-2!"
                     />
                   </Link>
                   <span className="text-[10px] font-medium">
@@ -167,9 +168,12 @@ const HomeAdmin = () => {
                 />
               </div>
 
-              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-415px)]  overflow-y-scroll">
-                {purpose === "rent"
-                  ? propertiesToRent?.map((property, index) => (
+              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-250px)]  overflow-y-scroll">
+                {purpose === "rent" ? (
+                  propertiesToRent?.length === 0 ? (
+                    <EmptyProperties />
+                  ) : (
+                    propertiesToRent?.map((property, index) => (
                       <li className="w-full" key={index}>
                         <AdminCard
                           propertyId={property.id!}
@@ -187,24 +191,29 @@ const HomeAdmin = () => {
                         />
                       </li>
                     ))
-                  : propertiesToSale?.map((property, index) => (
-                      <li className="w-full" key={index}>
-                        <AdminCard
-                          propertyId={property.id!}
-                          city={property.city}
-                          state={property.state}
-                          title={property.title}
-                          description={property.description}
-                          guests={property.guests}
-                          beds={property.beds}
-                          bedroom={property.bedrooms}
-                          bathroom={property.bathrooms}
-                          coverImage={findImage(property.id!)}
-                          onEdit={() => handleEditProperty(property.id!)}
-                          onDelete={() => handleDeleteProperty(property.id!)}
-                        />
-                      </li>
-                    ))}
+                  )
+                ) : propertiesToSale?.length === 0 ? (
+                  <EmptyProperties />
+                ) : (
+                  propertiesToSale?.map((property, index) => (
+                    <li className="w-full" key={index}>
+                      <AdminCard
+                        propertyId={property.id!}
+                        city={property.city}
+                        state={property.state}
+                        title={property.title}
+                        description={property.description}
+                        guests={property.guests}
+                        beds={property.beds}
+                        bedroom={property.bedrooms}
+                        bathroom={property.bathrooms}
+                        coverImage={findImage(property.id!)}
+                        onEdit={() => handleEditProperty(property.id!)}
+                        onDelete={() => handleDeleteProperty(property.id!)}
+                      />
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
           </div>

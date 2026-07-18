@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import Button from "../Button";
-import profile from "../../assets/logo.svg"
+import profile from "../../assets/user.png"
 
 type HeaderProps = {
   isLogged: boolean;

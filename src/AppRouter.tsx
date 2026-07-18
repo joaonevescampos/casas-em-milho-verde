@@ -21,14 +21,6 @@ const AppRouter = () => {
 
         {/* rotas protegidas */}
         <Route
-          path="/upload"
-          element={
-            <PrivateRoute>
-              <UploadImages />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/admin/home"
           element={
             <PrivateRoute>
