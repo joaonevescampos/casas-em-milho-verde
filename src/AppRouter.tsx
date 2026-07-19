@@ -10,7 +10,7 @@ import Sale from "./pages/public/Sale";
 import Header from "./components/public/Header";
 import Footer from "./components/public/Footer";
 import { AnimatePresence } from "motion/react";
-import { PageTransition } from "./components/PageTransition";
+import PageTransition from "./components/PageTransition";
 function PublicLayout() {
   const location = useLocation();
   return (

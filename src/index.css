@@ -31,6 +31,7 @@ html, body {
 
 main {
   padding: 0 80px;
+  margin-top: 100vh;
 }
 
 @media (max-width: 768px) {
