@@ -47,7 +47,7 @@ const Header = () => {
           </NavLink>
         ))}
       </nav>
-      <DefaultButton text="WHAT'S APP" />
+      <DefaultButton text="WHAT'S APP" path="" />
     </header>
   );
 };

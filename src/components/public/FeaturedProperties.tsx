@@ -3,6 +3,7 @@ import type { Property } from "@/types/properties";
 import { useEffect, useMemo } from "react";
 import PropertyCard from "./PropertyCard";
 import Reveal from "../Reveal";
+import DefaultButton from "../Button";
 
 type Props = {
   purpose: string;
@@ -43,35 +44,43 @@ const FeaturedProperties = ({ purpose }: Props) => {
   }, [getFeaturedProperties]);
 
   return (
-    <Reveal delay={.5}>
-
-    <section className="max-w-300 m-auto pt-12">
-      <div className="flex flex-col">
-        <span className="text-secondary5 text-[10px]">
+    <Reveal delay={0.5}>
+      <section className="relative max-w-300 m-auto pt-12 max-lg:pt-8">
+        <div className="flex flex-col">
+          <span className="text-secondary5 text-[10px]">
+            {purpose === "rent"
+              ? "HOSPEDAGENS EM DESTAQUE"
+              : "IMÓVEIS EM DESTAQUE"}
+          </span>
+          <h2 className="text-2xl font-cormorant font-semibold">
+            {purpose === "rent"
+              ? "Casas para relaxar em Milho Verde."
+              : "Casas à venda"}
+          </h2>
+        </div>
+        <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
           {purpose === "rent"
-            ? "HOSPEDAGENS EM DESTAQUE"
-            : "IMÓVEIS EM DESTAQUE"}
-        </span>
-        <h2 className="text-2xl font-cormorant font-semibold">
-          {purpose === "rent"
-            ? "Casas para relaxar em Milho Verde."
-            : "Casas à venda"}
-        </h2>
-      </div>
-      <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
-        {purpose === "rent"
-          ? rentProperties.map((rentProperty, i) => (
-              <div key={i}>
-                <PropertyCard property={rentProperty} />
-              </div>
-            ))
-          : rentProperties.map((saleProperty, i) => (
-              <div key={i}>
-                <PropertyCard property={saleProperty} />
-              </div>
-            ))}
-      </div>
-    </section>
+            ? rentProperties.map((rentProperty, i) => (
+                <div key={i}>
+                  <PropertyCard property={rentProperty} />
+                </div>
+              ))
+            : rentProperties.map((saleProperty, i) => (
+                <div key={i}>
+                  <PropertyCard property={saleProperty} />
+                </div>
+              ))}
+        </div>
+        <div className="flex items-center justify-center py-4 max-lg:py-0">
+          <DefaultButton
+            text={
+              purpose === "rent" ? "VER TODAS HOSPEDAGENS" : "VER TODOS IMÓVEIS"
+            }
+            style="absolute top-8 right-0 max-lg:static! max-lg:self-center! border border-secondary5/50! text-secondary5! bg-transparent! hover:bg-secondary5! hover:text-white!"
+            path={purpose === "rent" ? "/alugueis-temporada" : "venda"}
+          />
+        </div>
+      </section>
     </Reveal>
   );
 };

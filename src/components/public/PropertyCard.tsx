@@ -52,7 +52,7 @@ const PropertyCard = ({ property }: Props) => {
       </div>
       <hr />
       <Link to={property.purpose==="rent" ? `/alugueis-temporada/${property.slug}` : `/venda/${property.slug}`} className="flex gap-2 items-center text-xs text-primary2 w-full p-4 cursor-pointer hover:text-secondary5">
-        <span className="font-semibold">VER DETALHES</span>
+        <span className="font-semibold text-[10px]">VER DETALHES</span>
         <FaArrowRightLong />
       </Link>
     </div>

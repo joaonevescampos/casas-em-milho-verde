@@ -51,10 +51,10 @@ const Login = () => {
 
   return (
     <>
-      <AdminHeader isLogged={false} />
+      {/* <AdminHeader isLogged={false} /> */}
       {isLoading && <Loading />}
      
-      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8!">
+      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! mt-0!">
         <div className="flex flex-col gap-2 items-center justify-ceter">
           <img src={logo} alt="logo" className="w-36" />
           <h1 className="font-cormorant text-3xl max-lg:text-2xl font-semibold">

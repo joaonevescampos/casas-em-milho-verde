@@ -36,8 +36,9 @@ const AppRouter = () => {
           <Route path="/" element={<Home />} />
           <Route path="/alugueis-temporada" element={<Rent />} />
           <Route path="/venda" element={<Sale />} />
-          <Route path="/admin" element={<Login />} />
         </Route>
+
+        <Route path="/admin" element={<Login />} />
 
         {/* rotas protegidas */}
         <Route
