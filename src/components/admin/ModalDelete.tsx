@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import useDeletePropertyImages from "@/hooks/useDeletePropertyImages";
 import useDeleteProperty from "@/hooks/useDeleteProperty";
 import Loading from "../Loading";
+import fallback from "../../assets/no-image.png"
 
 type ModalProps = {
   onClose?: () => void;
@@ -75,7 +76,7 @@ const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
                 />
               ) : (
                 <img
-                  src="https://stock.adobe.com/br/search?k=no+image+available"
+                  src={fallback}
                   alt="no-image"
                   className="w-full h-full object-cover rounded-sm"
                 />

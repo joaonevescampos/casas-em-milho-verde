@@ -94,7 +94,7 @@ const HomeAdmin = () => {
   return (
     <>
       <AdminHeader isLogged={true} onLogout={() => logout()} />
-      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! px-4">
+      <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! px-4 mt-0!">
         {isLoading && <Loading />}
 
         {openAddProperty && (

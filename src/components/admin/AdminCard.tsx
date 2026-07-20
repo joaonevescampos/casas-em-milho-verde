@@ -1,6 +1,6 @@
-
 import { BiSolidPencil } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
+import fallback from "../../assets/no-image.png";
 
 type PropertiesCard = {
   propertyId: string;
@@ -43,7 +43,7 @@ const AdminCard = ({
             />
           ) : (
             <img
-              src="https://placehold.co/400x300?text=Sem+Imagem"
+              src={fallback}
               alt="no-image"
               className="w-full h-full object-cover rounded-sm"
             />

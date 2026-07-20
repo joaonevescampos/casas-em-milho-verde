@@ -33,12 +33,13 @@ const Header = () => {
         </span>
       </div>
       <nav className="flex text-xs items-center h-full">
-        {nav.map((item) => (
+        {nav.map((item, i) => (
           <NavLink
+            key={i}
             to={item.path}
             className={({ isActive }) =>
               isActive
-                ? "bg-white/80 border-b-2 border-primary1 font-semibold h-full flex items-center px-4"
+                ? "bg-white/60 border-b-2 border-primary1 font-semibold h-full flex items-center px-4"
                 : "opacity-70 h-full flex items-center px-4 hover:bg-white/50 hover:border-b-2 hover:border-primary1 hover:font-semibold transition-all duration-500"
             }
           >

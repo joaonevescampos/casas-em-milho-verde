@@ -28,7 +28,7 @@ export default function Reveal({
       }}
       viewport={{
         once: true,
-        amount: 0.25,
+        amount: 0.15,
       }}
       transition={{
         duration: 2,

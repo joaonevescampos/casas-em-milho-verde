@@ -1,12 +1,14 @@
+import FeaturedProperties from "@/components/public/FeaturedProperties"
 import HeroHome from "@/components/public/HeroHome"
 import Strip from "@/components/public/Strip"
 
 const Home = () => {
   return (
-    <main>
+    <main className="">
       <HeroHome />
       <Strip />
-      <div className="h-400 w-full"></div>
+      <FeaturedProperties purpose="rent"/>
+      <FeaturedProperties purpose="sale"/>
     </main>
   )
 }
