@@ -45,7 +45,7 @@ const FeaturedProperties = ({ purpose }: Props) => {
 
   return (
     <Reveal delay={0.5}>
-      <section className="relative max-w-300 m-auto pt-12 max-lg:pt-8">
+      <section className="relative min-h-[556px] max-w-300 m-auto pt-12 max-lg:pt-8">
         <div className="flex flex-col">
           <span className="text-secondary5 text-[10px]">
             {purpose === "rent"
@@ -58,7 +58,7 @@ const FeaturedProperties = ({ purpose }: Props) => {
               : "Casas à venda"}
           </h2>
         </div>
-        <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+        <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
           {purpose === "rent"
             ? rentProperties.map((rentProperty, i) => (
                 <div key={i}>
@@ -71,7 +71,7 @@ const FeaturedProperties = ({ purpose }: Props) => {
                 </div>
               ))}
         </div>
-        <div className="flex items-center justify-center py-4 max-lg:py-0">
+        <div className="flex items-center justify-center max-lg:pt-4">
           <DefaultButton
             text={
               purpose === "rent" ? "VER TODAS HOSPEDAGENS" : "VER TODOS IMÓVEIS"

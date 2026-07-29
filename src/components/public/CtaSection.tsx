@@ -11,7 +11,7 @@ type Props = {
 
  const CtaSection = ({ purpose }: Props) => {
   return (
-    <section className="-mx-20 max-md:-mx-4 my-8 overflow-hidden">
+    <section className="-mx-20 mt-8 max-md:-mx-4 overflow-hidden">
       <div className="relative h-80">
         {/* Apenas zoom ao carregar */}
         <motion.div
