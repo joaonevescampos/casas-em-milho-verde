@@ -24,7 +24,7 @@ const PropertyCard = ({ property }: Props) => {
     <div className="w-full rounded-xl shadow bg-white">
       <picture className="relative">
         {property.is_featured && (
-          <span className="absolute top-0 right-0 rounded-tr-xl rounded-bl-xl bg-linear-120 from-primary2 to-secondary1 text-white px-3 py-1.5 text-[8px] font-bold">
+          <span className="absolute top-0 right-0 rounded-tr-xl rounded-bl-xl bg-secondary5 text-white px-3 py-1.5 text-[8px] font-bold">
             EM DESTAQUE
           </span>
         )}

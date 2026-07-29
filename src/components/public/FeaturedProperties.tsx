@@ -45,7 +45,7 @@ const FeaturedProperties = ({ purpose }: Props) => {
 
   return (
     <Reveal delay={0.5}>
-      <section className="relative min-h-[556px] max-w-300 m-auto pt-12 max-lg:pt-8">
+      <section className="relative min-h-139 max-w-300 m-auto pt-12 max-lg:pt-8">
         <div className="flex flex-col">
           <span className="text-secondary5 text-[10px]">
             {purpose === "rent"

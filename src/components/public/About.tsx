@@ -47,7 +47,7 @@ const About = () => {
                   className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-fit hover:bg-primary5/10 max-lg:m-auto max-lg:w-full"
                 >
                   <img src={airbnbLogo} alt="airbnb-logo" className="w-4" />
-                  <span>Ver perfil do Airbnb</span>
+                  <span className="text-sm">Ver perfil do Airbnb</span>
                 </Link>
               </div>
             </div>
@@ -58,7 +58,7 @@ const About = () => {
                 className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10"
               >
                 <img src={whatsappLogo} alt="airbnb-logo" className="w-8" />
-                <span>What's App</span>
+                <span className="text-sm">What's App</span>
               </Link>
               <Link
                 to="https://www.airbnb.com.br/users/profile/1463193187508284145?previous_page_name=PdpHomeMarketplace"
@@ -66,7 +66,7 @@ const About = () => {
                 className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10"
               >
                 <img src={instagramLogo} alt="airbnb-logo" className="w-5" />
-                <span>Instagram</span>
+                <span className="text-sm">Instagram</span>
               </Link>
             </div>
           </div>

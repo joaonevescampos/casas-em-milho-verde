@@ -11,8 +11,8 @@ import quotation from "../../assets/quotation.png";
 
 const Testimonials = () => {
   return (
-    <Reveal delay={0.5}>
-      <section className="relative flex items-center justify-center -mx-20 max-md:-mx-4 overflow-hidden bg-linear-120! to-primary1/50! from-primary4! py-12 px-20 max-md:px-4">
+    <section className="relative flex items-center justify-center -mx-20 max-md:-mx-4 overflow-hidden bg-linear-120! to-primary1/50! from-primary4! py-12 px-20 max-md:px-4">
+      <Reveal delay={0.5}>
         <img
           src={quotation}
           alt="quotation"
@@ -55,8 +55,8 @@ const Testimonials = () => {
             <CarouselNext />
           </Carousel>
         </div>
-      </section>
-    </Reveal>
+      </Reveal>
+    </section>
   );
 };
 

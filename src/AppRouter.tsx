@@ -5,12 +5,13 @@ import Login from "./pages/admin/Login";
 import HomeAdmin from "./pages/admin/HomeAdmin";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/public/Home";
-import Rent from "./pages/public/Rent";
+import Rent from "./pages/public/Cataloge";
 import Sale from "./pages/public/Sale";
 import Header from "./components/public/Header";
 import Footer from "./components/public/Footer";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "./components/PageTransition";
+import Cataloge from "./pages/public/Cataloge";
 function PublicLayout() {
   const location = useLocation();
   return (
@@ -34,8 +35,8 @@ const AppRouter = () => {
         {/* Rotas públicas */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/alugueis-temporada" element={<Rent />} />
-          <Route path="/venda" element={<Sale />} />
+          <Route path="/alugueis-temporada" element={<Cataloge />} />
+          <Route path="/venda" element={<Cataloge />} />
         </Route>
 
         <Route path="/admin" element={<Login />} />
