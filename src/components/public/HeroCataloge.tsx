@@ -39,32 +39,32 @@ const HeroCataloge = ({ purpose }: Props) => {
           </motion.div>
         </motion.div>
       </picture>
-      <div className="absolute top-1/2 left-1/2 -translate-1/2 max-lg:left-4 max-w-200 text-white">
-        <div className="flex flex-col items-center  gap-4 text-center">
+      <div className="absolute top-1/2 left-1/2 -translate-1/2 max-w-200 w-full text-white">
+        <div className="flex flex-col items-center gap-4 text-center">
           <FadeUp delay={.5}>
-            <h1 className="font-cormorant text-5xl font-semibold">
+            <h1 className="font-cormorant text-5xl max-md:text-3xl font-semibold">
               {purpose === "rent"
                 ? "Alugue uma casa por temporada!"
                 : "Invista na sua casa própria!"}
             </h1>
           </FadeUp>
           <FadeUp delay={1}>
-            <h2 className="text-sm max-w-100 leading-relaxed">
+            <h2 className="text-sm max-w-100 leading-relaxed max-md:text-xs">
               {purpose === "rent"
                 ? "Tire uns dias para relaxar na natureza."
                 : "Adquira seu próprio imóvel."}
             </h2>
           </FadeUp>
           <FadeUp delay={1.5}>
-            <div className="flex gap-4 pt-12">
+            <div className="flex max-md:flex-col gap-4 pt-12">
               <DefaultButton
                 text="VER HOSPEDAGENS"
-                style={`rounded-sm! ${purpose === "rent" ? "bg-white! text-secondary1!" : "bg-secondary1/70! border"}`}
+                style={`rounded-sm! w-40! ${purpose === "rent" ? "bg-white! text-secondary1!" : "bg-secondary1/70! border"}`}
                 path="/alugueis-temporada"
               />
               <DefaultButton
                 text="VER IMÓVEIS À VENDA"
-                style={`rounded-sm! ${purpose === "sale" ? "bg-white! text-secondary1!" : "bg-secondary1/70! border"}`}
+                style={`rounded-sm! w-40! ${purpose === "sale" ? "bg-white! text-secondary1!" : "bg-secondary1/70! border"}`}
                 path="/venda"
               />
             </div>

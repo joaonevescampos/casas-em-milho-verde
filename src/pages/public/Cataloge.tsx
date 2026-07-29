@@ -61,7 +61,7 @@ const Cataloge = () => {
                 : "Casas à venda"}
             </h2>
           </div>
-          <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
+          <div className="grid grid-cols-4 gap-4 my-4 max-lg:mx-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
             {purpose === "rent"
               ? rentProperties.map((rentProperty, i) => (
                   <div key={i}>

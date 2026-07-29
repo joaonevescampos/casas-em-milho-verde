@@ -5,8 +5,6 @@ import Login from "./pages/admin/Login";
 import HomeAdmin from "./pages/admin/HomeAdmin";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/public/Home";
-import Rent from "./pages/public/Cataloge";
-import Sale from "./pages/public/Sale";
 import Header from "./components/public/Header";
 import Footer from "./components/public/Footer";
 import { AnimatePresence } from "motion/react";
