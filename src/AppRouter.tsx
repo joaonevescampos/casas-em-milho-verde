@@ -10,6 +10,7 @@ import Footer from "./components/public/Footer";
 import { AnimatePresence } from "motion/react";
 import PageTransition from "./components/PageTransition";
 import Cataloge from "./pages/public/Cataloge";
+import PropertyDetail from "./pages/public/PropertyDetail";
 function PublicLayout() {
   const location = useLocation();
   return (
@@ -35,6 +36,10 @@ const AppRouter = () => {
           <Route path="/" element={<Home />} />
           <Route path="/alugueis-temporada" element={<Cataloge />} />
           <Route path="/venda" element={<Cataloge />} />
+          <Route path="/venda/:slug" element={<PropertyDetail />} />
+          <Route path="/alugueis-temporada/:slug" element={<PropertyDetail />} />
+
+
         </Route>
 
         <Route path="/admin" element={<Login />} />
