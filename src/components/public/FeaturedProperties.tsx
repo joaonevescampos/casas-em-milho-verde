@@ -39,9 +39,9 @@ const FeaturedProperties = ({ purpose }: Props) => {
     [properties],
   );
 
-  useEffect(() => {
-    console.log(getFeaturedProperties("rent"));
-  }, [getFeaturedProperties]);
+  // useEffect(() => {
+  //   console.log(getFeaturedProperties("rent"));
+  // }, [getFeaturedProperties]);
 
   return (
     <Reveal delay={0.5}>

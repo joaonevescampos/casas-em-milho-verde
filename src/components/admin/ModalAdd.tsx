@@ -131,9 +131,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
         </button>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log(errors);
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="w-full overflow-y-scroll  h-10/12"
         >
           <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">

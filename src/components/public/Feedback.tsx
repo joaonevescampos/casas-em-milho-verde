@@ -23,8 +23,8 @@ const Feedback = ({ name, rate, comment, date, index }: Props) => {
             </div>
             <h2 className="font-bold">{name}</h2>
             <div className="flex gap-1 items-center">
-              {Array.from({ length: rate }).map((_) => (
-                <FaStar />
+              {Array.from({ length: rate }).map((_, index) => (
+                <FaStar key={index} />
               ))}
             </div>
             <span className="text-primary5/60 font-medium text-xs">{date}</span>

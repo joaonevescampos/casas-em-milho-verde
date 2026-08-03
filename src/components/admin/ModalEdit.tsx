@@ -76,7 +76,6 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
   }, [images, form]);
 
   useEffect(() => {
-    console.log("entrei no useEffect");
     if (!property) return;
 
     form.reset({
@@ -171,9 +170,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
         </button>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log(errors);
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="w-full overflow-y-scroll  h-10/12"
         >
           <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">

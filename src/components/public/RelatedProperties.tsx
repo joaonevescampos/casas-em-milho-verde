@@ -43,9 +43,9 @@ const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
     [properties],
   );
 
-  useEffect(() => {
-    console.log(getRelatedProperties("rent"));
-  }, [getRelatedProperties]);
+  // useEffect(() => {
+  //   console.log(getRelatedProperties("rent"));
+  // }, [getRelatedProperties]);
 
   return (
     <Reveal delay={0.5}>

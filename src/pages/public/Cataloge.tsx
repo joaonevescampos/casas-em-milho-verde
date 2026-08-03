@@ -17,7 +17,6 @@ const Cataloge = () => {
     } else {
       setPurpose("rent");
     }
-    console.log("teste");
   }, [location]);
 
   const getFeaturedProperties = (purpose: "sale" | "rent"): Property[] => {
@@ -39,10 +38,6 @@ const Cataloge = () => {
     () => getFeaturedProperties("rent"),
     [properties],
   );
-
-  useEffect(() => {
-    console.log(getFeaturedProperties("rent"));
-  }, [getFeaturedProperties]);
 
   return (
     <>

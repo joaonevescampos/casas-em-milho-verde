@@ -48,6 +48,7 @@ const Testimonials = () => {
                   date={testimonial.date}
                   rate={testimonial.rate}
                   index={index}
+                  key={index}
                 />
               ))}
             </CarouselContent>

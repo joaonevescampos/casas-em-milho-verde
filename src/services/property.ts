@@ -21,7 +21,6 @@ export default class Services {
         .from("property_images")
         .select("*")
         .eq("property_id", propertyId);
-      // console.log("resposta1", data, "resposta2", response.data, "ID", propertyId)
       return data ? data : null;
     } catch (error) {
       throw error;
