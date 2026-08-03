@@ -15,6 +15,7 @@ import { FaBath, FaBed, FaUser } from "react-icons/fa";
 import user from "../../assets/user.png";
 import DefaultButton from "@/components/Button";
 import CityMap from "@/components/public/Map";
+import RelatedProperties from "@/components/public/RelatedProperties";
 
 const PropertyDetail = () => {
   const param = useParams();
@@ -213,12 +214,14 @@ const PropertyDetail = () => {
           <span className="font-montserrat text-xs text-secondary3">
             {property?.city} - {property?.state}
           </span>
-          <CityMap
-            cityName={property?.city!}
-            zoom={9}
-          />
+          <CityMap cityName={property?.city!} zoom={9} />
         </div>
       </div>
+      <RelatedProperties
+        purpose={property?.purpose!}
+        category={property?.category!}
+        propertyId={property?.id!}
+      />
     </main>
   );
 };

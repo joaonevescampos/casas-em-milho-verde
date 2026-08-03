@@ -14,9 +14,9 @@ type Props = {
 
 const Feedback = ({ name, rate, comment, date, index }: Props) => {
   return (
-    <CarouselItem key={index} className="basis-1/1 lg:basis-1/3">
+    <CarouselItem key={index} className="basis-1/1 sm:basis-1/2 lg:basis-1/3">
       <div className=" relative">
-        <Card>
+        <Card className="w-full">
           <CardContent className="flex items-center justify-center p-4 flex-col gap-2 rounded-xl h-70">
             <div className="absolute top-2 left-2">
               <img src={airbnbLogo} alt="airbnb-logo" className="w-6" />

@@ -38,9 +38,9 @@ const Testimonials = () => {
             opts={{
               align: "start",
             }}
-            className="w-full m-auto max-w-300"
+            className="w-full max-w-300 max-xl:max-w-220 max-lg:max-w-150 max-md:max-w-100 max-sm:max-w-60"
           >
-            <CarouselContent>
+            <CarouselContent className="w-full">
               {testimonials.map((testimonial, index) => (
                 <Feedback
                   name={testimonial.name}

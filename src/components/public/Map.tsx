@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 // 🔧 CORREÇÃO: Ícones padrão do Leaflet no React
 // Isso resolve o problema de ícones quebrados no build
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 interface CityMapProps {
@@ -25,11 +28,11 @@ interface Coordinates {
   displayName: string;
 }
 
-const CityMap: React.FC<CityMapProps> = ({ 
-  cityName, 
-  zoom = 9, 
-  height = '100%', 
-  width = '100%' 
+const CityMap: React.FC<CityMapProps> = ({
+  cityName,
+  zoom = 9,
+  height = "100%",
+  width = "100%",
 }) => {
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,7 +42,7 @@ const CityMap: React.FC<CityMapProps> = ({
   useEffect(() => {
     const geocodeCity = async () => {
       if (!cityName) {
-        setError('Nome da cidade não fornecido');
+        setError("Nome da cidade não fornecido");
         setLoading(false);
         return;
       }
@@ -53,9 +56,9 @@ const CityMap: React.FC<CityMapProps> = ({
           `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cityName)}&format=json&limit=1`,
           {
             headers: {
-              'User-Agent': 'CityMapApp/1.0' // ⚠️ Identifique seu app para respeitar a política de uso
-            }
-          }
+              "User-Agent": "CityMapApp/1.0", // ⚠️ Identifique seu app para respeitar a política de uso
+            },
+          },
         );
 
         if (!response.ok) {
@@ -69,13 +72,15 @@ const CityMap: React.FC<CityMapProps> = ({
           setCoordinates({
             lat: parseFloat(result.lat),
             lng: parseFloat(result.lon),
-            displayName: result.display_name
+            displayName: result.display_name,
           });
         } else {
           throw new Error(`Cidade "${cityName}" não encontrada`);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Erro ao buscar coordenadas');
+        setError(
+          err instanceof Error ? err.message : "Erro ao buscar coordenadas",
+        );
         setCoordinates(null);
       } finally {
         setLoading(false);
@@ -88,7 +93,7 @@ const CityMap: React.FC<CityMapProps> = ({
   // 🎯 Estados de carregamento e erro
   if (loading) {
     return (
-      <div 
+      <div
         className="flex items-center justify-center bg-gray-100 rounded-lg"
         style={{ height, width }}
       >
@@ -102,7 +107,7 @@ const CityMap: React.FC<CityMapProps> = ({
 
   if (error) {
     return (
-      <div 
+      <div
         className="flex items-center justify-center bg-red-50 rounded-lg border border-red-200"
         style={{ height, width }}
       >
@@ -120,7 +125,7 @@ const CityMap: React.FC<CityMapProps> = ({
   // 🗺️ Renderiza o mapa com as coordenadas obtidas
   if (!coordinates) {
     return (
-      <div 
+      <div
         className="flex items-center justify-center bg-gray-100 rounded-lg"
         style={{ height, width }}
       >
@@ -132,11 +137,14 @@ const CityMap: React.FC<CityMapProps> = ({
   }
 
   return (
-    <div style={{ height, width }} className="rounded-lg overflow-hidden shadow-lg">
+    <div
+      style={{ height, width }}
+      className="rounded-lg overflow-hidden shadow-lg z-10"
+    >
       <MapContainer
         center={[coordinates.lat, coordinates.lng]}
         zoom={zoom}
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: "100%", width: "100%" }}
         zoomControl={true}
         scrollWheelZoom={true}
         dragging={true}
@@ -146,7 +154,7 @@ const CityMap: React.FC<CityMapProps> = ({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
+
         {/* 📍 Marcador na cidade */}
         <Marker position={[coordinates.lat, coordinates.lng]}>
           <Popup>
