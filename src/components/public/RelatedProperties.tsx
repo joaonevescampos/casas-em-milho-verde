@@ -76,7 +76,7 @@ const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
           <DefaultButton
             text="VER MAIS"
             style="absolute top-8 right-0 max-lg:static! max-lg:self-center! border border-secondary5/50! text-secondary5! bg-transparent! hover:bg-secondary5! hover:text-white!"
-            path={purpose === "rent" ? "/alugueis-temporada" : "venda"}
+            path={purpose === "rent" ? "/alugueis-temporada" : "/venda"}
           />
         </div>
       </section>

@@ -20,6 +20,7 @@ interface CityMapProps {
   zoom?: number; // Zoom opcional (padrão: 11 para mostrar área ampla)
   height?: string; // Altura opcional (padrão: 500px)
   width?: string; // Largura opcional (padrão: 100%)
+  minHeight?: string;
 }
 
 interface Coordinates {
@@ -33,6 +34,7 @@ const CityMap: React.FC<CityMapProps> = ({
   zoom = 9,
   height = "100%",
   width = "100%",
+  minHeight="200px"
 }) => {
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -109,7 +111,7 @@ const CityMap: React.FC<CityMapProps> = ({
     return (
       <div
         className="flex items-center justify-center bg-red-50 rounded-lg border border-red-200"
-        style={{ height, width }}
+        style={{ height, width, minHeight }}
       >
         <div className="text-red-600 text-center p-4">
           <p className="font-semibold">⚠️ Erro ao carregar mapa</p>
@@ -127,7 +129,7 @@ const CityMap: React.FC<CityMapProps> = ({
     return (
       <div
         className="flex items-center justify-center bg-gray-100 rounded-lg"
-        style={{ height, width }}
+        style={{ height, width, minHeight }}
       >
         <div className="text-gray-600 text-center">
           <p>Nenhuma coordenada disponível</p>
@@ -138,13 +140,13 @@ const CityMap: React.FC<CityMapProps> = ({
 
   return (
     <div
-      style={{ height, width }}
+      style={{ height, width, minHeight }}
       className="rounded-lg overflow-hidden shadow-lg z-10"
     >
       <MapContainer
         center={[coordinates.lat, coordinates.lng]}
         zoom={zoom}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", minHeight: "200px" }}
         zoomControl={true}
         scrollWheelZoom={true}
         dragging={true}

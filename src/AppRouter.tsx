@@ -11,6 +11,7 @@ import { AnimatePresence } from "motion/react";
 import PageTransition from "./components/PageTransition";
 import Cataloge from "./pages/public/Cataloge";
 import PropertyDetail from "./pages/public/PropertyDetail";
+import { ScrollToTop } from "./components/ScrollToTop";
 function PublicLayout() {
   const location = useLocation();
   return (
@@ -29,6 +30,7 @@ function PublicLayout() {
 const AppRouter = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <ToastContainer autoClose={2000} />
       <Routes>
         {/* Rotas públicas */}
@@ -37,9 +39,10 @@ const AppRouter = () => {
           <Route path="/alugueis-temporada" element={<Cataloge />} />
           <Route path="/venda" element={<Cataloge />} />
           <Route path="/venda/:slug" element={<PropertyDetail />} />
-          <Route path="/alugueis-temporada/:slug" element={<PropertyDetail />} />
-
-
+          <Route
+            path="/alugueis-temporada/:slug"
+            element={<PropertyDetail />}
+          />
         </Route>
 
         <Route path="/admin" element={<Login />} />
