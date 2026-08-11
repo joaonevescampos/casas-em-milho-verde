@@ -1,6 +1,6 @@
 import useGetAllProperties from "@/hooks/useGetAllProperties";
 import type { Property } from "@/types/properties";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import PropertyCard from "./PropertyCard";
 import Reveal from "../Reveal";
 import DefaultButton from "../Button";
@@ -43,9 +43,6 @@ const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
     [properties],
   );
 
-  // useEffect(() => {
-  //   console.log(getRelatedProperties("rent"));
-  // }, [getRelatedProperties]);
 
   return (
     <Reveal delay={0.5}>
@@ -69,7 +66,7 @@ const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
                   <PropertyCard property={rentProperty} />
                 </div>
               ))
-            : rentProperties.map((saleProperty, i) => (
+            : saleProperties.map((saleProperty, i) => (
                 <div key={i}>
                   <PropertyCard property={saleProperty} />
                 </div>

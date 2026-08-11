@@ -1,4 +1,3 @@
-import AdminHeader from "../../components/admin/AdminHeader";
 import AdminFooter from "../../components/admin/AdminFooter";
 import logo from "../../assets/logo.svg";
 import {
@@ -27,7 +26,7 @@ type FormData = {
 const Login = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  // const { register, handleSubmit } = useForm<FormData>();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -51,7 +50,6 @@ const Login = () => {
 
   return (
     <>
-      {/* <AdminHeader isLogged={false} /> */}
       {isLoading && <Loading />}
      
       <main className="flex flex-col gap-4 items-center justify-center bg-linear-to-b from-opacity1 to-opacity2 py-8! mt-0! min-h-[calc(100vh-56px)]">
