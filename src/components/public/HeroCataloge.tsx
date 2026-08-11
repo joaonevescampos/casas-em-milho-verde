@@ -1,6 +1,5 @@
 import rentCover from "../../assets/rent-cover.png";
 import saleCover from "../../assets/sale-cover.png";
-import DefaultButton from "../Button";
 import FadeUp from "../FadeUp";
 import { motion, useScroll, useTransform } from "motion/react";
 
