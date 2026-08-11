@@ -66,11 +66,11 @@ const PropertyDetail = () => {
               }}
               className="w-full"
             >
-              <CarouselContent>
+              <CarouselContent className="ml-0">
                 {images?.map((image, index) => (
                   <CarouselItem
                     key={image.id ?? image.image_url ?? index}
-                    className="basis-full"
+                    className="basis-full pl-0"
                   >
                     <img
                       src={image.image_url}
@@ -107,7 +107,7 @@ const PropertyDetail = () => {
                 setApi={setThumbApi}
                 className="min-w-0 flex-1"
               >
-                <CarouselContent className="-ml-2">
+                <CarouselContent className="ml-2">
                   {images?.map((image, index) => (
                     <CarouselItem
                       key={image.id ?? image.image_url ?? index}
