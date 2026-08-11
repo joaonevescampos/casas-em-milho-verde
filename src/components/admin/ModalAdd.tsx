@@ -49,6 +49,9 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       beds: 1,
       guests: 1,
       bathrooms: 1,
+      area: 0,
+      garage: 1,
+      balcony: 0,
       airbnb_link: "",
     },
   });
@@ -63,9 +66,12 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
   };
 
   async function onSubmit(data: Property) {
+    console.log("entrei");
     try {
       setFakeLoading(true);
       const slug = createSlug(data.title);
+
+      console.log("data", data);
 
       const property = await createProperty({
         ...data,
@@ -131,7 +137,9 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
         </button>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, (errors) => {
+            console.log("ERROS DE VALIDAÇÃO:", errors);
+          })}
           className="w-full overflow-y-scroll  h-10/12"
         >
           <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
@@ -319,7 +327,8 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           <SelectItem value="Mansão">Mansão</SelectItem>
                           <SelectItem value="Fazenda">Fazenda</SelectItem>
                           <SelectItem value="Sitio">Sítio</SelectItem>
-                           <SelectItem value="Chale">Chalé</SelectItem>
+                          <SelectItem value="Chale">Chalé</SelectItem>
+                          <SelectItem value="Lote">Lote</SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -333,22 +342,30 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                   )}
                 />
                 <Controller
-                  name="airbnb_link"
+                  name="area"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="fieldgroup-airbnb_link"
+                        htmlFor="fieldgroup-area"
                         className="font-semibold text-xs"
                       >
-                        Link do anúncio do Airbnb
+                        Área construída
                       </FieldLabel>
                       <Input
                         {...field}
-                        id="fieldgroup-airbnb_link"
+                        value={field.value ?? ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+
+                          field.onChange(
+                            value === "" ? undefined : Number(value),
+                          );
+                        }}
+                        id="fieldgroup-area"
                         aria-invalid={fieldState.invalid}
-                        placeholder="Adicione o link do airbnb do seu anúncio"
-                        type="text"
+                        placeholder="Digite a área que tem o imóvel"
+                        type="number"
                         autoComplete="off"
                         className="h-10 px-2 text-xs border border-gray-300 rounded"
                       />
@@ -361,6 +378,37 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     </Field>
                   )}
                 />
+                {purpose === "rent" && (
+                  <Controller
+                    name="airbnb_link"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel
+                          htmlFor="fieldgroup-airbnb_link"
+                          className="font-semibold text-xs"
+                        >
+                          Link do anúncio do Airbnb
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id="fieldgroup-airbnb_link"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Adicione o link do airbnb do seu anúncio"
+                          type="text"
+                          autoComplete="off"
+                          className="h-10 px-2 text-xs border border-gray-300 rounded"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError
+                            errors={[fieldState.error]}
+                            className="text-[10px]"
+                          />
+                        )}
+                      </Field>
+                    )}
+                  />
+                )}
               </div>
               <div className="flex-1 flex flex-col gap-4">
                 <Controller
@@ -485,6 +533,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     </Field>
                   )}
                 />
+
                 <Controller
                   name="bedrooms"
                   control={form.control}
@@ -505,6 +554,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           <SelectValue placeholder="Selecione a quantidade de quartos" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value={0}>0</SelectItem>
                           <SelectItem value={1}>1</SelectItem>
                           <SelectItem value={2}>2</SelectItem>
                           <SelectItem value={3}>3</SelectItem>
@@ -527,48 +577,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     </Field>
                   )}
                 />
-                <Controller
-                  name="beds"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel
-                        htmlFor="field-beds"
-                        className="font-semibold text-xs"
-                      >
-                        Camas
-                      </FieldLabel>
 
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger id="field-beds" className="w-full">
-                          <SelectValue placeholder="Selecione a quantidade de camas" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={1}>1</SelectItem>
-                          <SelectItem value={2}>2</SelectItem>
-                          <SelectItem value={3}>3</SelectItem>
-                          <SelectItem value={4}>4</SelectItem>
-                          <SelectItem value={5}>5</SelectItem>
-                          <SelectItem value={6}>6</SelectItem>
-                          <SelectItem value={7}>7</SelectItem>
-                          <SelectItem value={8}>8</SelectItem>
-                          <SelectItem value={9}>9</SelectItem>
-                          <SelectItem value={10}>10</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.invalid && (
-                        <FieldError
-                          errors={[fieldState.error]}
-                          className="text-[10px]"
-                        />
-                      )}
-                    </Field>
-                  )}
-                />
                 <Controller
                   name="bathrooms"
                   control={form.control}
@@ -589,6 +598,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           <SelectValue placeholder="Selecione a quantidade de banheiros" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value={0}>0</SelectItem>
                           <SelectItem value={1}>1</SelectItem>
                           <SelectItem value={2}>2</SelectItem>
                           <SelectItem value={3}>3</SelectItem>
@@ -611,26 +621,28 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     </Field>
                   )}
                 />
+
                 <Controller
-                  name="guests"
+                  name="balcony"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel
-                        htmlFor="field-guests"
+                        htmlFor="field-balcony"
                         className="font-semibold text-xs"
                       >
-                        Hóspedes
+                        Varanda
                       </FieldLabel>
 
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger id="field-guests" className="w-full">
-                          <SelectValue placeholder="Selecione a quantidade de hospedes" />
+                        <SelectTrigger id="field-balcony" className="w-full">
+                          <SelectValue placeholder="Selecione a quantidade de varanda" />
                         </SelectTrigger>
                         <SelectContent>
+                          <SelectItem value={0}>0</SelectItem>
                           <SelectItem value={1}>1</SelectItem>
                           <SelectItem value={2}>2</SelectItem>
                           <SelectItem value={3}>3</SelectItem>
@@ -641,16 +653,152 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           <SelectItem value={8}>8</SelectItem>
                           <SelectItem value={9}>9</SelectItem>
                           <SelectItem value={10}>10</SelectItem>
-                          <SelectItem value={11}>11</SelectItem>
-                          <SelectItem value={12}>12</SelectItem>
-                          <SelectItem value={13}>13</SelectItem>
-                          <SelectItem value={14}>14</SelectItem>
-                          <SelectItem value={15}>15</SelectItem>
-                          <SelectItem value={16}>16</SelectItem>
-                          <SelectItem value={17}>17</SelectItem>
-                          <SelectItem value={18}>18</SelectItem>
-                          <SelectItem value={19}>19</SelectItem>
-                          <SelectItem value={20}>20</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-[10px]"
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                {purpose === "rent" && (
+                  <>
+                    <Controller
+                      name="guests"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel
+                            htmlFor="field-guests"
+                            className="font-semibold text-xs"
+                          >
+                            Hóspedes
+                          </FieldLabel>
+
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger id="field-guests" className="w-full">
+                              <SelectValue placeholder="Selecione a quantidade de hospedes" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={0}>0</SelectItem>
+                              <SelectItem value={1}>1</SelectItem>
+                              <SelectItem value={2}>2</SelectItem>
+                              <SelectItem value={3}>3</SelectItem>
+                              <SelectItem value={4}>4</SelectItem>
+                              <SelectItem value={5}>5</SelectItem>
+                              <SelectItem value={6}>6</SelectItem>
+                              <SelectItem value={7}>7</SelectItem>
+                              <SelectItem value={8}>8</SelectItem>
+                              <SelectItem value={9}>9</SelectItem>
+                              <SelectItem value={10}>10</SelectItem>
+                              <SelectItem value={11}>11</SelectItem>
+                              <SelectItem value={12}>12</SelectItem>
+                              <SelectItem value={13}>13</SelectItem>
+                              <SelectItem value={14}>14</SelectItem>
+                              <SelectItem value={15}>15</SelectItem>
+                              <SelectItem value={16}>16</SelectItem>
+                              <SelectItem value={17}>17</SelectItem>
+                              <SelectItem value={18}>18</SelectItem>
+                              <SelectItem value={19}>19</SelectItem>
+                              <SelectItem value={20}>20</SelectItem>
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError
+                              errors={[fieldState.error]}
+                              className="text-[10px]"
+                            />
+                          )}
+                        </Field>
+                      )}
+                    />
+
+                    <Controller
+                      name="beds"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel
+                            htmlFor="field-beds"
+                            className="font-semibold text-xs"
+                          >
+                            Camas
+                          </FieldLabel>
+
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger id="field-beds" className="w-full">
+                              <SelectValue placeholder="Selecione a quantidade de camas" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value={0}>0</SelectItem>
+                              <SelectItem value={1}>1</SelectItem>
+                              <SelectItem value={2}>2</SelectItem>
+                              <SelectItem value={3}>3</SelectItem>
+                              <SelectItem value={4}>4</SelectItem>
+                              <SelectItem value={5}>5</SelectItem>
+                              <SelectItem value={6}>6</SelectItem>
+                              <SelectItem value={7}>7</SelectItem>
+                              <SelectItem value={8}>8</SelectItem>
+                              <SelectItem value={9}>9</SelectItem>
+                              <SelectItem value={10}>10</SelectItem>
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError
+                              errors={[fieldState.error]}
+                              className="text-[10px]"
+                            />
+                          )}
+                        </Field>
+                      )}
+                    />
+                  </>
+                )}
+
+                <Controller
+                  name="garage"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel
+                        htmlFor="field-garage"
+                        className="font-semibold text-xs"
+                      >
+                        Vagas de carro
+                      </FieldLabel>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger id="field-garage" className="w-full">
+                          <SelectValue placeholder="Selecione a vagas de carro" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={0}>0</SelectItem>
+                          <SelectItem value={1}>1</SelectItem>
+                          <SelectItem value={2}>2</SelectItem>
+                          <SelectItem value={3}>3</SelectItem>
+                          <SelectItem value={4}>4</SelectItem>
+                          <SelectItem value={5}>5</SelectItem>
+                          <SelectItem value={6}>6</SelectItem>
+                          <SelectItem value={7}>7</SelectItem>
+                          <SelectItem value={8}>8</SelectItem>
+                          <SelectItem value={9}>9</SelectItem>
+                          <SelectItem value={10}>10</SelectItem>
                         </SelectContent>
                       </Select>
 

@@ -191,14 +191,18 @@ const PropertyDetail = () => {
               </Link>
             </div>
           </div>
-          <DefaultButton
-            text="RESERVAR NO AIRBNB"
-            path={property?.airbnb_link}
-            style="w-full!"
-          />
+          {property?.purpose === "rent" ? (
+            <Link to={property?.airbnb_link!} target="_blank">
+              <DefaultButton text="RESERVAR NO AIRBNB" style="w-full!" />
+            </Link>
+          ) : (
+            <Link to="" target="_blank">
+              <DefaultButton text="CONVERSAR NO WHAT'S APP" style="w-full!" />
+            </Link>
+          )}
         </div>
       </div>
-      <div className="flex gap-4 w-full rounded-2xl bg-white p-4 shadow-lg max-w-300 m-auto mb-8">
+      <div className="flex gap-4 w-full rounded-2xl bg-white p-4 shadow-lg max-w-300 m-auto mb-8 min-h-80">
         <div className="flex-2 flex flex-col gap-4 ">
           <h2 className="font-cormorant font-semibold text-2xl max-lg:text-xl">
             Sobre o espaço

@@ -31,7 +31,7 @@ export default function Reveal({
         amount: 0.15,
       }}
       transition={{
-        duration: 2,
+        duration: 1,
         delay,
         ease: [0.22, 1, 0.36, 1],
       }}

@@ -16,6 +16,9 @@ export type Property = {
   bathrooms: number;
   guests: number;
   beds: number;
+  area: number;
+  garage: number;
+  balcony: number;
 
   airbnb_link?: string;
   status?: string;
@@ -33,5 +36,5 @@ export type PropertyImages = {
   position: number;
   cover_image: boolean;
   created_at?: string;
-  updated_at?: string
+  updated_at?: string;
 };

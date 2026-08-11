@@ -1,4 +1,5 @@
-import CatalogeCover from "../../assets/home-cover.png";
+import rentCover from "../../assets/rent-cover.png";
+import saleCover from "../../assets/sale-cover.png";
 import DefaultButton from "../Button";
 import FadeUp from "../FadeUp";
 import { motion, useScroll, useTransform } from "motion/react";
@@ -30,7 +31,7 @@ const HeroCataloge = ({ purpose }: Props) => {
         >
           <motion.div style={{ y, scale }} className="absolute inset-0">
             <img
-              src={CatalogeCover}
+              src={purpose === "rent" ? rentCover : saleCover}
               alt="Cataloge-cover"
               className="h-full w-full object-cover object-top"
             />
