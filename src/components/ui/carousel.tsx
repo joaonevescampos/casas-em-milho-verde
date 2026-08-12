@@ -179,7 +179,7 @@ function CarouselContent({
         className={cn(
           "flex will-change-transform",
           orientation === "horizontal"
-            ? "-ml-4"
+            ? "ml-0"
             : "-mt-4 flex-col",
           className
         )}

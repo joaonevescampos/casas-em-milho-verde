@@ -8,7 +8,7 @@ import {
 import type { CarouselApi } from "@/components/ui/carousel";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
 import useGetAllProperties from "@/hooks/useGetAllProperties";
 import { FaBath, FaBed, FaUser } from "react-icons/fa";
@@ -23,6 +23,7 @@ const PropertyDetail = () => {
   const { properties } = useGetAllProperties();
   const [mainApi, setMainApi] = useState<CarouselApi>();
   const [thumbApi, setThumbApi] = useState<CarouselApi>();
+  const location =useLocation()
 
   const [selected, setSelected] = useState(0);
 
@@ -107,11 +108,11 @@ const PropertyDetail = () => {
                 setApi={setThumbApi}
                 className="min-w-0 flex-1"
               >
-                <CarouselContent className="ml-2">
+                <CarouselContent className="-ml-2">
                   {images?.map((image, index) => (
                     <CarouselItem
                       key={image.id ?? image.image_url ?? index}
-                      className="basis-1/4 sm:basis-1/5 md:basis-1/6 pl-2 xl:basis-1/7"
+                      className="basis-1/4 sm:basis-1/5 md:basis-1/6 pl-2 xl:basis-1/7 "
                     >
                       <button
                         type="button"
@@ -215,7 +216,7 @@ const PropertyDetail = () => {
                 <DefaultButton text="RESERVAR NO AIRBNB" style="w-full!" />
               </Link>
             ) : (
-              <Link to="" target="_blank">
+              <Link to={`https://wa.me/553899504678?text=Olá%2C%20me%20interessei%20por%20este%20anúncio%3A%0A%0A*${property?.title}*%0A"casasemmilhoverde.com${location?.pathname}"%0A%0AGostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es%20e%20disponibilidade%20para%20fazer%20uma%20visita.`} target="_blank">
                 <DefaultButton text="CONVERSAR NO WHAT'S APP" style="w-full!" />
               </Link>
             )}

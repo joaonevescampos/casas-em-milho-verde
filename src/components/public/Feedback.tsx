@@ -17,7 +17,7 @@ const Feedback = ({ name, rate, comment, date, index }: Props) => {
     <CarouselItem key={index} className="basis-1/1 sm:basis-1/2 lg:basis-1/3">
       <div className=" relative">
         <Card className="w-full">
-          <CardContent className="flex items-center justify-center p-4 flex-col gap-2 rounded-xl h-70">
+          <CardContent className="flex items-center justify-center p-4 flex-col gap-2 rounded-xl h-70 max-lg:h-80">
             <div className="absolute top-2 left-2">
               <img src={airbnbLogo} alt="airbnb-logo" className="w-6" />
             </div>
@@ -28,7 +28,7 @@ const Feedback = ({ name, rate, comment, date, index }: Props) => {
               ))}
             </div>
             <span className="text-primary5/60 font-medium text-xs">{date}</span>
-            <p className="opacity-60 text-[13px] text-center pt-2">{comment}</p>
+            <p className="opacity-60 text-[13px] max-lg:text-xs text-center pt-2 line-clamp-13">{comment}</p>
           </CardContent>
         </Card>
       </div>

@@ -60,9 +60,9 @@ type Props = {
                 />
               ) : (
                 <DefaultButton
-                  text="CONVERSAR NO WHAT'S APP"
+                  text="WHAT'S APP"
                   style="bg-linear-120! to-primary2/50! from-primary2! w-50!"
-                  path="/venda"
+                  path={`https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!`}
                 />
               )}
             </FadeUp>
