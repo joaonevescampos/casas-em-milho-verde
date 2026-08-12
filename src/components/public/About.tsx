@@ -36,7 +36,7 @@ const About = () => {
                   Corretor de imóveis & Superhost
                 </span>
                 <span className="font-semibold text-primary5 text-sm">
-                  CRECI - 123456
+                  CRECI-MG - 66066
                 </span>
                 <h3 className="text-secondary5 pb-4 font-bold">
                   Fundador da empresa Casas Em Milho Verde

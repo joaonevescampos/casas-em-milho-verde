@@ -31,7 +31,7 @@ const Header = () => {
             Matias Hansen
           </span>
           <span className="font-montserrat text-[10px] max-lg:text-[7px] text-secondary5">
-            CORRETOR DE IMÓVEIS . CRECI - 12345
+            CORRETOR DE IMÓVEIS . CRECI-MG - 66066
           </span>
         </div>
         <nav className="flex text-xs items-center h-full">
@@ -76,27 +76,3 @@ const Header = () => {
 
 export default Header;
 
-//  <div className="flex flex-col">
-//         <span className="font-cormorant font-semibold text-xl max-lg:text-sm pb-1">
-//           Matias Hansen
-//         </span>
-//         <span className="font-montserrat text-[10px] max-lg:text-[7px] text-secondary5">
-//           CORRETOR DE IMÓVEIS . CRECI - 12345
-//         </span>
-//       </div>
-//       <nav className="flex text-xs items-center h-full">
-//         {nav.map((item, i) => (
-//           <NavLink
-//             key={i}
-//             to={item.path}
-//             className={({ isActive }) =>
-//               isActive
-//                 ? "bg-white/60 border-b-2 border-primary1 font-semibold h-full flex items-center px-4"
-//                 : "opacity-70 h-full flex items-center px-4 hover:bg-white/50 hover:border-b-2 hover:border-primary1 hover:font-semibold transition-all duration-500"
-//             }
-//           >
-//             <span>{item.name}</span>
-//           </NavLink>
-//         ))}
-//       </nav>
-//       <DefaultButton text="WHAT'S APP" path="" />

@@ -44,7 +44,7 @@ const MobileMenu = () => {
               Matias Hansen
             </span>
             <span className="font-montserrat text-xs text-secondary5">
-              CORRETOR DE IMÓVEIS . CRECI - 12345
+              CORRETOR DE IMÓVEIS . CRECI-MG - 66066
             </span>
           </div>
           <DrawerClose

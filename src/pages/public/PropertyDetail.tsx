@@ -197,7 +197,7 @@ const PropertyDetail = () => {
                   Casas Em Milho Verde
                 </span>
                 <span className="font-semibold text-xs text-gray-500">
-                  CRECI - 123456
+                  CRECI-MG - 66066
                 </span>
                 <p className="text-xs text-gray-500">
                   Especialista em alugueis de temporada e corretor de imóveis.
