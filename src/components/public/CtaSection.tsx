@@ -1,5 +1,5 @@
-import coverRent from "../../assets/home-cover.png";
-import coverSale from "../../assets/home-cover.png";
+import coverRent from "../../assets/rent-cover.png";
+import coverSale from "../../assets/sale-cover.png";
 import { motion } from "motion/react";
 import Reveal from "../Reveal";
 import FadeUp from "../FadeUp";
@@ -26,7 +26,7 @@ type Props = {
           <img
             src={purpose === "rent" ? coverRent : coverSale}
             alt="home-cover"
-            className="h-full w-full object-cover object-top"
+            className="h-full w-full object-cover object-center"
           />
 
           <div className="absolute inset-0 bg-secondary1/85" />
