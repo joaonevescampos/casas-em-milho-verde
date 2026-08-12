@@ -15,6 +15,7 @@ const HeroCataloge = ({ purpose }: Props) => {
 
   // Opcional: zoom suave
   const scale = useTransform(scrollY, [0, 800], [1, 1.15]);
+  
   return (
     <section className="absolute left-0 top-0 z-20 w-full h-screen">
       <picture className="relative block h-screen overflow-hidden">

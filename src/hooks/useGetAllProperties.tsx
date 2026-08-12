@@ -3,7 +3,7 @@ import Services from "../services/property";
 import type { Property } from "../types/properties";
 
 export default function useGetAllProperties() {
-  const [properties, setProperties] = useState<Property[]>();
+  const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<boolean>(false);
 
