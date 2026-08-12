@@ -51,7 +51,7 @@ const MobileMenu = () => {
             className="top-0 border-none"
             render={
               <Button variant="outline" className="opacity-50">
-                <IoIosClose />
+                <IoIosClose className="scale-150" />
               </Button>
             }
           />

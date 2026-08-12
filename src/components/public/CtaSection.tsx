@@ -56,13 +56,13 @@ type Props = {
                 <DefaultButton
                   text="FAZER RESERVA NO AIRBNB"
                   style="bg-linear-120! to-primary2/50! from-primary2! w-50!"
-                  path=""
+                  path="https://www.airbnb.com.br/users/show/214506273"
                 />
               ) : (
                 <DefaultButton
                   text="WHAT'S APP"
                   style="bg-linear-120! to-primary2/50! from-primary2! w-50!"
-                  path={`https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!`}
+                  path="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                 />
               )}
             </FadeUp>

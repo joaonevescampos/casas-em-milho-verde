@@ -44,26 +44,26 @@ const About = () => {
                 <Link
                   to="https://www.airbnb.com.br/users/profile/1463193187508284145?previous_page_name=PdpHomeMarketplace"
                   target="_blank"
-                  className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-fit hover:bg-primary5/10 max-lg:m-auto max-lg:w-full"
+                  className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-fit hover:bg-primary5/10 max-lg:m-auto max-lg:w-full max-w-80"
                 >
                   <img src={airbnbLogo} alt="airbnb-logo" className="w-4" />
                   <span className="text-sm">Ver perfil do Airbnb</span>
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col justify-center max-lg:pt-8 gap-4 max-lg:w-full">
+            <div className="flex flex-col justify-center max-lg:pt-4 gap-4 max-lg:w-full">
               <Link
-                to="https://www.airbnb.com.br/users/profile/1463193187508284145?previous_page_name=PdpHomeMarketplace"
+                to="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                 target="_blank"
-                className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10"
+                className="flex gap-4 items-center justify-center p-2.5 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10 max-w-80 m-auto"
               >
                 <img src={whatsappLogo} alt="airbnb-logo" className="w-8" />
                 <span className="text-sm">What's App</span>
               </Link>
               <Link
-                to="https://www.airbnb.com.br/users/profile/1463193187508284145?previous_page_name=PdpHomeMarketplace"
+                to="https://www.instagram.com/casasemmilhoverde?igsh=d2U5bGJvZW8wYzM0"
                 target="_blank"
-                className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10"
+                className="flex gap-4 items-center justify-center p-4 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10 max-w-80 m-auto "
               >
                 <img src={instagramLogo} alt="airbnb-logo" className="w-5" />
                 <span className="text-sm">Instagram</span>
