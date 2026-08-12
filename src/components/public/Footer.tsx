@@ -51,7 +51,7 @@ const Footer = () => {
               <NavLink
                 to="https://www.google.com/maps/place/Milho+Verde,+Serro+-+MG,+39155-000/@-7.2076812,-34.8295578,15z/data=!4m6!3m5!1s0xaedd54a584f335:0xdb9ef20115927e73!8m2!3d-18.4708851!4d-43.4973649!16s%2Fg%2F11b6x9dhzj?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
-                className="hover:font-semibold"
+                className="hover:font-medium"
               >
                 Milho Verde - Serro, MG
               </NavLink>
@@ -59,11 +59,11 @@ const Footer = () => {
             <div className="flex gap-2 items-center">
               <IoLogoWhatsapp className="text-primary2 text-sm" />
               <NavLink
-                to="/"
+                to="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                 target="_blank"
-                className="hover:font-semibold"
+                className="hover:font-medium"
               >
-                +55 38 98999 - 9999
+                +55 38 99950 - 4678
               </NavLink>
             </div>
             <div className="flex gap-2 items-center">
@@ -71,7 +71,7 @@ const Footer = () => {
               <NavLink
                 to="https://www.instagram.com/casasemmilhoverde"
                 target="_blank"
-                className="hover:font-semibold"
+                className="hover:font-medium"
               >
                 @casasemmilhoverde
               </NavLink>
@@ -85,7 +85,7 @@ const Footer = () => {
           <strong>CASAS EM MILHO VERDE</strong> - TODOS DIREITOS RESERVADOS -
           2026
         </small>
-        <small className="opacity-70">
+        <small className="opacity-70 text-end">
           DESENVOLVIDO POR{" "}
           <strong>
             <Link
