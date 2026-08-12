@@ -38,7 +38,7 @@ const About = () => {
                 <span className="font-semibold text-primary5 text-sm">
                   CRECI-MG - 66066
                 </span>
-                <h3 className="text-secondary5 pb-4 font-bold">
+                <h3 className="text-secondary5 pb-4 font-bold text-sm">
                   Fundador da empresa Casas Em Milho Verde
                 </h3>
                 <Link
