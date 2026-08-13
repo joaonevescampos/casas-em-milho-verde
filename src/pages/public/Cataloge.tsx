@@ -34,7 +34,7 @@ const Cataloge = () => {
             <h2 className="text-2xl font-cormorant font-semibold">
               {purpose === "rent"
                 ? "Casas para relaxar em Milho Verde."
-                : "Casas à venda"}
+                : "Imóveis à venda"}
             </h2>
           </div>
           <div className="grid grid-cols-4 gap-4 my-4 max-lg:mx-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">

@@ -21,7 +21,7 @@ const Footer = () => {
             </div>
           </Link>
           <p className="text-[10px]">
-            Hospedagens selecionadas e imóveis especiais entre as montanhas do
+            Hospedagens selecionadas e imóveis especiais entre as serras do
             interior de Minas Gerais. Curadoria com alma, tranquilidade e
             respeito pela natureza.
           </p>

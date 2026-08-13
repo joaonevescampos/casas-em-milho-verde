@@ -43,7 +43,7 @@ const HeroHome = () => {
               MILHO VERDE E REGIÃO - MINAS GERAIS
             </span>
             <h1 className="font-cormorant text-5xl font-semibold">
-              Encontre experiências únicas entre montanhas, natureza e
+              Encontre experiências únicas entre serras, natureza e
               aconchego.
             </h1>
           </FadeUp>

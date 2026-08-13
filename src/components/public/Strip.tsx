@@ -9,7 +9,7 @@ const Strip = () => {
             <FaLeaf className="text-white text-2xl" />
           </div>
           <span className="max-w-40 max-lg:max-w-none text-[10px]">
-            Natureza exuberante com paisagens preservadas
+            Natureza com paisagens preservadas
           </span>
         </div>
         <div className="flex gap-4 items-center">
@@ -25,7 +25,7 @@ const Strip = () => {
             <FaMountain className="text-white text-2xl" />
           </div>
           <span className="max-w-40 max-lg:max-w-none text-[10px]">
-            Relaxe entre as montanhas de Milho Verde
+            Relaxe entre as serras de Milho Verde
           </span>
         </div>
       </div>
