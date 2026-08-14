@@ -54,7 +54,7 @@ const PropertyDetail = () => {
     <>
       <main className="mt-20! bg-linear-120! to-primary1/50! from-primary4! pb-4!">
         <div className="flex max-lg:flex-col gap-4 justify-center py-8 max-w-300 m-auto ">
-          <div className="flex-2 w-full rounded-2xl bg-white p-4 shadow-lg">
+          <div className="flex-2 flex flex-col justify-center w-full rounded-2xl bg-white p-4 shadow-lg">
             {/* IMAGEM PRINCIPAL */}
 
             <Carousel
@@ -76,7 +76,7 @@ const PropertyDetail = () => {
                     <img
                       src={image.image_url}
                       alt={`Foto ${index + 1} do imóvel`}
-                      className="block h-105 w-full rounded-xl object-cover max-lg:h-80"
+                      className="block h-120 w-full rounded-xl object-cover max-lg:h-80"
                       loading={index === 0 ? "eager" : "lazy"}
                       fetchPriority={index === 0 ? "high" : "low"}
                       decoding="async"
@@ -148,7 +148,7 @@ const PropertyDetail = () => {
               </button>
             </div>
           </div>
-          <div className="flex-1 flex flex-col gap-2 rounded-2xl bg-white p-4">
+          <div className="flex-1 flex flex-col gap-2 justify-center rounded-2xl bg-white p-4">
             <div className="flex justify-between items-center">
               <div className="flex flex-col gap-1">
                 <span className="text-primary2 text-[10px] font-medium">
@@ -172,9 +172,12 @@ const PropertyDetail = () => {
               {property?.title}
             </h2>
             {property?.purpose === "sale" && (
+              <>
               <span className="text-2xl font-cormorant font-semibold text-primary1">
                 R$ {property.price?.toLocaleString("pt-BR") || "0"}
               </span>
+              <span className="text-sm text-secondary5/80 bg-secondary5/5 font-medium p-2 border border-secondary5/30 rounded-lg text-center">Área construída: {property?.area} m²</span>
+              </>
             )}
             {property?.purpose === "rent" ? (
               <div className="grid grid-cols-2 text-sm">
