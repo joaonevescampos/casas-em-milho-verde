@@ -177,6 +177,7 @@ const HomeAdmin = () => {
                       <li className="w-full" key={index}>
                         <AdminCard
                           propertyId={property.id!}
+                          purpose={property.purpose}
                           city={property.city}
                           state={property.state}
                           title={property.title}
@@ -185,6 +186,10 @@ const HomeAdmin = () => {
                           beds={property.beds!}
                           bedroom={property.bedrooms!}
                           bathroom={property.bathrooms!}
+                          emphasis1={property.emphasis1!}
+                          emphasis2={property.emphasis2!}
+                          emphasis3={property.emphasis3!}
+                          emphasis4={property.emphasis4!}
                           coverImage={findImage(property.id!)}
                           onEdit={() => handleEditProperty(property.id!)}
                           onDelete={() => handleDeleteProperty(property.id!)}
@@ -199,6 +204,7 @@ const HomeAdmin = () => {
                     <li className="w-full" key={index}>
                       <AdminCard
                         propertyId={property.id!}
+                        purpose={property.purpose}
                         city={property.city}
                         state={property.state}
                         title={property.title}
@@ -207,6 +213,10 @@ const HomeAdmin = () => {
                         beds={property.beds!}
                         bedroom={property.bedrooms!}
                         bathroom={property.bathrooms!}
+                        emphasis1={property.emphasis1!}
+                        emphasis2={property.emphasis2!}
+                        emphasis3={property.emphasis3!}
+                        emphasis4={property.emphasis4!}
                         coverImage={findImage(property.id!)}
                         onEdit={() => handleEditProperty(property.id!)}
                         onDelete={() => handleDeleteProperty(property.id!)}

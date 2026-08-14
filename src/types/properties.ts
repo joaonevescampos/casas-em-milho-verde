@@ -12,6 +12,11 @@ export type Property = {
   city: string;
   neighborhood: string;
 
+  emphasis1?: string;
+  emphasis2?: string;
+  emphasis3?: string;
+  emphasis4?: string;
+
   bedrooms?: number;
   bathrooms?: number;
   guests?: number;
@@ -19,6 +24,9 @@ export type Property = {
   area?: number;
   garage?: number;
   balcony?: number;
+
+  code?: string;
+  price?: number;
 
   airbnb_link?: string;
   status?: string;

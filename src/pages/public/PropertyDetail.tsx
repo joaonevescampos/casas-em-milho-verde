@@ -23,7 +23,7 @@ const PropertyDetail = () => {
   const { properties } = useGetAllProperties();
   const [mainApi, setMainApi] = useState<CarouselApi>();
   const [thumbApi, setThumbApi] = useState<CarouselApi>();
-  const location =useLocation()
+  const location = useLocation();
 
   const [selected, setSelected] = useState(0);
 
@@ -148,42 +148,88 @@ const PropertyDetail = () => {
               </button>
             </div>
           </div>
-          <div className="flex-1 flex flex-col gap-4 rounded-2xl bg-white p-4">
-            <span className="font-montserrat text-xs text-secondary5">
-              {property?.city} - {property?.state}
-            </span>
+          <div className="flex-1 flex flex-col gap-2 rounded-2xl bg-white p-4">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col gap-1">
+                <span className="text-primary2 text-[10px] font-medium">
+                  {property?.city.toUpperCase()} -{" "}
+                  {property?.state.toUpperCase()}
+                </span>
+                {property?.purpose === "sale" && (
+                  <span className="text-primary2 text-[10px] font-medium">
+                    {property?.neighborhood.toUpperCase()}
+                  </span>
+                )}
+              </div>
+              {property?.purpose === "sale" && (
+                <span className="text-xs text-black/60 font-medium py-1 px-2 bg-primary2/20 rounded-2xl">
+                  {property?.code}
+                </span>
+              )}
+            </div>
+
             <h2 className="font-cormorant font-semibold text-2xl max-lg:text-xl">
               {property?.title}
             </h2>
-            <div className="grid grid-cols-2 text-sm">
-              <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-tl-lg p-4">
-                <FaUser className="text-gray-300 text-3xl" />
-                <span className="font-medium text-gray-500">
-                  {property?.guests} hóspedes
-                </span>
-              </div>
+            {property?.purpose === "sale" && (
+              <span className="text-2xl font-cormorant font-semibold text-primary1">
+                R$ {property.price?.toLocaleString("pt-BR") || "0"}
+              </span>
+            )}
+            {property?.purpose === "rent" ? (
+              <div className="grid grid-cols-2 text-sm">
+                <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-tl-lg p-4">
+                  <FaUser className="text-gray-300 text-3xl" />
+                  <span className="font-medium text-gray-500">
+                    {property?.guests} hóspedes
+                  </span>
+                </div>
 
-              <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-tr-lg p-4">
-                <FaBed className="text-gray-300 text-3xl" />
-                <span className="font-medium text-gray-500">
-                  {property?.bedrooms} quartos
-                </span>
-              </div>
+                <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-tr-lg p-4">
+                  <FaBed className="text-gray-300 text-3xl" />
+                  <span className="font-medium text-gray-500">
+                    {property?.bedrooms} quartos
+                  </span>
+                </div>
 
-              <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-bl-lg p-4">
-                <FaBath className="text-gray-300 text-3xl" />
-                <span className="font-medium text-gray-500">
-                  {property?.bathrooms} banheiros
-                </span>
-              </div>
+                <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-bl-lg p-4">
+                  <FaBath className="text-gray-300 text-3xl" />
+                  <span className="font-medium text-gray-500">
+                    {property?.bathrooms} banheiros
+                  </span>
+                </div>
 
-              <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-br-lg p-4">
-                <FaBed className="text-gray-300 text-3xl" />
-                <span className="font-medium text-gray-500">
-                  {property?.beds} camas
-                </span>
+                <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-br-lg p-4">
+                  <FaBed className="text-gray-300 text-3xl" />
+                  <span className="font-medium text-gray-500">
+                    {property?.beds} camas
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-center border-2 border-gray-200 rounded-lg p-2">
+                  <span className="font-medium text-gray-500 text-xs text-center">
+                    {property?.emphasis1}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center border-2 border-gray-200 rounded-lg p-2">
+                  <span className="font-medium text-gray-500 text-xs text-center">
+                    {property?.emphasis2}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center border-2 border-gray-200 rounded-lg p-2">
+                  <span className="font-medium text-gray-500 text-xs text-center">
+                    {property?.emphasis3}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center border-2 border-gray-200 rounded-lg p-2">
+                  <span className="font-medium text-gray-500 text-xs text-center">
+                    {property?.emphasis4}
+                  </span>
+                </div>
+              </div>
+            )}
             <div className="flex gap-4 border border-gray-200 rounded-2xl p-4">
               <div>
                 <img src={user} alt="user" className="rounded-full w-28" />
@@ -216,7 +262,10 @@ const PropertyDetail = () => {
                 <DefaultButton text="RESERVAR NO AIRBNB" style="w-full!" />
               </Link>
             ) : (
-              <Link to={`https://wa.me/553899504678?text=Olá%2C%20me%20interessei%20por%20este%20anúncio%3A%0A%0A*${property?.title}*%0A"casasemmilhoverde.com${location?.pathname}"%0A%0AGostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es%20e%20disponibilidade%20para%20fazer%20uma%20visita.`} target="_blank">
+              <Link
+                to={`https://wa.me/553899504678?text=Olá%2C%20me%20interessei%20por%20este%20anúncio%3A%0A%0A*${property?.title}*%0A"casasemmilhoverde.com${location?.pathname}"%0A%0AGostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es%20e%20disponibilidade%20para%20fazer%20uma%20visita.`}
+                target="_blank"
+              >
                 <DefaultButton text="CONVERSAR NO WHAT'S APP" style="w-full!" />
               </Link>
             )}
