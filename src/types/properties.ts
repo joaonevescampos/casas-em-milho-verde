@@ -12,13 +12,13 @@ export type Property = {
   city: string;
   neighborhood: string;
 
-  bedrooms: number;
-  bathrooms: number;
-  guests: number;
-  beds: number;
-  area: number;
-  garage: number;
-  balcony: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  guests?: number;
+  beds?: number;
+  area?: number;
+  garage?: number;
+  balcony?: number;
 
   airbnb_link?: string;
   status?: string;

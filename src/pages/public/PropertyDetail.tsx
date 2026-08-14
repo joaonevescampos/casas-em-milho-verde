@@ -166,21 +166,21 @@ const PropertyDetail = () => {
               <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-tr-lg p-4">
                 <FaBed className="text-gray-300 text-3xl" />
                 <span className="font-medium text-gray-500">
-                  {property?.guests} quartos
+                  {property?.bedrooms} quartos
                 </span>
               </div>
 
               <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-bl-lg p-4">
                 <FaBath className="text-gray-300 text-3xl" />
                 <span className="font-medium text-gray-500">
-                  {property?.guests} banheiros
+                  {property?.bathrooms} banheiros
                 </span>
               </div>
 
               <div className="flex flex-col gap-4 items-center justify-center border-2 border-gray-100 rounded-br-lg p-4">
                 <FaBed className="text-gray-300 text-3xl" />
                 <span className="font-medium text-gray-500">
-                  {property?.guests} camas
+                  {property?.beds} camas
                 </span>
               </div>
             </div>

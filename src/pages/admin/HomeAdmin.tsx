@@ -181,10 +181,10 @@ const HomeAdmin = () => {
                           state={property.state}
                           title={property.title}
                           description={property.description}
-                          guests={property.guests}
-                          beds={property.beds}
-                          bedroom={property.bedrooms}
-                          bathroom={property.bathrooms}
+                          guests={property.guests!}
+                          beds={property.beds!}
+                          bedroom={property.bedrooms!}
+                          bathroom={property.bathrooms!}
                           coverImage={findImage(property.id!)}
                           onEdit={() => handleEditProperty(property.id!)}
                           onDelete={() => handleDeleteProperty(property.id!)}
@@ -203,10 +203,10 @@ const HomeAdmin = () => {
                         state={property.state}
                         title={property.title}
                         description={property.description}
-                        guests={property.guests}
-                        beds={property.beds}
-                        bedroom={property.bedrooms}
-                        bathroom={property.bathrooms}
+                        guests={property.guests!}
+                        beds={property.beds!}
+                        bedroom={property.bedrooms!}
+                        bathroom={property.bathrooms!}
                         coverImage={findImage(property.id!)}
                         onEdit={() => handleEditProperty(property.id!)}
                         onDelete={() => handleDeleteProperty(property.id!)}

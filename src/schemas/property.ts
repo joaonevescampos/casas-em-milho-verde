@@ -19,7 +19,7 @@ export const propertySchema = z.object({
   beds: z.number(),
   guests: z.number(),
   bathrooms: z.number(),
-  area: z.number().min(1, "preencha a área do imóvel"),
+  area: z.number().optional(),
   balcony: z.number(),
   garage: z.number(),
   airbnb_link: z.string(),

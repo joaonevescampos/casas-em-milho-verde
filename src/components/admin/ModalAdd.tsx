@@ -354,7 +354,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           const value = e.target.value;
 
                           field.onChange(
-                            value === "" ? undefined : Number(value),
+                            value === "" ? 0 : Number(value),
                           );
                         }}
                         id="fieldgroup-area"

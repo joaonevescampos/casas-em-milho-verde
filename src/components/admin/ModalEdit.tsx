@@ -176,7 +176,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
         </button>
 
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, errors => {console.log(errors)})}
           className="w-full overflow-y-scroll  h-10/12"
         >
           <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
@@ -400,7 +400,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                     </Field>
                   )}
                 />
-                <Controller
+                 <Controller
                   name="area"
                   control={form.control}
                   render={({ field, fieldState }) => (
@@ -409,10 +409,18 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                         htmlFor="fieldgroup-area"
                         className="font-semibold text-xs"
                       >
-                        Área construída
+                        Área construída (opcional)
                       </FieldLabel>
                       <Input
                         {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+
+                          field.onChange(
+                            value === "" ? 0 : Number(value),
+                          );
+                        }}
                         id="fieldgroup-area"
                         aria-invalid={fieldState.invalid}
                         placeholder="Digite a área que tem o imóvel"
