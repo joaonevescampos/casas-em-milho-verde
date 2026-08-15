@@ -173,10 +173,14 @@ const PropertyDetail = () => {
             </h2>
             {property?.purpose === "sale" && (
               <>
-              <span className="text-2xl font-cormorant font-semibold text-primary1">
-                R$ {property.price?.toLocaleString("pt-BR") || "0"}
-              </span>
-              <span className="text-sm text-secondary5/80 bg-secondary5/5 font-medium p-2 border border-secondary5/30 rounded-lg text-center">Área construída: {property?.area} m²</span>
+                <span className="text-2xl font-cormorant font-semibold text-primary1">
+                  R$ {property.price?.toLocaleString("pt-BR") || "0"}
+                </span>
+                {(property.category != "Lote" && "Terreno") && (
+                  <span className="text-sm text-secondary5/80 bg-secondary5/5 font-medium p-2 border border-secondary5/30 rounded-lg text-center">
+                    Área construída: {property?.area} m²
+                  </span>
+                )}
               </>
             )}
             {property?.purpose === "rent" ? (
