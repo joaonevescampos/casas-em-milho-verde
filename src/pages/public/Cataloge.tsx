@@ -12,13 +12,21 @@ const Cataloge = () => {
   const purpose: "sale" | "rent" =
     location.pathname === "/venda" ? "sale" : "rent";
 
-  const saleProperties = properties.filter(
-    (property) => property.purpose === "sale",
-  );
+  const saleProperties = properties
+    .filter((property) => property.purpose === "sale")
+    .sort((a, b) => {
+      if (a.is_featured && !b.is_featured) return -1;
+      if (!a.is_featured && b.is_featured) return 1;
+      return 0;
+    });
 
-  const rentProperties = properties.filter(
-    (property) => property.purpose === "rent",
-  );
+  const rentProperties = properties
+    .filter((property) => property.purpose === "rent")
+    .sort((a, b) => {
+      if (a.is_featured && !b.is_featured) return -1;
+      if (!a.is_featured && b.is_featured) return 1;
+      return 0;
+    });
 
   return (
     <>
