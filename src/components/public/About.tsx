@@ -100,10 +100,7 @@ const About = () => {
               também para fortalecer o turismo local.{" "}
             </p>
             <p className="text-sm opacity-70 leading-7">
-              Com o tempo, o projeto foi crescendo e, hoje, como Corretor de
-              Imóveis, também ajudo quem deseja comprar ou vender casas e lotes
-              em Milho Verde, mantendo a mesma proposta de um trabalho próximo,
-              pessoal e conectado ao lugar onde vivo.
+              Com o tempo, o projeto foi crescendo e, hoje, como Corretor de Imóveis, também ajudo quem deseja comprar ou vender casas e lotes em Milho Verde e região, mantendo a mesma proposta de um trabalho próximo, pessoal e conectado ao lugar onde vivo.
             </p>
           </div>
         </div>

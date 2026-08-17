@@ -15,7 +15,7 @@ const HeroCataloge = ({ purpose }: Props) => {
 
   // Opcional: zoom suave
   const scale = useTransform(scrollY, [0, 800], [1, 1.15]);
-  
+
   return (
     <section className="absolute left-0 top-0 z-20 w-full h-screen">
       <picture className="relative block h-screen overflow-hidden">
@@ -46,14 +46,12 @@ const HeroCataloge = ({ purpose }: Props) => {
             <h1 className="font-cormorant text-5xl max-md:text-3xl font-semibold">
               {purpose === "rent"
                 ? "Alugue uma casa por temporada!"
-                : "Invista na sua casa própria!"}
+                : "Invista no seu próprio imóvel!"}
             </h1>
           </FadeUp>
           <FadeUp delay={1}>
             <h2 className="text-sm max-w-100 leading-relaxed max-md:text-xs">
-              {purpose === "rent"
-                ? "Tire uns dias para relaxar na natureza."
-                : "Adquira seu próprio imóvel."}
+              {purpose === "rent" && "Tire uns dias para relaxar na natureza."}
             </h2>
           </FadeUp>
         </div>
