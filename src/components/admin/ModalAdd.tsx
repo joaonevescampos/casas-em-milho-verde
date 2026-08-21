@@ -358,12 +358,18 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-code"
                             aria-invalid={fieldState.invalid}
                             placeholder="Digite o código do imóvel"
                             type="text"
                             autoComplete="off"
                             className="h-10 px-2 text-xs border border-gray-300 rounded"
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Se estiver vazio, envia undefined em vez de null
+                              field.onChange(value === "" ? undefined : value);
+                            }}
                           />
                           {fieldState.invalid && (
                             <FieldError
@@ -426,6 +432,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                         </FieldLabel>
                         <Input
                           {...field}
+                          value={field.value ?? ""}
                           id="fieldgroup-airbnb_link"
                           aria-invalid={fieldState.invalid}
                           placeholder="Adicione o link do airbnb do seu anúncio"
@@ -551,6 +558,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                       </FieldLabel>
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         id="fieldgroup-neighborhood"
                         aria-invalid={fieldState.invalid}
                         placeholder="Digite o nome do bairro"
@@ -583,6 +591,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Perto do mercado"
@@ -612,6 +621,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Sala e cozinha integrada"
@@ -641,6 +651,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis3"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: 3 suítes"
@@ -670,6 +681,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis4"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Centro de Milho Verde"

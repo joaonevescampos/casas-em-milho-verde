@@ -14,7 +14,7 @@ import useGetAllProperties from "@/hooks/useGetAllProperties";
 import { FaBath, FaBed, FaUser } from "react-icons/fa";
 import user from "../../assets/user.png";
 import DefaultButton from "@/components/Button";
-import CityMap from "@/components/public/Map";
+import MapComponent from "@/components/public/Map";
 import RelatedProperties from "@/components/public/RelatedProperties";
 
 const PropertyDetail = () => {
@@ -157,7 +157,7 @@ const PropertyDetail = () => {
                 </span>
                 {property?.purpose === "sale" && (
                   <span className="text-primary2 text-[10px] font-medium">
-                    {property?.neighborhood.toUpperCase()}
+                    {property?.neighborhood!.toUpperCase()}
                   </span>
                 )}
               </div>
@@ -294,7 +294,7 @@ const PropertyDetail = () => {
             <span className="font-montserrat text-xs text-secondary3">
               {property?.city} - {property?.state}
             </span>
-            <CityMap cityName={property?.city!} zoom={9} />
+            <MapComponent cityName={property?.city!} coordinates="18°27'39.7S 43°29'20.2W" zoom={9} />
           </div>
         </div>
       </main>
