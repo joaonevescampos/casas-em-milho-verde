@@ -32,6 +32,10 @@ const HeroHome = () => {
               className="h-full w-full object-cover object-top"
             />
 
+            <span className="absolute bottom-0 right-0 text-white shadow-2xl bg-black/40 text-[10px] z-20 text-center px-2 py-1 min-w-55 rounded">
+              Frame do vídeo de Boa Sorte Viajante.
+            </span>
+
             <div className="absolute inset-0 bg-linear-120 from-[#0A160E] from-0% via-[#0A160E]/70 via-40% to-primary2/10 to-100%" />
           </motion.div>
         </motion.div>
@@ -43,8 +47,7 @@ const HeroHome = () => {
               MILHO VERDE E REGIÃO - MINAS GERAIS
             </span>
             <h1 className="font-cormorant text-5xl font-semibold">
-              Encontre experiências únicas entre serras, natureza e
-              aconchego.
+              Encontre experiências únicas entre serras, natureza e aconchego.
             </h1>
           </FadeUp>
           <FadeUp delay={1.5}>

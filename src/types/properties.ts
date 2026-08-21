@@ -10,25 +10,25 @@ export type Property = {
 
   state: string;
   city: string;
-  neighborhood: string;
+  neighborhood?: string | null;
 
-  emphasis1?: string;
-  emphasis2?: string;
-  emphasis3?: string;
-  emphasis4?: string;
+  emphasis1?: string| null;
+  emphasis2?: string| null;
+  emphasis3?: string| null;
+  emphasis4?: string| null;
 
-  bedrooms?: number;
-  bathrooms?: number;
-  guests?: number;
-  beds?: number;
-  area?: number;
-  garage?: number;
-  balcony?: number;
+  bedrooms?: number| null;
+  bathrooms?: number| null;
+  guests?: number| null;
+  beds?: number| null;
+  area?: number| null;
+  garage?: number| null;
+  balcony?: number| null;
 
-  code?: string;
-  price?: number;
+  code?: string| null;
+  price?: number| null;
 
-  airbnb_link?: string;
+  airbnb_link?: string| null;
   status?: string;
 
   is_featured: boolean;

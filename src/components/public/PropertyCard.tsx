@@ -44,7 +44,7 @@ const PropertyCard = ({ property }: Props) => {
                 </span>
                 {property?.purpose === "sale" && (
                   <span className="text-primary2 text-[10px] font-medium">
-                    {property?.neighborhood.toUpperCase()}
+                    {property?.neighborhood!.toUpperCase()}
                   </span>
                 )}
               </div>

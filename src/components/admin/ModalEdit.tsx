@@ -95,21 +95,21 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       is_featured: property.is_featured,
       state: property.state,
       city: property.city,
-      neighborhood: property.neighborhood,
-      emphasis1: property.emphasis1,
-      emphasis2: property.emphasis2,
-      emphasis3: property.emphasis3,
-      emphasis4: property.emphasis4,
-      code: property.code,
-      price: property.price,
-      bedrooms: property.bedrooms,
-      beds: property.beds,
-      guests: property.guests,
-      bathrooms: property.bathrooms,
-      area: property.area,
-      garage: property.garage,
-      balcony: property.balcony,
-      airbnb_link: property.airbnb_link,
+      neighborhood: property?.neighborhood,
+      emphasis1: property?.emphasis1,
+      emphasis2: property?.emphasis2,
+      emphasis3: property?.emphasis3,
+      emphasis4: property?.emphasis4,
+      code: property?.code,
+      price: property?.price,
+      bedrooms: property?.bedrooms,
+      beds: property?.beds,
+      guests: property?.guests,
+      bathrooms: property?.bathrooms,
+      area: property?.area,
+      garage: property?.garage,
+      balcony: property?.balcony,
+      airbnb_link: property?.airbnb_link,
     });
   }, [property, form]);
 
@@ -431,12 +431,18 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-code"
                             aria-invalid={fieldState.invalid}
                             placeholder="Digite o código do imóvel"
                             type="text"
                             autoComplete="off"
                             className="h-10 px-2 text-xs border border-gray-300 rounded"
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Se estiver vazio, envia undefined em vez de null
+                              field.onChange(value === "" ? undefined : value);
+                            }}
                           />
                           {fieldState.invalid && (
                             <FieldError
@@ -499,6 +505,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                         </FieldLabel>
                         <Input
                           {...field}
+                          value={field.value ?? ""}
                           id="fieldgroup-airbnb_link"
                           aria-invalid={fieldState.invalid}
                           placeholder="Adicione o link do airbnb do seu anúncio"
@@ -624,6 +631,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                       </FieldLabel>
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         id="fieldgroup-neighborhood"
                         aria-invalid={fieldState.invalid}
                         placeholder="Digite o nome do bairro"
@@ -656,6 +664,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Perto do mercado"
@@ -685,6 +694,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Sala e cozinha integrada"
@@ -714,6 +724,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis3"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: 3 suítes"
@@ -743,6 +754,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                           </FieldLabel>
                           <Input
                             {...field}
+                            value={field.value ?? ""}
                             id="fieldgroup-emphasis4"
                             aria-invalid={fieldState.invalid}
                             placeholder="Ex.: Centro de Milho Verde"
