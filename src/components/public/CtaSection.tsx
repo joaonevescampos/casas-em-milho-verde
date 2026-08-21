@@ -45,7 +45,7 @@ type Props = {
 
               <FadeUp delay={1}>
                 <h2 className="max-w-xl text-xs leading-relaxed">
-                   {purpose === "rent" ? "Sua próxima reserva te espera..." : "Adquira seu próprio imóvel."}
+                   {purpose === "rent" ? "Sua próxima reserva te espera..." : "Confira as opções a venda."}
                   
                 </h2>
               </FadeUp>

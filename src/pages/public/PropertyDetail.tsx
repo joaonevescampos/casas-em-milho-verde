@@ -173,10 +173,23 @@ const PropertyDetail = () => {
             </h2>
             {property?.purpose === "sale" && (
               <>
-                <span className="text-2xl font-cormorant font-semibold text-primary1">
-                  R$ {property.price?.toLocaleString("pt-BR") || "0"}
-                </span>
-                {(property.category != "Lote" && "Terreno") && (
+                {property.id === "0e82d29b-a723-4e59-a2e3-50f803d3f6fd" ? (
+                  <div className="flex flex-col">
+                    <h3 className="text-2xl font-cormorant font-semibold truncate text-primary1">
+                      R$ 420.000 <span className="text-sm">sem mobília</span>
+                    </h3>
+                    <h3 className="text-2xl font-cormorant font-semibold truncate text-primary1">
+                      R$ {property.price?.toLocaleString("pt-BR") || "0"}{" "}
+                      <span className="text-sm">com mobília</span>
+                    </h3>
+                  </div>
+                ) : (
+                  <h3 className="text-2xl font-cormorant font-semibold text-primary1">
+                    R$ {property.price?.toLocaleString("pt-BR") || "0"}
+                  </h3>
+                )}
+
+                {property.category != "Lote" && "Terreno" && (
                   <span className="text-sm text-secondary5/80 bg-secondary5/5 font-medium p-2 border border-secondary5/30 rounded-lg text-center">
                     Área construída: {property?.area} m²
                   </span>
@@ -294,7 +307,11 @@ const PropertyDetail = () => {
             <span className="font-montserrat text-xs text-secondary3">
               {property?.city} - {property?.state}
             </span>
-            <MapComponent cityName={property?.city!} coordinates="18°27'39.7S 43°29'20.2W" zoom={9} />
+            <MapComponent
+              cityName={property?.city!}
+              coordinates="18°27'39.7S 43°29'20.2W"
+              zoom={9}
+            />
           </div>
         </div>
       </main>
