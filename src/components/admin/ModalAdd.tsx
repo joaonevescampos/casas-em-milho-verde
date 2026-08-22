@@ -611,6 +611,43 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                 {purpose === "sale" ? (
                   <>
                     <Controller
+                      name="area"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel
+                            htmlFor="fieldgroup-area"
+                            className="font-semibold text-xs"
+                          >
+                            Área construída (opcional)
+                          </FieldLabel>
+                          <Input
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) => {
+                              const value =
+                                e.target.value === ""
+                                  ? undefined
+                                  : Number(e.target.value);
+                              field.onChange(value);
+                            }}
+                            id="fieldgroup-area"
+                            aria-invalid={fieldState.invalid}
+                            placeholder={`Adicione a área contruida`}
+                            type="number"
+                            autoComplete="off"
+                            className="h-10 px-2 text-xs border border-gray-300 rounded"
+                          />
+                          {fieldState.invalid && (
+                            <FieldError
+                              errors={[fieldState.error]}
+                              className="text-[10px]"
+                            />
+                          )}
+                        </Field>
+                      )}
+                    />
+                    <Controller
                       name="emphasis1"
                       control={form.control}
                       render={({ field, fieldState }) => (

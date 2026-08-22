@@ -12,7 +12,7 @@ export const propertySchema = z.object({
     .min(1, "descrição passou do limite permitido"),
   category: z.string().min(1, "preencha a categoria"),
   is_featured: z.boolean(),
-  state: z.string().min(1, "preencha o estatdo"),
+  state: z.string().min(1, "preencha o estado"),
   city: z.string().min(1, "preencha a cidade"),
   neighborhood: z.string().nullable().optional(),
   emphasis1: z.string().nullable().optional(),
