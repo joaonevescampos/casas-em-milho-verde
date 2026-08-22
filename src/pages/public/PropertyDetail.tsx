@@ -309,7 +309,7 @@ const PropertyDetail = () => {
             </span>
             <MapComponent
               cityName={property?.city!}
-              coordinates="18°27'39.7S 43°29'20.2W"
+              coordinates={property?.coordinate}
               zoom={9}
             />
           </div>

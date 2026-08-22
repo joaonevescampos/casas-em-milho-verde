@@ -77,6 +77,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       garage: 1,
       balcony: 0,
       airbnb_link: "",
+      coordinate: "",
     },
   });
 
@@ -110,6 +111,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       garage: property?.garage,
       balcony: property?.balcony,
       airbnb_link: property?.airbnb_link,
+      coordinate: property?.coordinate,
     });
   }, [property, form]);
 
@@ -191,7 +193,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
           onSubmit={form.handleSubmit(onSubmit, (errors) => {
             console.log(errors);
           })}
-          className="w-full overflow-y-scroll  h-10/12"
+          className="w-full overflow-y-scroll h-10/12 pr-4"
         >
           <div className="grid grid-cols-8 max-lg:grid-cols-6 max-md:grid-cols-4 gap-3">
             {/* Imagens do Storage */}
@@ -523,6 +525,37 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
                     )}
                   />
                 )}
+
+                <Controller
+                  name="coordinate"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel
+                        htmlFor="fieldgroup-coordinate"
+                        className="font-semibold text-xs"
+                      >
+                        Coordenadas Ex.: 18°27'39.7"S 43°29'20.2"W (opcional)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        id="fieldgroup-coordinate"
+                        aria-invalid={fieldState.invalid}
+                        placeholder={`Adicione a coordenada como no exemplo.: 18°27'39.7"S 43°29'20.2"W`}
+                        type="text"
+                        autoComplete="off"
+                        className="h-10 px-2 text-xs border border-gray-300 rounded"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-[10px]"
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
               </div>
               <div className="flex-1 flex flex-col gap-4">
                 <Controller

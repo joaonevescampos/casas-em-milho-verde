@@ -31,6 +31,8 @@ export type Property = {
   airbnb_link?: string| null;
   status?: string;
 
+  coordinate?: string | null;
+
   is_featured: boolean;
 
   created_at?: string;

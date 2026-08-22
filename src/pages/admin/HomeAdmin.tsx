@@ -168,7 +168,7 @@ const HomeAdmin = () => {
                 />
               </div>
 
-              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-250px)]  overflow-y-scroll">
+              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-250px)] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 pr-4">
                 {purpose === "rent" ? (
                   propertiesToRent?.length === 0 ? (
                     <EmptyProperties />

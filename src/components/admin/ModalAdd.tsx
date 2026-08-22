@@ -59,6 +59,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       garage: 1,
       balcony: 0,
       airbnb_link: "",
+      coordinate: "",
     },
   });
 
@@ -141,7 +142,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full overflow-y-scroll  h-10/12"
+          className="w-full overflow-y-scroll h-10/12 pr-4"
         >
           <div className="flex flex-col gap-2 rounded-xl p-4 m-2 border border-gray-300">
             <h1 className="text-sm font-semibold">Fotos</h1>
@@ -450,6 +451,37 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
                     )}
                   />
                 )}
+
+                <Controller
+                  name="coordinate"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel
+                        htmlFor="fieldgroup-coordinate"
+                        className="font-semibold text-xs"
+                      >
+                        Coordenadas Ex.: 18°27'39.7"S 43°29'20.2"W (opcional)
+                      </FieldLabel>
+                      <Input
+                        {...field}
+                        value={field.value ?? ""}
+                        id="fieldgroup-coordinate"
+                        aria-invalid={fieldState.invalid}
+                        placeholder={`Adicione a coordenada como no exemplo.: 18°27'39.7"S 43°29'20.2"W`}
+                        type="text"
+                        autoComplete="off"
+                        className="h-10 px-2 text-xs border border-gray-300 rounded"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError
+                          errors={[fieldState.error]}
+                          className="text-[10px]"
+                        />
+                      )}
+                    </Field>
+                  )}
+                />
               </div>
               <div className="flex-1 flex flex-col gap-4">
                 <Controller

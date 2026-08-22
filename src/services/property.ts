@@ -115,6 +115,14 @@ export default class Services {
 
   async deleteImage(imageId: string) {
     try {
+      // Verifica se o usuário está autenticado
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Usuário não autenticado");
+      }
+
       // Busca o registro da imagem
       const { data: image, error } = await supabase
         .from("property_images")

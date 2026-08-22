@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 
 interface MapComponentProps {
   cityName?: string;
-  coordinates?: string;
+  coordinates?: string | null;
   zoom?: number;
   height?: string;
   width?: string;
@@ -32,122 +32,71 @@ interface Coordinates {
 // 🔧 Função CORRIGIDA para converter coordenadas
 const convertCoordinatesToDecimal = (coordStr: string): { lat: number; lng: number } | null => {
   try {
-    // Remove aspas e espaços extras
-    let cleaned = coordStr
-      .replace(/["']/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
     
-    console.log("Coordenada original:", coordStr);
-    console.log("Coordenada limpa:", cleaned);
+    // 🔥 CORREÇÃO: Extrai latitude e longitude separadamente
+    // Procura por padrões como: 18°28'18.5"S ou 18°28'18.5 S
+    const latRegex = /(\d+)°(\d+)'([\d.]+)["']?\s*([NS])/i;
+    const lngRegex = /(\d+)°(\d+)'([\d.]+)["']?\s*([EW])/i;
     
-    // Divide a string em partes
-    const parts = cleaned.split(' ');
+    let latMatch = coordStr.match(latRegex);
+    let lngMatch = coordStr.match(lngRegex);
     
-    // 🔥 CORREÇÃO IMPORTANTE: Identificar corretamente latitude e longitude
-    let latPart = '';
-    let lngPart = '';
-    
-    // Primeiro, tenta encontrar pelos indicadores de direção
-    for (const part of parts) {
-      if (part.includes('S') || part.includes('N')) {
-        latPart = part;
-      } else if (part.includes('W') || part.includes('E')) {
-        lngPart = part;
-      }
+    // Se não encontrou com as aspas, tenta sem
+    if (!latMatch) {
+      const altLatRegex = /(\d+)°(\d+)'([\d.]+)\s*([NS])/i;
+      latMatch = coordStr.match(altLatRegex);
     }
     
-    // Se não encontrou pelos indicadores, tenta pela posição
-    if (!latPart && !lngPart) {
-      if (parts.length >= 2) {
-        // A primeira parte geralmente é latitude, a segunda longitude
-        latPart = parts[0];
-        lngPart = parts[1];
-      } else {
-        console.error("Formato inválido: não foi possível separar latitude e longitude");
-        return null;
-      }
+    if (!lngMatch) {
+      const altLngRegex = /(\d+)°(\d+)'([\d.]+)\s*([EW])/i;
+      lngMatch = coordStr.match(altLngRegex);
     }
     
-    console.log("Latitude parte:", latPart);
-    console.log("Longitude parte:", lngPart);
+    if (!latMatch || !lngMatch) {
+      console.error("❌ Formato não reconhecido. Use: 18°28'18.5\"S 43°29'51.8\"W");
+      return null;
+    }
     
-    // Função para converter uma coordenada individual
-    const convertSingleCoord = (coord: string): number => {
-      // Remove N, S, E, W para extrair os números
-      const cleanCoord = coord.replace(/[NSWE]/g, '').trim();
-      
-      console.log("Convertendo:", coord, "-> Limpo:", cleanCoord);
-      
-      // Tenta encontrar graus, minutos, segundos
-      // Aceita: 18°28'18.5" ou 18°28'18.5
-      const match = cleanCoord.match(/(\d+)°(\d+)'([\d.]+)/);
-      
-      if (match) {
-        const degrees = parseFloat(match[1]);
-        const minutes = parseFloat(match[2]);
-        const seconds = parseFloat(match[3]);
-        
-        let decimal = degrees + minutes / 60 + seconds / 3600;
-        
-        // 🔥 CORREÇÃO: Verifica se é Sul ou Oeste para tornar negativo
-        if (coord.includes('S') || coord.includes('W')) {
-          decimal = -decimal;
-        }
-        
-        console.log(`Convertido: ${coord} -> ${decimal}`);
-        return decimal;
-      }
-      
-      // Se não encontrar o formato, tenta como decimal
-      const decimal = parseFloat(cleanCoord);
-      if (!isNaN(decimal)) {
-        // Se a coordenada original tem S ou W, torna negativo
-        if (coord.includes('S') || coord.includes('W')) {
-          return -Math.abs(decimal);
-        }
-        return decimal;
-      }
-      
-      console.error(`Não foi possível converter: ${coord}`);
-      return 0;
-    };
+    // Converte latitude
+    const latDeg = parseFloat(latMatch[1]);
+    const latMin = parseFloat(latMatch[2]);
+    const latSec = parseFloat(latMatch[3]);
+    const latDir = latMatch[4].toUpperCase();
     
-    const lat = convertSingleCoord(latPart);
-    const lng = convertSingleCoord(lngPart);
+    let lat = latDeg + latMin / 60 + latSec / 3600;
+    if (latDir === 'S') {
+      lat = -lat;
+    }
     
-    console.log("Latitude decimal:", lat);
-    console.log("Longitude decimal:", lng);
+    // Converte longitude
+    const lngDeg = parseFloat(lngMatch[1]);
+    const lngMin = parseFloat(lngMatch[2]);
+    const lngSec = parseFloat(lngMatch[3]);
+    const lngDir = lngMatch[4].toUpperCase();
     
-    // 🔥 Validação mais rigorosa
+    let lng = lngDeg + lngMin / 60 + lngSec / 3600;
+    if (lngDir === 'W') {
+      lng = -lng;
+    }
+    
     if (isNaN(lat) || isNaN(lng)) {
-      console.error("Coordenadas inválidas (NaN)");
+      console.error("❌ Coordenadas inválidas (NaN)");
       return null;
     }
     
     if (lat < -90 || lat > 90) {
-      console.error(`Latitude inválida: ${lat} (deve estar entre -90 e 90)`);
+      console.error(`❌ Latitude inválida: ${lat} (deve estar entre -90 e 90)`);
       return null;
     }
     
     if (lng < -180 || lng > 180) {
-      console.error(`Longitude inválida: ${lng} (deve estar entre -180 e 180)`);
+      console.error(`❌ Longitude inválida: ${lng} (deve estar entre -180 e 180)`);
       return null;
     }
-    
-    // 🔥 Verificação específica para Brasil (opcional, mas ajuda a detectar erros)
-    // Brasil está entre -33° e 5° de latitude e -73° e -34° de longitude
-    if (lat < -33 && lat > -34) {
-      console.warn("Latitude parece estar no Brasil (Sul)");
-    }
-    
-    if (lng < -73 && lng > -34) {
-      console.warn("Longitude parece estar no Brasil (Oeste)");
-    }
-    
+  
     return { lat, lng };
   } catch (error) {
-    console.error("Erro ao converter coordenadas:", error);
+    console.error("❌ Erro ao converter coordenadas:", error);
     return null;
   }
 };
@@ -254,14 +203,12 @@ const MapComponent: React.FC<MapComponentProps> = ({
 
       try {
         if (coordinatesProp) {
-          console.log("🔍 Processando coordenadas:", coordinatesProp);
           const decimalCoords = convertCoordinatesToDecimal(coordinatesProp);
           
           if (!decimalCoords) {
             throw new Error(`Formato de coordenadas inválido: "${coordinatesProp}". Use: 18°28'18.5S 43°29'51.8W`);
           }
           
-          console.log("✅ Coordenadas convertidas:", decimalCoords);
           await reverseGeocode(decimalCoords.lat, decimalCoords.lng);
         } else if (cityName) {
           await geocodeCity(cityName);

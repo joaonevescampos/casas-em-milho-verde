@@ -29,4 +29,5 @@ export const propertySchema = z.object({
   balcony: z.number().nullable().optional(),
   garage: z.number().nullable().optional(),
   airbnb_link: z.string().nullable().optional(),
+  coordinate: z.string().nullable().optional(),
 });
