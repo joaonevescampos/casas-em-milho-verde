@@ -12,26 +12,28 @@ export type Property = {
   city: string;
   neighborhood?: string | null;
 
-  emphasis1?: string| null;
-  emphasis2?: string| null;
-  emphasis3?: string| null;
-  emphasis4?: string| null;
+  emphasis1?: string | null;
+  emphasis2?: string | null;
+  emphasis3?: string | null;
+  emphasis4?: string | null;
 
-  bedrooms?: number| null;
-  bathrooms?: number| null;
-  guests?: number| null;
-  beds?: number| null;
-  area?: number| null;
-  garage?: number| null;
-  balcony?: number| null;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  guests?: number | null;
+  beds?: number | null;
+  area?: number | null;
+  garage?: number | null;
+  balcony?: number | null;
 
-  code?: string| null;
-  price?: number| null;
+  code?: string | null;
+  price?: number | null;
 
-  airbnb_link?: string| null;
+  airbnb_link?: string | null;
   status?: string;
 
   coordinate?: string | null;
+
+  order: number;
 
   is_featured: boolean;
 

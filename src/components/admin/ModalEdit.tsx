@@ -78,6 +78,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       balcony: 0,
       airbnb_link: "",
       coordinate: "",
+      order: 0,
     },
   });
 
@@ -112,6 +113,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
       balcony: property?.balcony,
       airbnb_link: property?.airbnb_link,
       coordinate: property?.coordinate,
+      order: property.order,
     });
   }, [property, form]);
 

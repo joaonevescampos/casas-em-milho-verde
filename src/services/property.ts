@@ -182,7 +182,7 @@ export default class Services {
       const { data } = await supabase
         .from("properties")
         .select("*")
-        .order("created_at", { ascending: true });
+        .order("order", { ascending: true });
 
       return data ? data : null;
     } catch (error) {

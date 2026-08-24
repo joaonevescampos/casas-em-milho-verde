@@ -60,6 +60,7 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
       balcony: 0,
       airbnb_link: "",
       coordinate: "",
+      order: 0,
     },
   });
 

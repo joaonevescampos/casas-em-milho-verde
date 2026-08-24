@@ -3,23 +3,24 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import fallback from "../../assets/no-image.png";
 
 type PropertiesCard = {
-  propertyId: string;
+  propertyId?: string;
   purpose: string;
   city: string;
   state: string;
   title: string;
   description: string;
-  guests: number;
-  beds: number;
-  bedroom: number;
-  bathroom: number;
-  coverImage?: string;
-  emphasis1: string;
-  emphasis2: string;
-  emphasis3: string;
-  emphasis4: string;
-  onEdit: (propertyId: string) => void;
-  onDelete: (propertyId: string) => void;
+  guests?: number | null;
+  beds?: number | null;
+  bedroom?: number | null;
+  bathroom?: number | null;
+  coverImage?: string | null;
+  emphasis1?: string | null;
+  emphasis2?: string | null;
+  emphasis3?: string | null;
+  emphasis4?: string | null;
+  is_featured?: boolean;
+  onEdit: (propertyId: string | undefined) => void;
+  onDelete: (propertyId: string | undefined) => void;
 };
 
 const AdminCard = ({
@@ -38,11 +39,19 @@ const AdminCard = ({
   emphasis2,
   emphasis3,
   emphasis4,
+  is_featured,
   onEdit,
   onDelete,
 }: PropertiesCard) => {
   return (
-    <div className="flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full">
+    <div
+      className={`flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full ${is_featured && "bg-secondary5/10"}`}
+    >
+      {is_featured && (
+        <div className="absolute top-0 left-0 bg-secondary5 rounded text-white font-bold text-[10px] px-4 py-1">
+          EM DESTAQUE
+        </div>
+      )}
       <div className="flex items-center gap-2 rounded-sm">
         <div className="w-36 min-w-36 h-24 max-lg:w-28 max-lg:min-w-28">
           {coverImage ? (

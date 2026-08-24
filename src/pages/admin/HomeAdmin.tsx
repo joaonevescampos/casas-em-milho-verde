@@ -1,4 +1,3 @@
-import AdminCard from "@/components/admin/AdminCard";
 import AdminFooter from "@/components/admin/AdminFooter";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { EmptyProperties } from "@/components/admin/EmptyProperties";
@@ -8,49 +7,90 @@ import ModalEdit from "@/components/admin/ModalEdit";
 import DefaultButton from "@/components/Button";
 import Loading from "@/components/Loading";
 import useGetAllImages from "@/hooks/useGetAllImages";
-import useGetAllProperties from "@/hooks/useGetAllProperties";
-
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import SortableAdminList from "@/components/admin/SortableAdminList";
+import type { Property, PropertyImages } from "@/types/properties";
 
 const HomeAdmin = () => {
-  const [purpose, setPurpose] = useState<string>("rent");
+  // Estados
+  const [purpose, setPurpose] = useState<"rent" | "sale">("rent");
+  const [propertiesToRent, setPropertiesToRent] = useState<Property[]>([]);
+  const [propertiesToSale, setPropertiesToSale] = useState<Property[]>([]);
   const [openAddProperty, setOpenAddProperty] = useState<boolean>(false);
   const [openEditProperty, setOpenEditProperty] = useState<boolean>(false);
   const [openDeleteProperty, setOpenDeleteProperty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>("");
-  const { properties, loading: loadingProperties } = useGetAllProperties();
-  const { images, loading: loadingImages } = useGetAllImages();
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
+  const { images, loading: loadingImages } = useGetAllImages();
+  const navigate = useNavigate();
+
+  // Função para buscar os dados ordenados
+  const fetchProperties = async () => {
+    try {
+      setIsFetching(true);
+
+      // Buscar propriedades de aluguel com ordenação
+      const { data: rentData, error: rentError } = await supabase
+        .from("properties")
+        .select("*")
+        .eq("purpose", "rent")
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (rentError) throw rentError;
+      setPropertiesToRent(rentData || []);
+
+      // Buscar propriedades de venda com ordenação
+      const { data: saleData, error: saleError } = await supabase
+        .from("properties")
+        .select("*")
+        .eq("purpose", "sale")
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (saleError) throw saleError;
+      setPropertiesToSale(saleData || []);
+    } catch (error) {
+      console.error("Erro ao buscar propriedades:", error);
+      toast.error("Erro ao carregar propriedades");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  // Buscar dados ao montar o componente
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  // Função para encontrar a imagem de capa
   const findImage = (propertyId: string) => {
     const selectedImage = images?.find(
-      (image) => image.property_id === propertyId && image.cover_image,
+      (image: PropertyImages) =>
+        image.property_id === propertyId && image.cover_image,
     )?.image_url;
 
     return selectedImage;
   };
 
-  const propertiesToRent = properties?.filter(
-    (property) => property.purpose === "rent",
-  );
-  const propertiesToSale = properties?.filter(
-    (property) => property.purpose === "sale",
-  );
-
-  const changePurpose = (value: string) => {
-    value === "rent" ? setPurpose("rent") : setPurpose("sale");
+  // Mudar propósito
+  const changePurpose = (value: "rent" | "sale") => {
+    setPurpose(value);
   };
 
+  // Handlers dos modais
   const handleAddProperty = () => {
     setOpenAddProperty(true);
   };
 
   const handleEditProperty = (propertyId: string) => {
-    setOpenEditProperty(true);
     setSelectedId(propertyId);
+    setOpenEditProperty(true);
   };
 
   const handleDeleteProperty = (propertyId: string) => {
@@ -60,18 +100,20 @@ const HomeAdmin = () => {
 
   const handleCloseAdd = () => {
     setOpenAddProperty(false);
+    fetchProperties(); // Recarregar após adicionar
   };
 
   const handleCloseEdit = () => {
     setOpenEditProperty(false);
+    fetchProperties(); // Recarregar após editar
   };
 
   const handleCloseDelete = () => {
     setOpenDeleteProperty(false);
+    fetchProperties(); // Recarregar após deletar
   };
 
-  const navigate = useNavigate();
-
+  // Logout
   async function logout() {
     try {
       setIsLoading(true);
@@ -85,11 +127,16 @@ const HomeAdmin = () => {
     }
   }
 
-  const loading = loadingProperties || loadingImages;
+  // Verificar se está carregando
+  const loading = loadingImages || isFetching;
 
   if (loading) {
     return <Loading />;
   }
+
+  // Propriedades atuais baseadas no propósito
+  const currentProperties =
+    purpose === "rent" ? propertiesToRent : propertiesToSale;
 
   return (
     <>
@@ -98,20 +145,17 @@ const HomeAdmin = () => {
         {isLoading && <Loading />}
 
         {openAddProperty && (
-          <ModalAdd purpose={purpose} onClose={() => handleCloseAdd()} />
+          <ModalAdd purpose={purpose} onClose={handleCloseAdd} />
         )}
         {openEditProperty && (
           <ModalEdit
             propertyId={selectedId}
-            onClose={() => handleCloseEdit()}
+            onClose={handleCloseEdit}
             purpose={purpose}
           />
         )}
         {openDeleteProperty && (
-          <ModalDelete
-            propertyId={selectedId}
-            onClose={() => handleCloseDelete()}
-          />
+          <ModalDelete propertyId={selectedId} onClose={handleCloseDelete} />
         )}
 
         <div className="flex flex-col gap-2 text-center">
@@ -129,13 +173,17 @@ const HomeAdmin = () => {
         <section className="flex flex-col items-center justify-center w-full">
           <div className="flex gap-4 items-center justify-center text-[10px] max-lg:text-[8px]">
             <button
-              className={`flex items-center justify-center w-40 max-lg:w-32 py-4 cursor-pointer rounded-t-sm  font-medium bg-white  ${purpose === "sale" ? "opacity-100" : "opacity-40"}`}
+              className={`flex items-center justify-center w-40 max-lg:w-32 py-4 cursor-pointer rounded-t-sm font-medium bg-white ${
+                purpose === "sale" ? "opacity-100" : "opacity-40"
+              }`}
               onClick={() => changePurpose("sale")}
             >
               VENDA DE IMÓVEIS
             </button>
             <button
-              className={`flex items-center justify-center w-40 py-4 cursor-pointer rounded-t-sm  font-medium bg-white ${purpose === "rent" ? "opacity-100 " : "opacity-40"}`}
+              className={`flex items-center justify-center w-40 py-4 cursor-pointer rounded-t-sm font-medium bg-white ${
+                purpose === "rent" ? "opacity-100" : "opacity-40"
+              }`}
               onClick={() => changePurpose("rent")}
             >
               ALUGUÉIS DE TEMPORADA
@@ -150,81 +198,33 @@ const HomeAdmin = () => {
                     target="_blank"
                   >
                     <DefaultButton
-                      text={`${purpose === "rent" ? "VER ANÚNCIOS PARA ALUGAR >" : "VER ANÚNCIOS PARA VENDER >"}`}
+                      text={`${
+                        purpose === "rent"
+                          ? "VER ANÚNCIOS PARA ALUGAR >"
+                          : "VER ANÚNCIOS PARA VENDER >"
+                      }`}
                       style="bg-transparent! border border-primary1/30 text-primary1! text-[8px]! h-6! max-lg:h-6! rounded-xs! px-2!"
                     />
                   </Link>
                   <span className="text-[10px] font-medium">
-                    {purpose === "rent"
-                      ? propertiesToRent?.length
-                      : propertiesToSale?.length}{" "}
-                    anúncios
+                    {currentProperties.length} anúncios
                   </span>
                 </div>
 
-                <DefaultButton
-                  text="+ ADICIONAR"
-                  onClick={() => handleAddProperty()}
-                />
+                <DefaultButton text="+ ADICIONAR" onClick={handleAddProperty} />
               </div>
 
-              <ul className="flex flex-col gap-2 w-full h-[calc(100vh-250px)] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 pr-4">
-                {purpose === "rent" ? (
-                  propertiesToRent?.length === 0 ? (
-                    <EmptyProperties />
-                  ) : (
-                    propertiesToRent?.map((property, index) => (
-                      <li className="w-full" key={index}>
-                        <AdminCard
-                          propertyId={property.id!}
-                          purpose={property.purpose}
-                          city={property.city}
-                          state={property.state}
-                          title={property.title}
-                          description={property.description}
-                          guests={property.guests!}
-                          beds={property.beds!}
-                          bedroom={property.bedrooms!}
-                          bathroom={property.bathrooms!}
-                          emphasis1={property.emphasis1!}
-                          emphasis2={property.emphasis2!}
-                          emphasis3={property.emphasis3!}
-                          emphasis4={property.emphasis4!}
-                          coverImage={findImage(property.id!)}
-                          onEdit={() => handleEditProperty(property.id!)}
-                          onDelete={() => handleDeleteProperty(property.id!)}
-                        />
-                      </li>
-                    ))
-                  )
-                ) : propertiesToSale?.length === 0 ? (
-                  <EmptyProperties />
-                ) : (
-                  propertiesToSale?.map((property, index) => (
-                    <li className="w-full" key={index}>
-                      <AdminCard
-                        propertyId={property.id!}
-                        purpose={property.purpose}
-                        city={property.city}
-                        state={property.state}
-                        title={property.title}
-                        description={property.description}
-                        guests={property.guests!}
-                        beds={property.beds!}
-                        bedroom={property.bedrooms!}
-                        bathroom={property.bathrooms!}
-                        emphasis1={property.emphasis1!}
-                        emphasis2={property.emphasis2!}
-                        emphasis3={property.emphasis3!}
-                        emphasis4={property.emphasis4!}
-                        coverImage={findImage(property.id!)}
-                        onEdit={() => handleEditProperty(property.id!)}
-                        onDelete={() => handleDeleteProperty(property.id!)}
-                      />
-                    </li>
-                  ))
-                )}
-              </ul>
+              {currentProperties.length === 0 ? (
+                <EmptyProperties />
+              ) : (
+                <SortableAdminList
+                  properties={currentProperties}
+                  findImage={findImage}
+                  handleEditProperty={handleEditProperty}
+                  handleDeleteProperty={handleDeleteProperty}
+                  onOrderChange={fetchProperties}
+                />
+              )}
             </div>
           </div>
         </section>
