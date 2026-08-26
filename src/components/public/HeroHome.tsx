@@ -72,7 +72,7 @@ const HeroHome = () => {
       {/* Conteúdo sobreposto */}
       <div
         className={`absolute top-1/2 -translate-y-1/2 left-16 max-lg:left-4
-         max-w-150 text-white w-full`}
+         max-w-150 max-sm:max-w-[calc(100vw-30px)] text-white w-full`}
       >
         <Reveal className="flex flex-col gap-4">
           <FadeUp delay={1}>
