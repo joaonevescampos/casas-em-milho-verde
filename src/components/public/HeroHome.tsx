@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import homeCover from "../../assets/home-cover.png";
 import DefaultButton from "../Button";
 import Reveal from "../Reveal";
@@ -5,17 +6,30 @@ import FadeUp from "../FadeUp";
 import { motion, useScroll, useTransform } from "motion/react";
 
 const HeroHome = () => {
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const { scrollY } = useScroll();
 
-  // A imagem desce mais devagar que o scroll
+  // Só aplica parallax se NÃO for tela pequena
   const y = useTransform(scrollY, [0, 800], [0, 250]);
-
-  // Opcional: zoom suave
   const scale = useTransform(scrollY, [0, 800], [1, 1.15]);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      setIsSmallScreen(window.innerHeight < 540);
+    };
+
+    checkHeight();
+    window.addEventListener("resize", checkHeight);
+    return () => window.removeEventListener("resize", checkHeight);
+  }, []);
+
   return (
-    <section className="absolute left-0 top-0 z-20 w-full h-screen">
-      <picture className="relative block h-screen overflow-hidden">
-        {/* Zoom Out ao carregar */}
+    <section
+      className={`w-full ${
+        isSmallScreen ? "h-135 relative" : "absolute left-0 top-0 z-20 h-screen"
+      }`}
+    >
+      <picture className={`relative block w-full h-full overflow-hidden`}>
         <motion.div
           initial={{ scale: 1.8 }}
           animate={{ scale: 1 }}
@@ -25,22 +39,41 @@ const HeroHome = () => {
           }}
           className="absolute inset-0"
         >
-          <motion.div style={{ y, scale }} className="absolute inset-0">
-            <img
-              src={homeCover}
-              alt="home-cover"
-              className="h-full w-full object-cover object-top"
-            />
-
-            <span className="absolute bottom-0 right-0 text-white shadow-2xl bg-black/40 text-[10px] z-20 text-center px-2 py-1 min-w-55 rounded">
-              Frame do vídeo de Boa Sorte Viajante.
-            </span>
-
-            <div className="absolute inset-0 bg-linear-120 from-[#0A160E] from-0% via-[#0A160E]/70 via-40% to-primary2/10 to-100%" />
-          </motion.div>
+          {/* Se for tela pequena, remove o parallax */}
+          {isSmallScreen ? (
+            <div className="absolute inset-0">
+              <img
+                src={homeCover}
+                alt="home-cover"
+                className="h-full w-full object-cover object-top"
+              />
+              <span className="absolute bottom-0 right-0 text-white shadow-2xl bg-black/40 text-[10px] z-20 text-center px-2 py-1 min-w-55 rounded">
+                Frame do vídeo de Boa Sorte Viajante.
+              </span>
+              <div className="absolute inset-0 bg-linear-120 from-[#0A160E] from-0% via-[#0A160E]/70 via-40% to-primary2/10 to-100%" />
+            </div>
+          ) : (
+            // Com parallax
+            <motion.div style={{ y, scale }} className="absolute inset-0">
+              <img
+                src={homeCover}
+                alt="home-cover"
+                className="h-full w-full object-cover object-top"
+              />
+              <span className="absolute bottom-0 right-0 text-white shadow-2xl bg-black/40 text-[10px] z-20 text-center px-2 py-1 min-w-55 rounded">
+                Frame do vídeo de Boa Sorte Viajante.
+              </span>
+              <div className="absolute inset-0 bg-linear-120 from-[#0A160E] from-0% via-[#0A160E]/70 via-40% to-primary2/10 to-100%" />
+            </motion.div>
+          )}
         </motion.div>
       </picture>
-      <div className="absolute top-1/2 -translate-y-1/2 left-16 max-lg:left-4 max-w-150 text-white">
+
+      {/* Conteúdo sobreposto */}
+      <div
+        className={`absolute top-1/2 -translate-y-1/2 left-16 max-lg:left-4
+         max-w-150 text-white w-full`}
+      >
         <Reveal className="flex flex-col gap-4">
           <FadeUp delay={1}>
             <span className="text-[10px]">
@@ -57,7 +90,7 @@ const HeroHome = () => {
             </h2>
           </FadeUp>
           <FadeUp delay={2}>
-            <div className="flex gap-4 pt-12">
+            <div className="flex gap-4 pt-12 flex-wrap">
               <DefaultButton
                 text="VER HOSPEDAGENS"
                 style="bg-linear-120! to-primary2/50! from-primary2!"

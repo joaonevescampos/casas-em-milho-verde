@@ -36,6 +36,12 @@ main {
   margin-top: 100vh;
 }
 
+@media (max-height: 540px) {
+  main {
+    margin-top: 0px;
+  }
+}
+
 @media (max-width: 768px) {
 main {
   padding: 0 16px;
