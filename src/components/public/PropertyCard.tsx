@@ -1,6 +1,6 @@
 import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
 import type { PropertyCardType } from "@/types/properties";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import fallback from "../../assets/no-image.png";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -10,13 +10,15 @@ type Props = {
 };
 const PropertyCard = ({ property }: Props) => {
   const { detailImagesProperty, images } = useDetailPropertyImages();
+  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-    if (property.id) {
-      detailImagesProperty(property.id);
-    }
+     if (property.id && !hasFetched) {
+    detailImagesProperty(property.id);
+    setHasFetched(true);
+  }
     console.log(property)
-  }, [property.id, images]);
+  }, [property.id, hasFetched]);
 
   const coverImage =
     images?.find((image) => image.cover_image)?.image_url ?? null;
