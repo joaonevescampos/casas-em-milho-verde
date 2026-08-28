@@ -1,5 +1,5 @@
 // components/admin/SortableAdminList.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   DndContext,
   closestCenter,
@@ -8,43 +8,46 @@ import {
   useSensor,
   useSensors,
   type DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { supabase } from '@/lib/supabase';
-import AdminCard from './AdminCard';
-import SortableItem from './SortableItem';
-import { toast } from 'react-toastify';
-import type { Property } from '@/types/properties';
+} from "@dnd-kit/sortable";
+import { supabase } from "@/lib/supabase";
+import AdminCard from "./AdminCard";
+import SortableItem from "./SortableItem";
+import { toast } from "react-toastify";
+import type { PropertyCardType } from "@/types/properties";
 
 interface SortableAdminListProps {
-  properties: Property[];
-  findImage: (id: string) => string | undefined;
+  properties: PropertyCardType[];
   handleEditProperty: (id: string) => void;
   handleDeleteProperty: (id: string) => void;
-  onOrderChange: () => void;
+  // onOrderChange: () => void;
 }
 
 // Type guard para verificar se a propriedade tem ID válido
-function hasValidId(property: Property): property is Property & { id: string } {
-  return property.id !== undefined && property.id !== null && property.id.length > 0;
+function hasValidId(
+  property: PropertyCardType,
+): property is PropertyCardType & { id: string } {
+  return (
+    property.id !== undefined && property.id !== null && property.id.length > 0
+  );
 }
 
 const SortableAdminList: React.FC<SortableAdminListProps> = ({
   properties,
-  findImage,
   handleEditProperty,
   handleDeleteProperty,
-  onOrderChange,
+  // onOrderChange,
 }) => {
   // Filtrar apenas propriedades com ID válido
   const validItems = properties.filter(hasValidId);
-  
-  const [items, setItems] = useState<(Property & { id: string })[]>(validItems);
+
+  const [items, setItems] =
+    useState<(PropertyCardType & { id: string })[]>(validItems);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   useEffect(() => {
@@ -60,7 +63,7 @@ const SortableAdminList: React.FC<SortableAdminListProps> = ({
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -81,24 +84,21 @@ const SortableAdminList: React.FC<SortableAdminListProps> = ({
 
       // Atualizar ordem no banco - usando update individual
       const updatePromises = newItems.map((item, index) =>
-        supabase
-          .from('properties')
-          .update({ order: index })
-          .eq('id', item.id)
+        supabase.from("properties").update({ order: index }).eq("id", item.id),
       );
 
       const results = await Promise.all(updatePromises);
-      
-      const errors = results.filter(result => result.error);
+
+      const errors = results.filter((result) => result.error);
       if (errors.length > 0) {
         throw errors[0].error;
       }
 
-      toast.success('Ordem atualizada com sucesso!');
-      onOrderChange();
+      toast.success("Ordem atualizada com sucesso!");
+      // onOrderChange();
     } catch (error) {
-      console.error('Erro ao salvar ordem:', error);
-      toast.error('Erro ao salvar a ordem dos anúncios.');
+      console.error("Erro ao salvar ordem:", error);
+      toast.error("Erro ao salvar a ordem dos anúncios.");
       setItems(validItems);
     } finally {
       setIsUpdating(false);
@@ -138,11 +138,10 @@ const SortableAdminList: React.FC<SortableAdminListProps> = ({
                   beds={property.beds ?? 0}
                   bedroom={property.bedrooms ?? 0}
                   bathroom={property.bathrooms ?? 0}
-                  emphasis1={property.emphasis1 ?? ''}
-                  emphasis2={property.emphasis2 ?? ''}
-                  emphasis3={property.emphasis3 ?? ''}
-                  emphasis4={property.emphasis4 ?? ''}
-                  coverImage={findImage(property.id)}
+                  emphasis1={property.emphasis1 ?? ""}
+                  emphasis2={property.emphasis2 ?? ""}
+                  emphasis3={property.emphasis3 ?? ""}
+                  emphasis4={property.emphasis4 ?? ""}
                   is_featured={property.is_featured}
                   onEdit={() => handleEditProperty(property.id)}
                   onDelete={() => handleDeleteProperty(property.id)}

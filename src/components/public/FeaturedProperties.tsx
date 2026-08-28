@@ -1,43 +1,48 @@
-import useGetAllProperties from "@/hooks/useGetAllProperties";
-import type { Property } from "@/types/properties";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import PropertyCard from "./PropertyCard";
 import Reveal from "../Reveal";
 import DefaultButton from "../Button";
+import useFeatured from "@/hooks/useFeatured";
 
 type Props = {
   purpose: string;
 };
 
 const FeaturedProperties = ({ purpose }: Props) => {
-  const { properties } = useGetAllProperties();
+  const { properties, useFeaturedProperties } = useFeatured();
 
-  const getFeaturedProperties = (purpose: "sale" | "rent"): Property[] => {
-    if (!properties?.length) return [];
+  useEffect(() => {
+    useFeaturedProperties(purpose);
+  }, [purpose]);
 
-    // Filtra pelo propósito primeiro
-    const filtered = properties.filter(
-      (property) => property.purpose === purpose,
-    );
+  // const getFeaturedProperties = (purpose: "sale" | "rent"): PropertyCard[] => {
+  //   if(purpose === "rent") {
+  //     if (!properties?.length) return [];
+  //   }
 
-    const featured = filtered.filter((property) => property.is_featured);
+  //   // Filtra pelo propósito primeiro
+  //   const filtered = properties.filter(
+  //     (property) => property.purpose === purpose,
+  //   );
 
-    const notFeatured = filtered
-      .filter((property) => !property.is_featured)
-      .sort(() => Math.random() - 0.5);
+  //   const featured = filtered.filter((property) => property.is_featured);
 
-    return [...featured, ...notFeatured].slice(0, 4);
-  };
+  //   const notFeatured = filtered
+  //     .filter((property) => !property.is_featured)
+  //     .sort(() => Math.random() - 0.5);
 
-  const saleProperties = useMemo(
-    () => getFeaturedProperties("sale"),
-    [properties],
-  );
+  //   return [...featured, ...notFeatured].slice(0, 4);
+  // };
 
-  const rentProperties = useMemo(
-    () => getFeaturedProperties("rent"),
-    [properties],
-  );
+  // const saleProperties = useMemo(
+  //   () => getFeaturedProperties("sale"),
+  //   [properties],
+  // );
+
+  // const rentProperties = useMemo(
+  //   () => getFeaturedProperties("rent"),
+  //   [properties],
+  // );
 
   return (
     <Reveal delay={0.5}>
@@ -55,17 +60,11 @@ const FeaturedProperties = ({ purpose }: Props) => {
           </h2>
         </div>
         <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
-          {purpose === "rent"
-            ? rentProperties.map((rentProperty, i) => (
-                <div key={i}>
-                  <PropertyCard property={rentProperty} />
-                </div>
-              ))
-            : saleProperties.map((saleProperty, i) => (
-                <div key={i}>
-                  <PropertyCard property={saleProperty} />
-                </div>
-              ))}
+          {properties.map((property, i) => (
+            <div key={i}>
+              <PropertyCard property={property} />
+            </div>
+          ))}
         </div>
         <div className="flex items-center justify-center max-lg:pt-4">
           <DefaultButton

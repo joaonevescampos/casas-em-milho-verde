@@ -1,32 +1,38 @@
 import HeroCataloge from "@/components/public/HeroCataloge";
 import PropertyCard from "@/components/public/PropertyCard";
 import Reveal from "@/components/Reveal";
-import useGetAllProperties from "@/hooks/useGetAllProperties";
+import useGetPropertiesCard from "@/hooks/useGetPropertiesCard";
+
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const Cataloge = () => {
-  const { properties } = useGetAllProperties();
+  const { properties, getPropertiesCardFunc } = useGetPropertiesCard();
 
   const location = useLocation();
 
   const purpose: "sale" | "rent" =
     location.pathname === "/venda" ? "sale" : "rent";
 
-  const saleProperties = properties
-    .filter((property) => property.purpose === "sale")
-    .sort((a, b) => {
-      if (a.is_featured && !b.is_featured) return -1;
-      if (!a.is_featured && b.is_featured) return 1;
-      return 0;
-    });
+  useEffect(() => {
+    getPropertiesCardFunc(purpose);
+  }, []);
 
-  const rentProperties = properties
-    .filter((property) => property.purpose === "rent")
-    .sort((a, b) => {
-      if (a.is_featured && !b.is_featured) return -1;
-      if (!a.is_featured && b.is_featured) return 1;
-      return 0;
-    });
+  // const saleProperties = properties
+  //   .filter((property) => property.purpose === "sale")
+  //   .sort((a, b) => {
+  //     if (a.is_featured && !b.is_featured) return -1;
+  //     if (!a.is_featured && b.is_featured) return 1;
+  //     return 0;
+  //   });
+
+  // const rentProperties = properties
+  //   .filter((property) => property.purpose === "rent")
+  //   .sort((a, b) => {
+  //     if (a.is_featured && !b.is_featured) return -1;
+  //     if (!a.is_featured && b.is_featured) return 1;
+  //     return 0;
+  //   });
 
   return (
     <>
@@ -46,17 +52,11 @@ const Cataloge = () => {
             </h2>
           </div>
           <div className="grid grid-cols-4 gap-4 my-4 max-lg:mx-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
-            {purpose === "rent"
-              ? rentProperties?.map((rentProperty, i) => (
-                  <div key={i}>
-                    <PropertyCard property={rentProperty} />
-                  </div>
-                ))
-              : saleProperties?.map((saleProperty, i) => (
-                  <div key={i}>
-                    <PropertyCard property={saleProperty} />
-                  </div>
-                ))}
+            {properties?.map((property, i) => (
+              <div key={i}>
+                <PropertyCard property={property} />
+              </div>
+            ))}
           </div>
         </section>
       </Reveal>

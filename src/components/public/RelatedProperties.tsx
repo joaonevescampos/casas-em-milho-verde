@@ -1,48 +1,49 @@
-import useGetAllProperties from "@/hooks/useGetAllProperties";
-import type { Property } from "@/types/properties";
-import { useMemo } from "react";
+import { useEffect } from "react";
 import PropertyCard from "./PropertyCard";
 import Reveal from "../Reveal";
 import DefaultButton from "../Button";
+import useGetRelatedProperties from "@/hooks/useGetRelatedProperties";
 
 type Props = {
   purpose: string;
   category: string;
-  propertyId: string;
 };
 
-const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
-  const { properties } = useGetAllProperties();
+const RelatedProperties = ({ purpose, category }: Props) => {
+  const { properties, getRelatedProperties } = useGetRelatedProperties();
 
-  const getRelatedProperties = (purpose: "sale" | "rent"): Property[] => {
-    if (!properties?.length) return [];
+  useEffect(() => {
+    getRelatedProperties(purpose, category);
+  }, [category]);
 
-    // Filtra pelo propósito primeiro
-    const filtered = properties.filter(
-      (property) => property.purpose === purpose,
-    );
+  // const getRelatedProperties = (purpose: "sale" | "rent"): Property[] => {
+  //   if (!properties?.length) return [];
 
-    const related = filtered.filter(
-      (property) => property.category === category && property.id != propertyId,
-    );
+  //   // Filtra pelo propósito primeiro
+  //   const filtered = properties.filter(
+  //     (property) => property.purpose === purpose,
+  //   );
 
-    const notrelated = filtered
-      .filter((property) => property.category != category)
-      .sort(() => Math.random() - 0.5);
+  //   const related = filtered.filter(
+  //     (property) => property.category === category && property.id != propertyId,
+  //   );
 
-    return [...related, ...notrelated].slice(0, 4);
-  };
+  //   const notrelated = filtered
+  //     .filter((property) => property.category != category)
+  //     .sort(() => Math.random() - 0.5);
 
-  const saleProperties = useMemo(
-    () => getRelatedProperties("sale"),
-    [properties],
-  );
+  //   return [...related, ...notrelated].slice(0, 4);
+  // };
 
-  const rentProperties = useMemo(
-    () => getRelatedProperties("rent"),
-    [properties],
-  );
+  // const saleProperties = useMemo(
+  //   () => getRelatedProperties("sale"),
+  //   [properties],
+  // );
 
+  // const rentProperties = useMemo(
+  //   () => getRelatedProperties("rent"),
+  //   [properties],
+  // );
 
   return (
     <Reveal delay={0.5}>
@@ -60,17 +61,11 @@ const RelatedProperties = ({ purpose, category, propertyId }: Props) => {
           </h2>
         </div>
         <div className="grid grid-cols-4 gap-4 my-4 max-lg:grid-cols-2 max-sm:grid-cols-1 min-h-100">
-          {purpose === "rent"
-            ? rentProperties.map((rentProperty, i) => (
-                <div key={i}>
-                  <PropertyCard property={rentProperty} />
-                </div>
-              ))
-            : saleProperties.map((saleProperty, i) => (
-                <div key={i}>
-                  <PropertyCard property={saleProperty} />
-                </div>
-              ))}
+          {properties?.map((property, i) => (
+            <div key={i}>
+              <PropertyCard property={property} />
+            </div>
+          ))}
         </div>
         <div className="flex items-center justify-center max-lg:pt-4">
           <DefaultButton

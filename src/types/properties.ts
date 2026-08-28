@@ -50,3 +50,32 @@ export type PropertyImages = {
   created_at?: string;
   updated_at?: string;
 };
+
+export type ShortImagesType = {
+  id: string;
+  property_id: string;
+  cover_image: boolean;
+  image_url: string;
+};
+
+export type PropertyCardType = {
+  id: string;
+  purpose: string;
+  title: string;
+  description: string;
+  city: string;
+  state: string;
+  neighborhood?: string;
+  code?: string;
+  price?: number;
+  slug?: string;
+  beds?: number;
+  bedrooms?: number;
+  guests?: number;
+  bathrooms?: number;
+  emphasis1?: string;
+  emphasis2?: string;
+  emphasis3?: string;
+  emphasis4?: string;
+  is_featured: boolean;
+};

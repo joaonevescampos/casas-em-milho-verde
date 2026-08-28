@@ -1,12 +1,12 @@
 import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
-import type { Property } from "@/types/properties";
+import type { PropertyCardType } from "@/types/properties";
 import { useEffect } from "react";
 import fallback from "../../assets/no-image.png";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 type Props = {
-  property: Property;
+  property: PropertyCardType;
 };
 const PropertyCard = ({ property }: Props) => {
   const { detailImagesProperty, images } = useDetailPropertyImages();

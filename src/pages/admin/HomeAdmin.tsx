@@ -6,81 +6,54 @@ import ModalDelete from "@/components/admin/ModalDelete";
 import ModalEdit from "@/components/admin/ModalEdit";
 import DefaultButton from "@/components/Button";
 import Loading from "@/components/Loading";
-import useGetAllImages from "@/hooks/useGetAllImages";
 import { supabase } from "@/lib/supabase";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SortableAdminList from "@/components/admin/SortableAdminList";
-import type { Property, PropertyImages } from "@/types/properties";
+import useGetPropertiesCard from "@/hooks/useGetPropertiesCard";
 
 const HomeAdmin = () => {
   // Estados
   const [purpose, setPurpose] = useState<"rent" | "sale">("rent");
-  const [propertiesToRent, setPropertiesToRent] = useState<Property[]>([]);
-  const [propertiesToSale, setPropertiesToSale] = useState<Property[]>([]);
+  const { properties, getPropertiesCardFunc, loading: loadingPropertiesCard } = useGetPropertiesCard();
+
+  useEffect(() => {
+    getPropertiesCardFunc(purpose)
+  }, [purpose])
+
+
+  // const [propertiesToRent, setPropertiesToRent] = useState<PropertyCard[]>(
+  //   [],
+  // );
+  // const [propertiesToSale, setPropertiesToSale] = useState<PropertyCard[]>(
+  //   [],
+  // );
   const [openAddProperty, setOpenAddProperty] = useState<boolean>(false);
   const [openEditProperty, setOpenEditProperty] = useState<boolean>(false);
   const [openDeleteProperty, setOpenDeleteProperty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>("");
-  const [isFetching, setIsFetching] = useState<boolean>(true);
+  // const [isFetching, setIsFetching] = useState<boolean>(true);
 
-  const { images, loading: loadingImages } = useGetAllImages();
+  // const { images, getCoverImagesFromPurpose, loading: loadingImages } = useGetCoverImagesFromPurpose();
   const navigate = useNavigate();
 
-  // Função para buscar os dados ordenados
-  const fetchProperties = async () => {
-    try {
-      setIsFetching(true);
-
-      // Buscar propriedades de aluguel com ordenação
-      const { data: rentData, error: rentError } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("purpose", "rent")
-        .order("order", { ascending: true, nullsFirst: false })
-        .order("created_at", { ascending: false });
-
-      if (rentError) throw rentError;
-      setPropertiesToRent(rentData || []);
-
-      // Buscar propriedades de venda com ordenação
-      const { data: saleData, error: saleError } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("purpose", "sale")
-        .order("order", { ascending: true, nullsFirst: false })
-        .order("created_at", { ascending: false });
-
-      if (saleError) throw saleError;
-      setPropertiesToSale(saleData || []);
-    } catch (error) {
-      console.error("Erro ao buscar propriedades:", error);
-      toast.error("Erro ao carregar propriedades");
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  // Buscar dados ao montar o componente
-  useEffect(() => {
-    fetchProperties();
-  }, []);
 
   // Função para encontrar a imagem de capa
-  const findImage = (propertyId: string) => {
-    const selectedImage = images?.find(
-      (image: PropertyImages) =>
-        image.property_id === propertyId && image.cover_image,
-    )?.image_url;
+  // const findImage = (propertyId: string) => {
+  //   const selectedImage = images?.find(
+  //     (image: PropertyImages) =>
+  //       image.property_id === propertyId && image.cover_image,
+  //   )?.image_url;
 
-    return selectedImage;
-  };
+  //   return selectedImage;
+  // };
 
   // Mudar propósito
   const changePurpose = (value: "rent" | "sale") => {
     setPurpose(value);
+   
   };
 
   // Handlers dos modais
@@ -100,17 +73,14 @@ const HomeAdmin = () => {
 
   const handleCloseAdd = () => {
     setOpenAddProperty(false);
-    fetchProperties(); // Recarregar após adicionar
   };
 
   const handleCloseEdit = () => {
     setOpenEditProperty(false);
-    fetchProperties(); // Recarregar após editar
   };
 
   const handleCloseDelete = () => {
     setOpenDeleteProperty(false);
-    fetchProperties(); // Recarregar após deletar
   };
 
   // Logout
@@ -128,15 +98,15 @@ const HomeAdmin = () => {
   }
 
   // Verificar se está carregando
-  const loading = loadingImages || isFetching;
+  const loading = loadingPropertiesCard;
 
   if (loading) {
     return <Loading />;
   }
 
   // Propriedades atuais baseadas no propósito
-  const currentProperties =
-    purpose === "rent" ? propertiesToRent : propertiesToSale;
+  // const currentProperties =
+  //   purpose === "rent" ? propertiesRent : propertiesSale;
 
   return (
     <>
@@ -207,22 +177,21 @@ const HomeAdmin = () => {
                     />
                   </Link>
                   <span className="text-[10px] font-medium">
-                    {currentProperties.length} anúncios
+                    {properties.length} anúncios
                   </span>
                 </div>
 
                 <DefaultButton text="+ ADICIONAR" onClick={handleAddProperty} />
               </div>
 
-              {currentProperties.length === 0 ? (
+              {properties.length === 0 ? (
                 <EmptyProperties />
               ) : (
                 <SortableAdminList
-                  properties={currentProperties}
-                  findImage={findImage}
+                  properties={properties}
                   handleEditProperty={handleEditProperty}
                   handleDeleteProperty={handleDeleteProperty}
-                  onOrderChange={fetchProperties}
+                  // onOrderChange={fetchProperties}
                 />
               )}
             </div>

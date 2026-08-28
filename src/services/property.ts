@@ -1,13 +1,21 @@
 import { convertToWebp } from "@/utils/convertFiles";
 import { supabase } from "../lib/supabase";
-import type { Property, PropertyImages } from "../types/properties";
+import type {
+  ShortImagesType,
+  Property,
+  PropertyCardType,
+  PropertyImages,
+} from "../types/properties";
 
 export default class Services {
-  async getAllImages() {
+  async getCoverImagesFromPurpose(
+    purpose: string,
+  ): Promise<ShortImagesType[] | null> {
     try {
       const { data } = await supabase
         .from("property_images")
-        .select("*")
+        .select("id, property_id, cover_image, image_url")
+        .eq("purpose", purpose)
         .order("position", { ascending: true });
       return data ? data : null;
     } catch (error) {
@@ -15,11 +23,30 @@ export default class Services {
     }
   }
 
-  async detailImagesFromPropertyId(propertyId: string) {
+  async detailCoverImageFromPropertyID(
+    propertyId: string,
+  ): Promise<ShortImagesType | null> {
     try {
       const { data } = await supabase
         .from("property_images")
-        .select("*")
+        .select("id, property_id, cover_image, image_url")
+        .eq("property_id", propertyId)
+        .eq("cover_image", true)
+        .single();
+      return data ? data : null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async detailImagesFromPropertyId(
+    propertyId: string,
+  ): Promise<ShortImagesType[] | null> {
+    console.log("acessei o banco");
+    try {
+      const { data } = await supabase
+        .from("property_images")
+        .select("id, property_id, cover_image, image_url")
         .eq("property_id", propertyId);
       return data ? data : null;
     } catch (error) {
@@ -176,26 +203,221 @@ export default class Services {
       throw error;
     }
   }
-
-  async selectAllProperties(): Promise<Property[] | null> {
+  async selectRelatedPropertySale(
+    category: string,
+  ): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
     try {
-      const { data } = await supabase
-        .from("properties")
-        .select("*")
-        .order("order", { ascending: true });
+      let finalResults: PropertyCardType[] = [];
 
-      return data ? data : null;
+      // Primeiro: Buscar 4 propriedades da categoria específica
+      const { data: categoryData, error: categoryError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "sale")
+        .eq("category", category)
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false })
+        .limit(4);
+
+      if (categoryError) throw categoryError;
+
+      // Adiciona os resultados da categoria específica
+      if (categoryData && categoryData.length > 0) {
+        finalResults = [...categoryData];
+      }
+
+      // Se não completou 4 resultados, busca o restante da categoria "sale"
+      if (finalResults.length < 4) {
+        const remainingCount = 4 - finalResults.length;
+
+        // Buscar IDs já selecionados para evitar duplicatas
+        const existingIds = finalResults.map((item) => item.id);
+
+        const { data: saleData, error: saleError } = await supabase
+          .from("properties")
+          .select(
+            "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          )
+          .eq("purpose", "sale")
+          .not("category", "eq", category) // Exclui a categoria já buscada
+          .order("order", { ascending: true, nullsFirst: false })
+          .order("created_at", { ascending: false })
+          .limit(remainingCount);
+
+        if (saleError) throw saleError;
+
+        // Filtra para evitar duplicatas (segurança extra)
+        if (saleData) {
+          const filteredSaleData = saleData.filter(
+            (item) => !existingIds.includes(item.id),
+          );
+          finalResults = [...finalResults, ...filteredSaleData];
+        }
+      }
+
+      return finalResults.length > 0 ? finalResults : null;
     } catch (error) {
-      throw Error(`Cannot get properties: ${error}`);
+      throw Error(`Error to fetch sale properties ${error}`);
     }
   }
 
-  async detailProperty(id: string): Promise<Property | null> {
+  async selectRelatedPropertyRent(
+    category: string,
+  ): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
+    try {
+      let finalResults: PropertyCardType[] = [];
+
+      // Primeiro: Buscar 4 propriedades da categoria específica
+      const { data: categoryData, error: categoryError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "rent")
+        .eq("category", category)
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false })
+        .limit(4);
+
+      if (categoryError) throw categoryError;
+
+      // Adiciona os resultados da categoria específica
+      if (categoryData && categoryData.length > 0) {
+        finalResults = [...categoryData];
+      }
+
+      // Se não completou 4 resultados, busca o restante da categoria "rent"
+      if (finalResults.length < 4) {
+        const remainingCount = 4 - finalResults.length;
+
+        // Buscar IDs já selecionados para evitar duplicatas
+        const existingIds = finalResults.map((item) => item.id);
+
+        const { data: rentData, error: rentError } = await supabase
+          .from("properties")
+          .select(
+            "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          )
+          .eq("purpose", "rent")
+          .not("category", "eq", category) // Exclui a categoria já buscada
+          .order("order", { ascending: true, nullsFirst: false })
+          .order("created_at", { ascending: false })
+          .limit(remainingCount);
+
+        if (rentError) throw rentError;
+
+        // Filtra para evitar duplicatas (segurança extra)
+        if (rentData) {
+          const filteredRentData = rentData.filter(
+            (item) => !existingIds.includes(item.id),
+          );
+          finalResults = [...finalResults, ...filteredRentData];
+        }
+      }
+
+      return finalResults.length > 0 ? finalResults : null;
+    } catch (error) {
+      throw Error(`Error to fetch rent properties ${error}`);
+    }
+  }
+
+  async selectCardSaleProperties(): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
+    try {
+      // Buscar propriedades de venda com ordenação
+      const { data: saleData, error: saleError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "sale")
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (saleError) throw saleError;
+
+      return saleData;
+    } catch (error) {
+      throw Error(`Error to featch sale properties ${error}`);
+    }
+  }
+
+  async selectCardRentProperties(): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
+    try {
+      // Buscar propriedades de venda com ordenação
+      const { data: rentData, error: rentError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "rent")
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (rentError) throw rentError;
+
+      return rentData;
+    } catch (error) {
+      throw Error(`Error to featch rent properties featured ${error}`);
+    }
+  }
+
+  async selectFeaturedSale(): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
+    try {
+      // Buscar propriedades de venda com ordenação
+      const { data: saleData, error: saleError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "sale")
+        .eq("is_featured", true)
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (saleError) throw saleError;
+
+      return saleData;
+    } catch (error) {
+      throw Error(`Error to featch sale properties featured ${error}`);
+    }
+  }
+
+  async selectFeaturedRent(): Promise<PropertyCardType[] | null> {
+    console.log("acessei o banco");
+    try {
+      // Buscar propriedades de venda com ordenação
+      const { data: rentData, error: rentError } = await supabase
+        .from("properties")
+        .select(
+          "id, purpose, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
+        )
+        .eq("purpose", "rent")
+        .eq("is_featured", true)
+        .order("order", { ascending: true, nullsFirst: false })
+        .order("created_at", { ascending: false });
+
+      if (rentError) throw rentError;
+
+      return rentData;
+    } catch (error) {
+      throw Error(`Error to featch rent properties ${error}`);
+    }
+  }
+
+  async detailProperty(slug: string): Promise<Property | null> {
+    console.log("acessei o banco");
     try {
       const { data } = await supabase
         .from("properties")
         .select("*")
-        .eq("id", id)
+        .eq("slug", slug)
         .single();
       return data ? data : null;
     } catch (error) {

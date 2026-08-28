@@ -1,6 +1,8 @@
 import { BiSolidPencil } from "react-icons/bi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import fallback from "../../assets/no-image.png";
+import useGetCoverImageFromPropertyID from "@/hooks/useGetCoverImageFromPropertyID";
+import { useEffect } from "react";
 
 type PropertiesCard = {
   propertyId?: string;
@@ -34,7 +36,6 @@ const AdminCard = ({
   beds,
   bedroom,
   bathroom,
-  coverImage,
   emphasis1,
   emphasis2,
   emphasis3,
@@ -43,6 +44,13 @@ const AdminCard = ({
   onEdit,
   onDelete,
 }: PropertiesCard) => {
+// CRIAR O HOOK!!!
+  const {image, getCoverImagesFromPropertyID} = useGetCoverImageFromPropertyID()
+
+  useEffect(() => {
+    getCoverImagesFromPropertyID(propertyId!)
+  }, [propertyId])
+
   return (
     <div
       className={`flex items-center justify-between gap-2 border border-primary1/30 rounded-sm p-2 w-full ${is_featured && "bg-secondary5/10"}`}
@@ -54,9 +62,9 @@ const AdminCard = ({
       )}
       <div className="flex items-center gap-2 rounded-sm">
         <div className="w-36 min-w-36 h-24 max-lg:w-28 max-lg:min-w-28">
-          {coverImage ? (
+          {image ? (
             <img
-              src={coverImage}
+              src={image.image_url}
               alt={title}
               className="w-full h-full object-cover rounded-sm"
             />

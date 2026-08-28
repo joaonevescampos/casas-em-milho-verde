@@ -21,9 +21,9 @@ import type { Property, PropertyImages } from "@/types/properties";
 import Loading from "../Loading";
 import useAddImages from "@/hooks/useAddImages";
 import useDetailProperty from "@/hooks/useDetailProperty";
-import useGetAllImages from "@/hooks/useGetAllImages";
 import useDeleteImages from "@/hooks/useDeleteImage";
 import useUpdateProperty from "@/hooks/useUpdateProperty";
+import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
 
 type ModalProps = {
   onClose?: () => void;
@@ -38,19 +38,19 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
 
   const { property } = useDetailProperty(propertyId);
-  const { images } = useGetAllImages();
+  const { images, detailImagesProperty } = useDetailPropertyImages();
   const { updateProperty, loading: loadingUpdate } = useUpdateProperty();
   const { addImages, loading: loadingImages } = useAddImages();
   const { deleteImage } = useDeleteImages();
   const [fakeLoading, setFakeLoading] = useState(false);
 
-  const findImages = (propertyId: string) => {
-    const selectedImages = images?.filter(
-      (image) => image.property_id === propertyId,
-    );
+  // const findImages = (propertyId: string) => {
+  //   const selectedImages = images?.filter(
+  //     (image) => image.property_id === propertyId,
+  //   );
 
-    setImagesFromStorage(selectedImages);
-  };
+  //   setImagesFromStorage(selectedImages);
+  // };
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
@@ -83,7 +83,7 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
   });
 
   useEffect(() => {
-    findImages(propertyId);
+    detailImagesProperty(propertyId);
   }, [images, form]);
 
   useEffect(() => {

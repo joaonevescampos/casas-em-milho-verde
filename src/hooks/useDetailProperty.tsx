@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Services from "../services/property";
 import type { Property } from "../types/properties";
 
-export default function useDetailProperty(id : string) {
+export default function useDetailProperty(slug : string) {
   const [property, setProperty] = useState<Property>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<boolean>(false);
@@ -12,7 +12,7 @@ export default function useDetailProperty(id : string) {
   async function detailProperty() {
     try {
       setLoading(true);
-      const response: Property | null = await api.detailProperty(id);
+      const response: Property | null = await api.detailProperty(slug);
       if (response) {
         setError(false);
         setProperty(response);

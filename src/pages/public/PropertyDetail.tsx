@@ -10,24 +10,22 @@ import type { CarouselApi } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
-import useGetAllProperties from "@/hooks/useGetAllProperties";
 import { FaBath, FaBed, FaUser } from "react-icons/fa";
 import user from "../../assets/user.png";
 import DefaultButton from "@/components/Button";
 import MapComponent from "@/components/public/Map";
 import RelatedProperties from "@/components/public/RelatedProperties";
+import useDetailProperty from "@/hooks/useDetailProperty";
 
 const PropertyDetail = () => {
   const param = useParams();
   const { detailImagesProperty, images } = useDetailPropertyImages();
-  const { properties } = useGetAllProperties();
+  const { property } = useDetailProperty(param.slug!);
   const [mainApi, setMainApi] = useState<CarouselApi>();
   const [thumbApi, setThumbApi] = useState<CarouselApi>();
   const location = useLocation();
 
   const [selected, setSelected] = useState(0);
-
-  const property = properties?.find((property) => property.slug === param.slug);
 
   useEffect(() => {
     if (!property?.id) return;
@@ -319,7 +317,7 @@ const PropertyDetail = () => {
         <RelatedProperties
           purpose={property?.purpose!}
           category={property?.category!}
-          propertyId={property?.id!}
+         
         />
       </aside>
     </>
