@@ -15,6 +15,7 @@ const PropertyCard = ({ property }: Props) => {
     if (property.id) {
       detailImagesProperty(property.id);
     }
+    console.log(property)
   }, [property.id, images]);
 
   const coverImage =
