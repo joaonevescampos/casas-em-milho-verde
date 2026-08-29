@@ -302,7 +302,7 @@ export default class Services {
       const { data: categoryData, error: categoryError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          "id, purpose, slug, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "rent")
         .eq("category", category)

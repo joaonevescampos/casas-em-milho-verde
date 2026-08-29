@@ -43,6 +43,7 @@ const ModalDelete = ({ onClose, propertyId, slug }: ModalProps) => {
       toast.success("imagens deletadas com sucesso!");
       await deleteProperty(propertyId);
       toast.success("Propriedades do imóvel deletadas com sucesso!");
+      
     } catch (error) {
       toast.error("Erro ao deletar imagens");
       throw error;
