@@ -24,7 +24,7 @@ import type { PropertyCardType } from "@/types/properties";
 interface SortableAdminListProps {
   properties: PropertyCardType[];
   handleEditProperty: (propertyId: string, slug: string) => void;
-  handleDeleteProperty: (id: string) => void;
+  handleDeleteProperty: (id: string, slug: string) => void;
   // onOrderChange: () => void;
 }
 
@@ -144,7 +144,7 @@ const SortableAdminList: React.FC<SortableAdminListProps> = ({
                   emphasis4={property.emphasis4 ?? ""}
                   is_featured={property.is_featured}
                   onEdit={() => handleEditProperty(property.id, property.slug!)}
-                  onDelete={() => handleDeleteProperty(property.id)}
+                  onDelete={() => handleDeleteProperty(property.id, property.slug!)}
                 />
               </li>
             </SortableItem>

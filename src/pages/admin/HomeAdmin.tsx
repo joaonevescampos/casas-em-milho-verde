@@ -45,8 +45,9 @@ const HomeAdmin = () => {
     setOpenEditProperty(true);
   };
 
-  const handleDeleteProperty = (propertyId: string) => {
+  const handleDeleteProperty = (propertyId: string, slug: string) => {
     setSelectedId(propertyId);
+    setSlug(slug)
     setOpenDeleteProperty(true);
   };
 
