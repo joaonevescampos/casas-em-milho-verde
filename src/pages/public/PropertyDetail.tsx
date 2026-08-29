@@ -20,7 +20,7 @@ import useDetailProperty from "@/hooks/useDetailProperty";
 const PropertyDetail = () => {
   const param = useParams();
   const { detailImagesProperty, images } = useDetailPropertyImages();
-  const { property } = useDetailProperty(param.slug!);
+  const { property, detailProperty } = useDetailProperty();
   const [mainApi, setMainApi] = useState<CarouselApi>();
   const [thumbApi, setThumbApi] = useState<CarouselApi>();
   const location = useLocation();
@@ -28,6 +28,7 @@ const PropertyDetail = () => {
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
+    detailProperty(param.slug!)
     if (!property?.id) return;
 
     detailImagesProperty(property.id);

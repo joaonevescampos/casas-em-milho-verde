@@ -9,23 +9,27 @@ export default function useDeleteImages() {
 
   const api = new Services();
 
-  async function deleteImage(imageId: string) {
-    try {
-      setLoading(true);
-      const response: PropertyImages[] | null = await api.deleteImage(imageId);
+  async function deleteImageFunc(imageId: string) {
+  try {
+    setLoading(true);
+    setError(false);
+    
+    const response: PropertyImages[] | null = await api.deleteImage(imageId);
 
-      if (response) {
-        setError(false);
-        setImages(response);
-        return response;
-      }
-    } catch (error) {
-      setError(true);
-      throw Error(`Cannot get all images using hook usedeleteImages: ${error}`);
-    } finally {
-      setLoading(false);
+    if (response) {
+      setImages(response);
+      return response;
+    } else {
+      throw new Error("Resposta vazia ao deletar imagem");
     }
+  } catch (error) {
+    setError(true);
+    console.error("Erro ao deletar imagem:", error);
+    throw error; // Re-lança para o componente tratar
+  } finally {
+    setLoading(false);
   }
+}
 
-  return { images, deleteImage, loading, error };
+  return { images, deleteImageFunc, loading, error };
 }

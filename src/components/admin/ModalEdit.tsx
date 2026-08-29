@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
-import type { Property, PropertyImages } from "@/types/properties";
+import type { Property } from "@/types/properties";
 import Loading from "../Loading";
 import useAddImages from "@/hooks/useAddImages";
 import useDetailProperty from "@/hooks/useDetailProperty";
@@ -29,28 +29,19 @@ type ModalProps = {
   onClose?: () => void;
   purpose: string;
   propertyId: string;
+  slug : string;
 };
 
-const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
+const ModalEdit = ({ onClose, purpose, propertyId, slug }: ModalProps) => {
   const [files, setFiles] = useState<File[]>([]);
-  const [imagesFromStorage, setImagesFromStorage] =
-    useState<PropertyImages[]>();
   const [previews, setPreviews] = useState<string[]>([]);
 
-  const { property } = useDetailProperty(propertyId);
-  const { images, detailImagesProperty } = useDetailPropertyImages();
+  const { property, detailProperty } = useDetailProperty();
+  const { images : imagesFromStorage, detailImagesProperty } = useDetailPropertyImages();
   const { updateProperty, loading: loadingUpdate } = useUpdateProperty();
   const { addImages, loading: loadingImages } = useAddImages();
-  const { deleteImage } = useDeleteImages();
+  const { deleteImageFunc } = useDeleteImages();
   const [fakeLoading, setFakeLoading] = useState(false);
-
-  // const findImages = (propertyId: string) => {
-  //   const selectedImages = images?.filter(
-  //     (image) => image.property_id === propertyId,
-  //   );
-
-  //   setImagesFromStorage(selectedImages);
-  // };
 
   const form = useForm<z.infer<typeof propertySchema>>({
     resolver: zodResolver(propertySchema),
@@ -84,9 +75,12 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
 
   useEffect(() => {
     detailImagesProperty(propertyId);
-  }, [images, form]);
+    detailProperty(slug)
+
+  }, [propertyId, slug]);
 
   useEffect(() => {
+    console.log(property)
     if (!property) return;
 
     form.reset({
@@ -161,17 +155,18 @@ const ModalEdit = ({ onClose, purpose, propertyId }: ModalProps) => {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleDeleteStorageImage = async (imageId: string) => {
-    try {
-      await deleteImage(imageId);
-
-      setImagesFromStorage((prev) =>
-        prev?.filter((image) => image.id !== imageId),
-      );
-    } catch {
-      toast.error("Erro ao remover imagem.");
-    }
-  };
+const handleDeleteStorageImage = async (imageId: string) => {
+  try {
+    await deleteImageFunc(imageId);
+    toast.success("Imagem removida do armazenamento com sucesso!");
+    await detailImagesProperty(propertyId);
+    
+    toast.success("Imagem removida do banco com sucesso!");
+  } catch (error) {
+    console.error("Erro ao remover imagem:", error);
+    toast.error("Erro ao remover imagem. Tente novamente.");
+  }
+};
 
   if (loadingUpdate || loadingImages || fakeLoading) {
     return <Loading />;

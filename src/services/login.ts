@@ -1,4 +1,11 @@
 import { supabase } from "../lib/supabase";
+const { data: { user } } = await supabase.auth.getUser();
+
+if (user) {
+  console.log("✅ Usuário autenticado:", user.email);
+} else {
+  console.log("❌ Usuário NÃO autenticado");
+}
 
 export const loginToAdmin = async (
   email: string,
@@ -10,6 +17,7 @@ export const loginToAdmin = async (
   });
 
   if (error) {
+    console.log(error.message)
     throw new Error(error.message);
   }
 

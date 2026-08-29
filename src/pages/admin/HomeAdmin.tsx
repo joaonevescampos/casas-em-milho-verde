@@ -14,7 +14,6 @@ import SortableAdminList from "@/components/admin/SortableAdminList";
 import useGetPropertiesCard from "@/hooks/useGetPropertiesCard";
 
 const HomeAdmin = () => {
-  // Estados
   const [purpose, setPurpose] = useState<"rent" | "sale">("rent");
   const { properties, getPropertiesCardFunc, loading: loadingPropertiesCard } = useGetPropertiesCard();
 
@@ -22,47 +21,27 @@ const HomeAdmin = () => {
     getPropertiesCardFunc(purpose)
   }, [purpose])
 
-
-  // const [propertiesToRent, setPropertiesToRent] = useState<PropertyCard[]>(
-  //   [],
-  // );
-  // const [propertiesToSale, setPropertiesToSale] = useState<PropertyCard[]>(
-  //   [],
-  // );
   const [openAddProperty, setOpenAddProperty] = useState<boolean>(false);
   const [openEditProperty, setOpenEditProperty] = useState<boolean>(false);
   const [openDeleteProperty, setOpenDeleteProperty] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<string>("");
-  // const [isFetching, setIsFetching] = useState<boolean>(true);
+  const [slug, setSlug] = useState<string>("");
 
-  // const { images, getCoverImagesFromPurpose, loading: loadingImages } = useGetCoverImagesFromPurpose();
   const navigate = useNavigate();
 
-
-  // Função para encontrar a imagem de capa
-  // const findImage = (propertyId: string) => {
-  //   const selectedImage = images?.find(
-  //     (image: PropertyImages) =>
-  //       image.property_id === propertyId && image.cover_image,
-  //   )?.image_url;
-
-  //   return selectedImage;
-  // };
-
-  // Mudar propósito
   const changePurpose = (value: "rent" | "sale") => {
     setPurpose(value);
    
   };
 
-  // Handlers dos modais
   const handleAddProperty = () => {
     setOpenAddProperty(true);
   };
 
-  const handleEditProperty = (propertyId: string) => {
+  const handleEditProperty = (propertyId: string, slug: string) => {
     setSelectedId(propertyId);
+    setSlug(slug)
     setOpenEditProperty(true);
   };
 
@@ -83,7 +62,6 @@ const HomeAdmin = () => {
     setOpenDeleteProperty(false);
   };
 
-  // Logout
   async function logout() {
     try {
       setIsLoading(true);
@@ -97,16 +75,11 @@ const HomeAdmin = () => {
     }
   }
 
-  // Verificar se está carregando
   const loading = loadingPropertiesCard;
 
   if (loading) {
     return <Loading />;
   }
-
-  // Propriedades atuais baseadas no propósito
-  // const currentProperties =
-  //   purpose === "rent" ? propertiesRent : propertiesSale;
 
   return (
     <>
@@ -122,10 +95,11 @@ const HomeAdmin = () => {
             propertyId={selectedId}
             onClose={handleCloseEdit}
             purpose={purpose}
+            slug={slug}
           />
         )}
         {openDeleteProperty && (
-          <ModalDelete propertyId={selectedId} onClose={handleCloseDelete} />
+          <ModalDelete propertyId={selectedId} slug={slug} onClose={handleCloseDelete} />
         )}
 
         <div className="flex flex-col gap-2 text-center">

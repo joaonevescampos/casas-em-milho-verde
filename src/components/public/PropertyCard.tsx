@@ -17,7 +17,7 @@ const PropertyCard = ({ property }: Props) => {
     detailImagesProperty(property.id);
     setHasFetched(true);
   }
-    console.log(property)
+    
   }, [property.id, hasFetched]);
 
   const coverImage =

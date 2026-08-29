@@ -57,22 +57,21 @@ export default class Services {
   async addImages(files: File[], propertyId: string, initialLength: number) {
     try {
       const imagesToInsert: PropertyImages[] = [];
-
       const timestamp = Date.now();
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-
+ 
         // Converte para WebP
         const webpBlob = await convertToWebp(file);
 
         if (!webpBlob) {
+          console.error(`❌ Erro ao converter ${file.name} para WebP`);
           throw new Error("Erro ao converter imagem para WebP.");
         }
 
         // Sempre salva como .webp
         const fileName = `${timestamp}-${initialLength + i}.webp`;
-
         const filePath = `${propertyId}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -82,6 +81,7 @@ export default class Services {
           });
 
         if (uploadError) {
+          console.error(`❌ Erro no upload da imagem ${i + 1}:`, uploadError);
           throw uploadError;
         }
 
@@ -89,23 +89,25 @@ export default class Services {
           data: { publicUrl },
         } = supabase.storage.from("property_images").getPublicUrl(filePath);
 
-        imagesToInsert.push({
+        const imageData = {
           property_id: propertyId,
           image_url: publicUrl,
           position: initialLength + i,
           cover_image: initialLength + i === 0,
-        });
+        };
+
+        imagesToInsert.push(imageData);
       }
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("property_images")
         .insert(imagesToInsert)
         .select("*");
 
-      if (error) throw error;
-
       return data ?? null;
     } catch (error) {
+      console.error("  - Erro completo:", error);
+
       throw error;
     }
   }
@@ -140,69 +142,94 @@ export default class Services {
     }
   }
 
-  async deleteImage(imageId: string) {
-    try {
-      // Verifica se o usuário está autenticado
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error("Usuário não autenticado");
-      }
+ async deleteImage(imageId: string) {
+  try {
+    // Verifica se o usuário está autenticado
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("Usuário não autenticado");
+    }
 
-      // Busca o registro da imagem
-      const { data: image, error } = await supabase
+    // Busca o registro da imagem
+    const { data: image, error } = await supabase
+      .from("property_images")
+      .select("*")
+      .eq("id", imageId)
+      .single();
+
+    if (error) throw error;
+    if (!image) return null;
+
+    // EXTRAI O CAMINHO DO ARQUIVO CORRETAMENTE
+    // Verifica se a URL contém o padrão esperado
+    let filePath = image.image_url;
+    
+    // Se a URL for completa, extrai apenas o caminho
+    if (filePath.includes('/storage/v1/object/public/')) {
+      // Para URLs completas do Supabase
+      filePath = filePath.split('/storage/v1/object/public/property_images/')[1];
+    } else if (filePath.includes('/public/property_images/')) {
+      // Para URLs do seu próprio domínio
+      filePath = filePath.split('/public/property_images/')[1];
+    }
+    
+    // Se ainda tiver o domínio, tenta extrair de outra forma
+    if (!filePath || filePath.includes('http')) {
+      // Tenta extrair o nome do arquivo da URL
+      const urlParts = filePath.split('/');
+      filePath = urlParts[urlParts.length - 1];
+    }
+
+    // PRIMEIRO: Remove o arquivo do Storage
+    const { error: storageError } = await supabase.storage
+      .from("property_images")
+      .remove([filePath]);
+
+    if (storageError) {
+      console.error("Erro ao deletar do storage:", storageError);
+      throw new Error(`Erro ao deletar arquivo do storage: ${storageError.message}`);
+    }
+
+    // SEGUNDO: Remove o registro do banco (só se o storage deu certo)
+    const { error: deleteError } = await supabase
+      .from("property_images")
+      .delete()
+      .eq("id", imageId);
+
+    if (deleteError) {
+      // Se falhar aqui, o arquivo já foi deletado do storage
+      // Você pode tentar restaurar ou apenas logar o erro
+      console.error("Erro ao deletar do banco após deletar do storage:", deleteError);
+      throw deleteError;
+    }
+
+    // Se era a capa, promove outra imagem
+    if (image.cover_image) {
+      const { data: firstImage } = await supabase
         .from("property_images")
-        .select("*")
-        .eq("id", imageId)
+        .select("id")
+        .eq("property_id", image.property_id)
+        .order("position", { ascending: true })
+        .limit(1)
         .single();
 
-      if (error) throw error;
-
-      if (!image) return null;
-
-      // Extrai o caminho do arquivo no bucket
-      const filePath = image.image_url.split("/public/property_images/")[1];
-
-      // Remove o arquivo do Storage
-      const { error: storageError } = await supabase.storage
-        .from("property_images")
-        .remove([filePath]);
-
-      if (storageError) throw storageError;
-
-      // Remove o registro do banco
-      const { error: deleteError } = await supabase
-        .from("property_images")
-        .delete()
-        .eq("id", imageId);
-
-      if (deleteError) throw deleteError;
-
-      // Se era a capa, promove outra imagem
-      if (image.cover_image) {
-        const { data: firstImage } = await supabase
+      if (firstImage) {
+        await supabase
           .from("property_images")
-          .select("id")
-          .eq("property_id", image.property_id)
-          .order("position", { ascending: true })
-          .limit(1)
-          .single();
-
-        if (firstImage) {
-          await supabase
-            .from("property_images")
-            .update({
-              cover_image: true,
-            })
-            .eq("id", firstImage.id);
-        }
+          .update({ cover_image: true })
+          .eq("id", firstImage.id);
       }
-      return image;
-    } catch (error) {
-      throw error;
     }
+
+    return image;
+  } catch (error) {
+    console.error("Erro no deleteImage:", error);
+    throw error;
   }
+}
+
   async selectRelatedPropertySale(
     category: string,
   ): Promise<PropertyCardType[] | null> {
@@ -214,7 +241,7 @@ export default class Services {
       const { data: categoryData, error: categoryError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          "id, purpose, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "sale")
         .eq("category", category)
@@ -239,7 +266,7 @@ export default class Services {
         const { data: saleData, error: saleError } = await supabase
           .from("properties")
           .select(
-            "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+            "id, purpose, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
           )
           .eq("purpose", "sale")
           .not("category", "eq", category) // Exclui a categoria já buscada
@@ -275,7 +302,7 @@ export default class Services {
       const { data: categoryData, error: categoryError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          "id, purpose, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "rent")
         .eq("category", category)
@@ -300,7 +327,7 @@ export default class Services {
         const { data: rentData, error: rentError } = await supabase
           .from("properties")
           .select(
-            "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+            "id, purpose, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
           )
           .eq("purpose", "rent")
           .not("category", "eq", category) // Exclui a categoria já buscada
@@ -332,7 +359,7 @@ export default class Services {
       const { data: saleData, error: saleError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          "id, purpose, slug, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "sale")
         .order("order", { ascending: true, nullsFirst: false })
@@ -353,7 +380,7 @@ export default class Services {
       const { data: rentData, error: rentError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
+          "id, purpose, slug, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "rent")
         .order("order", { ascending: true, nullsFirst: false })
@@ -374,7 +401,7 @@ export default class Services {
       const { data: saleData, error: saleError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
+          "id, purpose, slug, title, description, code, price, emphasis1, emphasis2, emphasis3, emphasis4, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "sale")
         .eq("is_featured", true)
@@ -396,7 +423,7 @@ export default class Services {
       const { data: rentData, error: rentError } = await supabase
         .from("properties")
         .select(
-          "id, purpose, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
+          "id, purpose, slug, title, description, beds, bedrooms, guests, bathrooms, city, state, neighborhood, is_featured",
         )
         .eq("purpose", "rent")
         .eq("is_featured", true)

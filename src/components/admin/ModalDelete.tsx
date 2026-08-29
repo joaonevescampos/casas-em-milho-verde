@@ -12,10 +12,11 @@ import fallback from "../../assets/no-image.png"
 type ModalProps = {
   onClose?: () => void;
   propertyId: string;
+  slug: string;
 };
 
-const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
-  const { property } = useDetailProperty(propertyId);
+const ModalDelete = ({ onClose, propertyId, slug }: ModalProps) => {
+  const { property, detailProperty } = useDetailProperty();
   const { deleteImages, loading: loadingDeleteImages } =
     useDeletePropertyImages();
   const { deleteProperty, loading: loadingDeleteProperty } =
@@ -24,6 +25,7 @@ const ModalDelete = ({ onClose, propertyId }: ModalProps) => {
   const { detailImagesProperty, images } = useDetailPropertyImages();
 
   useEffect(() => {
+    detailProperty(slug)
     detailImagesProperty(propertyId);
   }, [propertyId]);
 
