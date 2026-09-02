@@ -1,6 +1,6 @@
 import useDetailPropertyImages from "@/hooks/useDetailPropertyImages";
 import type { PropertyCardType } from "@/types/properties";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import fallback from "../../assets/no-image.png";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -10,15 +10,13 @@ type Props = {
 };
 const PropertyCard = ({ property }: Props) => {
   const { detailImagesProperty, images } = useDetailPropertyImages();
-  const [hasFetched, setHasFetched] = useState(false);
 
   useEffect(() => {
-     if (property.id && !hasFetched) {
-    detailImagesProperty(property.id);
-    setHasFetched(true);
-  }
-    
-  }, [property.id, hasFetched]);
+    console.log(property);
+    if (property.id) {
+      detailImagesProperty(property.id);
+    }
+  }, [property.id]);
 
   const coverImage =
     images?.find((image) => image.cover_image)?.image_url ?? null;
@@ -67,7 +65,8 @@ const PropertyCard = ({ property }: Props) => {
                   R$ 420.000 <span className="text-sm">sem mobília</span>
                 </h3>
                 <h3 className="text-xl font-cormorant font-semibold truncate text-primary1">
-                  R$ {property.price?.toLocaleString("pt-BR") || "0"} <span className="text-sm">com mobília</span>
+                  R$ {property.price?.toLocaleString("pt-BR") || "0"}{" "}
+                  <span className="text-sm">com mobília</span>
                 </h3>
               </div>
             ) : (
@@ -83,7 +82,9 @@ const PropertyCard = ({ property }: Props) => {
           ${property.bathrooms} banheiros . ${property.beds} camas`
             : `${property.emphasis1} . ${property.emphasis2} . ${property.emphasis3} . ${property.emphasis4}`}
         </span>
-        <p className={`${property.id === "0e82d29b-a723-4e59-a2e3-50f803d3f6fd" ? "line-clamp-1" : "line-clamp-2"} text-sm opacity-70 leading-6.5`}>
+        <p
+          className={`${property.id === "0e82d29b-a723-4e59-a2e3-50f803d3f6fd" ? "line-clamp-1" : "line-clamp-2"} text-sm opacity-70 leading-6.5`}
+        >
           {property.description}
         </p>
       </div>
