@@ -28,7 +28,47 @@ const PropertyDetail = () => {
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
-    detailProperty(param.slug!)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        mainApi?.scrollPrev();
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        mainApi?.scrollNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mainApi]);
+
+  useEffect(() => {
+    if (!images?.length) return;
+
+    const preloadIndexes = new Set<number>();
+
+    // Imagem atual
+    preloadIndexes.add(selected);
+
+    // Próxima
+    preloadIndexes.add((selected + 1) % images.length);
+
+    // Anterior
+    preloadIndexes.add((selected - 1 + images.length) % images.length);
+
+    preloadIndexes.forEach((index) => {
+      const img = new Image();
+      img.src = images[index].image_url;
+    });
+  }, [selected, images]);
+
+  useEffect(() => {
+    detailProperty(param.slug!);
     if (!property?.id) return;
 
     detailImagesProperty(property.id);
@@ -36,17 +76,15 @@ const PropertyDetail = () => {
 
   function scrollTo(index: number) {
     mainApi?.scrollTo(index);
-    thumbApi?.scrollTo(index);
-    setSelected(index);
   }
 
   function onSelect(api: CarouselApi) {
-    if (api) {
-      const index = api.selectedScrollSnap();
+    if (!api) return;
 
-      setSelected(index);
-      thumbApi?.scrollTo(index);
-    }
+    const index = api.selectedScrollSnap();
+
+    setSelected(index);
+    thumbApi?.scrollTo(index);
   }
 
   return (
@@ -57,6 +95,11 @@ const PropertyDetail = () => {
             {/* IMAGEM PRINCIPAL */}
 
             <Carousel
+              opts={{
+                watchDrag: true,
+                skipSnaps: false,
+                duration: 20,
+              }}
               setApi={(api) => {
                 setMainApi(api);
 
@@ -76,8 +119,8 @@ const PropertyDetail = () => {
                       src={image.image_url}
                       alt={`Foto ${index + 1} do imóvel`}
                       className="block h-120 w-full rounded-xl object-cover max-lg:h-80"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      fetchPriority={index === 0 ? "high" : "low"}
+                      loading={index <= 2 ? "eager" : "lazy"}
+                      fetchPriority={index <= 2 ? "high" : "auto"}
                       decoding="async"
                       width="800"
                       height="420"
@@ -91,9 +134,9 @@ const PropertyDetail = () => {
             <div className="mt-4 flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => thumbApi?.scrollPrev()}
+                onClick={() => mainApi?.scrollPrev()}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border hover:bg-gray-100"
-                aria-label="Miniatura anterior"
+                aria-label="Imagem anterior"
               >
                 <ChevronLeft size={18} />
               </button>
@@ -139,9 +182,9 @@ const PropertyDetail = () => {
 
               <button
                 type="button"
-                onClick={() => thumbApi?.scrollNext()}
+                onClick={() => mainApi?.scrollNext()}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border hover:bg-gray-100"
-                aria-label="Próxima miniatura"
+                aria-label="Próxima imagem"
               >
                 <ChevronRight size={18} />
               </button>
@@ -318,7 +361,6 @@ const PropertyDetail = () => {
         <RelatedProperties
           purpose={property?.purpose!}
           category={property?.category!}
-         
         />
       </aside>
     </>
