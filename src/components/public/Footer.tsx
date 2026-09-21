@@ -59,7 +59,7 @@ const Footer = () => {
             <div className="flex gap-2 items-center">
               <IoLogoWhatsapp className="text-primary2 text-sm" />
               <NavLink
-                to="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
+                to="https://wa.me/553899404678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                 target="_blank"
                 className="hover:font-medium"
               >

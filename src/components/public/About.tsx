@@ -55,7 +55,7 @@ const About = () => {
 
               <div className="flex flex-col justify-center max-lg:pt-4 gap-4 max-lg:w-full">
                 <Link
-                  to="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
+                  to="https://wa.me/553899404678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                   target="_blank"
                   className="flex gap-4 items-center justify-center p-2.5 border-2 border-primary5/20 rounded-xl font-medium text-primary5 cursor-pointer w-50 max-lg:w-full hover:bg-primary5/10 max-w-80 m-auto"
                 >
@@ -100,7 +100,10 @@ const About = () => {
               também para fortalecer o turismo local.{" "}
             </p>
             <p className="text-sm opacity-70 leading-7">
-              Com o tempo, o projeto foi crescendo e, hoje, como Corretor de Imóveis, também ajudo quem deseja comprar ou vender casas e lotes em Milho Verde e região, mantendo a mesma proposta de um trabalho próximo, pessoal e conectado ao lugar onde vivo.
+              Com o tempo, o projeto foi crescendo e, hoje, como Corretor de
+              Imóveis, também ajudo quem deseja comprar ou vender casas e lotes
+              em Milho Verde e região, mantendo a mesma proposta de um trabalho
+              próximo, pessoal e conectado ao lugar onde vivo.
             </p>
           </div>
         </div>

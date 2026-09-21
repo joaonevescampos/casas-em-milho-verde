@@ -9,7 +9,7 @@ type Props = {
   purpose: string;
 };
 
- const CtaSection = ({ purpose }: Props) => {
+const CtaSection = ({ purpose }: Props) => {
   return (
     <section className="-mx-20 mt-8 max-md:-mx-4 overflow-hidden">
       <div className="relative h-80">
@@ -36,17 +36,19 @@ type Props = {
         <div className="absolute inset-x-0 bottom-20 px-20 max-md:px-4 text-white">
           <Reveal className="flex items-center justify-between gap-4 max-lg:flex-col max-lg:items-start">
             <div className="flex flex-col gap-4">
-              <FadeUp delay={.5}>
+              <FadeUp delay={0.5}>
                 <h1 className="font-cormorant text-5xl font-semibold max-lg:text-3xl">
-                  {purpose === "rent" ? "Desacelere, respire e viva o essencial." : "Viva no seu próprio imóvel."}
-                  
+                  {purpose === "rent"
+                    ? "Desacelere, respire e viva o essencial."
+                    : "Viva no seu próprio imóvel."}
                 </h1>
               </FadeUp>
 
               <FadeUp delay={1}>
                 <h2 className="max-w-xl text-xs leading-relaxed">
-                   {purpose === "rent" ? "Sua próxima reserva te espera..." : "Confira as opções a venda."}
-                  
+                  {purpose === "rent"
+                    ? "Sua próxima reserva te espera..."
+                    : "Confira as opções a venda."}
                 </h2>
               </FadeUp>
             </div>
@@ -62,7 +64,7 @@ type Props = {
                 <DefaultButton
                   text="WHAT'S APP"
                   style="bg-linear-120! to-primary2/50! from-primary2! w-50!"
-                  path="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
+                  path="https://wa.me/553899404678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
                 />
               )}
             </FadeUp>
@@ -71,6 +73,6 @@ type Props = {
       </div>
     </section>
   );
-}
+};
 
 export default CtaSection;

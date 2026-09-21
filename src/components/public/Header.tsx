@@ -49,7 +49,10 @@ const Header = () => {
             </NavLink>
           ))}
         </nav>
-        <Link to="https://wa.me/553899504678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!" target="_blank">
+        <Link
+          to="https://wa.me/553899404678?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20com%20o%20Matias%20sobre%20casas%20e%20hospedagens!"
+          target="_blank"
+        >
           <DefaultButton text="WHAT'S APP" />
         </Link>
       </header>
@@ -75,4 +78,3 @@ const Header = () => {
 };
 
 export default Header;
-

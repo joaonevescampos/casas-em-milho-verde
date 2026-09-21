@@ -325,7 +325,7 @@ const PropertyDetail = () => {
               </Link>
             ) : (
               <Link
-                to={`https://wa.me/553899504678?text=Olá%2C%20me%20interessei%20por%20este%20anúncio%3A%0A%0A*${property?.title}*%0A"casasemmilhoverde.com${location?.pathname}"%0A%0AGostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es%20e%20disponibilidade%20para%20fazer%20uma%20visita.`}
+                to={`https://wa.me/553899404678?text=Olá%2C%20me%20interessei%20por%20este%20anúncio%3A%0A%0A*${property?.title}*%0A"casasemmilhoverde.com${location?.pathname}"%0A%0AGostaria%20de%20saber%20mais%20informa%C3%A7%C3%B5es%20e%20disponibilidade%20para%20fazer%20uma%20visita.`}
                 target="_blank"
               >
                 <DefaultButton text="CONVERSAR NO WHAT'S APP" style="w-full!" />
