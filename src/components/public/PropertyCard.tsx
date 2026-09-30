@@ -32,7 +32,7 @@ const PropertyCard = ({ property }: Props) => {
         <img
           src={coverImage ? coverImage : fallback}
           alt={property.title}
-          className="w-full h-50 max-lg:h-70 object-cover rounded-t-xl"
+          className="w-full aspect-video object-cover rounded-t-xl"
         />
       </picture>
 

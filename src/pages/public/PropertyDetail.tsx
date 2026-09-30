@@ -118,7 +118,7 @@ const PropertyDetail = () => {
                     <img
                       src={image.image_url}
                       alt={`Foto ${index + 1} do imóvel`}
-                      className="block h-120 w-full rounded-xl object-cover max-lg:h-80"
+                      className="block h-120 w-full rounded-xl object-cover max-lg:aspect-video max-md:h-full"
                       loading={index <= 2 ? "eager" : "lazy"}
                       fetchPriority={index <= 2 ? "high" : "auto"}
                       decoding="async"
@@ -168,7 +168,7 @@ const PropertyDetail = () => {
                         <img
                           src={image.image_url}
                           alt={`Miniatura ${index + 1}`}
-                          className="h-16 w-24 object-cover"
+                          className="aspect-video object-cover"
                           loading="lazy"
                           decoding="async"
                           width="96"
