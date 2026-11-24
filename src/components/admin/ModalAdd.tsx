@@ -21,6 +21,7 @@ import useCreateProperty from "@/hooks/useCreateProperty";
 import type { Property } from "@/types/properties";
 import Loading from "../Loading";
 import useAddImages from "@/hooks/useAddImages";
+import { supabase } from "@/lib/supabase";
 
 type ModalProps = {
   onClose?: () => void;
@@ -64,19 +65,54 @@ const ModalAdd = ({ onClose, purpose }: ModalProps) => {
     },
   });
 
-  const createSlug = (title: string) => {
-    return title
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, "-");
-  };
+  // import { supabase } from './seu-cliente-supabase'
+
+const createSlug = async (title: string, tabela: string = 'properties'): Promise<string> => {
+  // 1. Sua lógica original de geração do slug base
+  const baseSlug = title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+
+  // 2. Busca todos os slugs que começam com o slug base
+  const { data, error } = await supabase
+    .from(tabela)
+    .select('slug')
+    .like('slug', `${baseSlug}%`)
+
+  if (error) throw new Error(`Erro ao verificar slugs: ${error.message}`)
+
+  const slugsExistentes = new Set((data ?? []).map((row) => row.slug))
+
+  // 3. Se o slug base está livre, retorna ele
+  if (!slugsExistentes.has(baseSlug)) {
+    return baseSlug
+  }
+
+  // 4. Procura o próximo sufixo numérico livre (1, 2, 3...)
+  let contador = 1
+  while (slugsExistentes.has(`${baseSlug}-${contador}`)) {
+    contador++
+  }
+
+  return `${baseSlug}-${contador}`
+}
+
+  // const createSlug = (title: string) => {
+  //   return title
+  //     .normalize("NFD")
+  //     .replace(/[\u0300-\u036f]/g, "")
+  //     .toLowerCase()
+  //     .trim()
+  //     .replace(/\s+/g, "-");
+  // };
 
   async function onSubmit(data: Property) {
     try {
       setFakeLoading(true);
-      const slug = createSlug(data.title);
+      const slug = await createSlug(data.title);
 
       const property = await createProperty({
         ...data,
